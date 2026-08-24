@@ -43,6 +43,16 @@
     .btn-delete-evento i { line-height: 1; }
     body.admin-mode .btn-delete-evento { display: flex; }
     #eventos-container .card { position: relative; overflow: hidden; }
+    .btn-sync-insta {
+      display: none; align-items: center; gap: 8px;
+      padding: 8px 18px; border: none; border-radius: 8px;
+      background: linear-gradient(135deg, #0f766e, #14b8a6); color: #fff;
+      font-weight: 600; font-size: 0.85rem; cursor: pointer;
+      box-shadow: 0 2px 8px rgba(13,148,136,0.35); transition: all 0.2s ease;
+    }
+    .btn-sync-insta:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(13,148,136,0.45); }
+    .btn-sync-insta:disabled { opacity: 0.7; cursor: wait; }
+    body.admin-mode .btn-sync-insta { display: inline-flex; }
     @media (max-width: 768px) {
       .evento-foto-wrap { height: 200px; }
     }
@@ -55,7 +65,12 @@
 
 <main class="main-content">
   <div class="container py-5">
-    <h2>Eventos</h2>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:1.5rem;">
+      <h2 style="margin:0;">Eventos</h2>
+      <button class="btn-sync-insta admin-only" style="display:none;" onclick="sincronizarInstagram(this)" title="Buscar novas postagens do Instagram">
+        <i class="bi bi-arrow-repeat"></i> Sincronizar Instagram
+      </button>
+    </div>
     <div class="row" id="eventos-container"></div>
 
     <a href="../index.html" class="button btn-secondary mt-3">Voltar</a>
@@ -144,6 +159,31 @@ document.addEventListener('click', function(e) {
       btn.innerHTML = '<i class="bi bi-x-lg"></i>';
     });
 });
+
+async function sincronizarInstagram(btn) {
+  if (btn.disabled) return;
+  btn.disabled = true;
+  var htmlOriginal = btn.innerHTML;
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Sincronizando…';
+  try {
+    var r = await apiFetch('/eventos/sync-instagram', { method: 'POST' });
+    var d = await r.json();
+    if (d.success && d.publicados > 0) {
+      alert('✅ ' + d.publicados + ' novo(s) post(s) publicado(s)!' + (d.sem_foto ? ' (' + d.sem_foto + ' sem foto)' : ''));
+      location.reload();
+    } else if (d.success) {
+      alert('Nenhuma novidade no Instagram.\nÚltima publicação do site: ' + (d.cutoff || '-'));
+      btn.disabled = false;
+      btn.innerHTML = htmlOriginal;
+    } else {
+      throw new Error(d.error || 'Falha na sincronização');
+    }
+  } catch (e) {
+    alert('Erro na sincronização: ' + e.message);
+    btn.disabled = false;
+    btn.innerHTML = htmlOriginal;
+  }
+}
 </script>
 
 </body>

@@ -45,6 +45,16 @@
     color: #fff; text-decoration: none;
   }
   .btn-evento-insta i { font-size: 1rem; line-height: 1; }
+  .btn-sync-insta {
+    display: none; align-items: center; gap: 8px;
+    padding: 8px 18px; border: none; border-radius: 8px;
+    background: linear-gradient(135deg, #0f766e, #14b8a6); color: #fff;
+    font-weight: 600; font-size: 0.85rem; cursor: pointer;
+    box-shadow: 0 2px 8px rgba(13,148,136,0.35); transition: all 0.2s ease;
+  }
+  .btn-sync-insta:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(13,148,136,0.45); }
+  .btn-sync-insta:disabled { opacity: 0.7; cursor: wait; }
+  body.admin-mode .btn-sync-insta { display: inline-flex; }
   @media (min-width: 769px) {
     .events-grid > .event-card-hover { flex: 0 0 min(680px, 90vw); }
     .event-card-hover .event-fotos-area { min-height: 300px; }
@@ -415,9 +425,14 @@ document.addEventListener('DOMContentLoaded', function() {
   <div class="landing-container">
     <div class="d-flex align-items-center justify-content-between mb-4">
       <h2>Eventos</h2>
-      <a href="pages/evento_form.html" class="btn btn-success admin-only" style="display:none;">
-        <i class="bi bi-plus-circle"></i> Eventos
-      </a>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <button class="btn-sync-insta admin-only" style="display:none;" onclick="sincronizarInstagram(this)" title="Buscar novas postagens do Instagram">
+          <i class="bi bi-arrow-repeat"></i> Sincronizar Instagram
+        </button>
+        <a href="pages/evento_form.html" class="btn btn-success admin-only" style="display:none;">
+          <i class="bi bi-plus-circle"></i> Eventos
+        </a>
+      </div>
     </div>
   </div>
 </section>
@@ -853,6 +868,31 @@ function atenderCastracao(btn) {
     .catch(function(err) {
       alert('Erro ao atender: ' + err.message);
     });
+}
+
+async function sincronizarInstagram(btn) {
+  if (btn.disabled) return;
+  btn.disabled = true;
+  var htmlOriginal = btn.innerHTML;
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Sincronizando…';
+  try {
+    var r = await apiFetch('/eventos/sync-instagram', { method: 'POST' });
+    var d = await r.json();
+    if (d.success && d.publicados > 0) {
+      alert('✅ ' + d.publicados + ' novo(s) post(s) publicado(s)!' + (d.sem_foto ? ' (' + d.sem_foto + ' sem foto)' : ''));
+      location.reload();
+    } else if (d.success) {
+      alert('Nenhuma novidade no Instagram.\nÚltima publicação do site: ' + (d.cutoff || '-'));
+      btn.disabled = false;
+      btn.innerHTML = htmlOriginal;
+    } else {
+      throw new Error(d.error || 'Falha na sincronização');
+    }
+  } catch (e) {
+    alert('Erro na sincronização: ' + e.message);
+    btn.disabled = false;
+    btn.innerHTML = htmlOriginal;
+  }
 }
 </script>
 

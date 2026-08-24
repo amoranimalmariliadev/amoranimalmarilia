@@ -147,21 +147,13 @@ class LoginFormHandler {
         setTimeout(function() { window.location.href = '/index.html'; }, 1000);
       })
       .catch(function(err) {
+        var msg = err.message;
         var isNetworkError = err.name === 'TypeError' && err.message.indexOf('fetch') !== -1;
         if (isNetworkError || err.message === 'Erro de conexão com o servidor (CORS).') {
-          localStorage.setItem('amoranimal_token', 'admin-static-token');
-          localStorage.setItem('amoranimal_usuario', JSON.stringify({ nome: valor, admin: true, static: true }));
-          localStorage.setItem('amoranimal_session_expiry', String(Date.now() + 600000));
-          window.loginHandler?.showMessage('Modo administrador local ativado! Redirecionando...', 'success');
-          setTimeout(function() { window.location.href = '/index.html'; }, 1000);
-        } else {
-          var msg = err.message;
-          if (isNetworkError) {
-            msg = 'Erro de conexão com o servidor. Verifique se a API está acessível (possível bloqueio CORS).';
-          }
-          window.loginHandler?.showMessage(msg, 'danger');
-          window.loginHandler?.setLoadingState(false);
+          msg = 'Erro de conexão com o servidor. Verifique se a API está acessível (possível bloqueio CORS).';
         }
+        window.loginHandler?.showMessage(msg, 'danger');
+        window.loginHandler?.setLoadingState(false);
       });
     }
 
@@ -251,6 +243,11 @@ class LoginFormHandler {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    if (localStorage.getItem('amoranimal_token') === 'admin-static-token') {
+      localStorage.removeItem('amoranimal_token');
+      localStorage.removeItem('amoranimal_usuario');
+      localStorage.removeItem('amoranimal_session_expiry');
+    }
     if (localStorage.getItem('amoranimal_token')) {
       window.location.href = '/index.html';
       return;
