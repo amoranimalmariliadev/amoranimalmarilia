@@ -31,9 +31,11 @@ function renderEvents(events) {
     container.innerHTML = '<p class="text-center text-muted" style="grid-column:1/-1;">Nenhum evento cadastrado.</p>';
     return;
   }
+  var INSTAGRAM_URL = 'https://www.instagram.com/grupoamoranimal/';
   events.forEach(function (ev) {
     var card = document.createElement('div');
     card.className = 'event-card-hover';
+    var instaUrl = ev.link || ev.url_instagram || INSTAGRAM_URL;
     card.innerHTML =
       '<button class="btn-delete-evento admin-only" data-id="' + ev.id + '" title="Excluir evento"><i class="bi bi-x-lg"></i></button>' +
       '<div class="event-info">' +
@@ -43,9 +45,10 @@ function renderEvents(events) {
           '<span><i class="bi bi-geo-alt"></i> ' + esc(ev.local || ev.endereco || '') + '</span>' +
         '</div>' +
         '<p class="event-descricao">' + esc(ev.descricao) + '</p>' +
+        '<a class="btn-evento-insta" href="' + instaUrl + '" target="_blank" rel="noopener noreferrer" title="Ver no Instagram"><i class="bi bi-instagram"></i> Ver no Instagram</a>' +
       '</div>' +
-      '<div class="event-fotos-area" style="display:flex;align-items:center;justify-content:center;background:#e2e8f0;color:#94a3b8;font-size:3rem;overflow:hidden;">' +
-        (ev.fotos || ev.arquivo ? '<img src="' + imgUrl(ev.fotos || ev.arquivo, 'eventos') + '" alt="' + esc(ev.titulo) + '" style="width:100%;height:100%;object-fit:cover;">' : '<i class="bi bi-calendar-event"></i>') +
+      '<div class="event-fotos-area" style="display:flex;align-items:center;justify-content:center;background:var(--bg-alt);color:#94a3b8;font-size:3rem;overflow:hidden;">' +
+        (ev.fotos || ev.arquivo ? '<img src="' + imgUrl(ev.fotos || ev.arquivo, 'eventos') + '" alt="' + esc(ev.titulo) + '">' : '<i class="bi bi-calendar-event"></i>') +
       '</div>';
     container.appendChild(card);
   });

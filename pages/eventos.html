@@ -7,6 +7,33 @@
   <link rel="stylesheet" href="../static/css/default.css">
   <link rel="stylesheet" href="../static/css/icons/bootstrap-icons.min.css">
   <link rel="icon" type="image/png" href="../static/css/favicon/ong.ico">
+  <style>
+    .evento-foto-wrap {
+      width: 100%; height: 280px; overflow: hidden;
+      background: var(--bg-alt);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .evento-foto-wrap img {
+      width: 100%; height: 100%; object-fit: contain; display: block;
+    }
+    .btn-evento-insta {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-top: 12px; padding: 8px 18px;
+      border-radius: 24px; font-size: 0.85rem; font-weight: 600;
+      color: #fff !important; text-decoration: none;
+      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      box-shadow: 0 2px 8px rgba(220,39,67,0.35);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .btn-evento-insta:hover {
+      transform: translateY(-2px); box-shadow: 0 4px 14px rgba(220,39,67,0.45);
+      color: #fff; text-decoration: none;
+    }
+    .btn-evento-insta i { font-size: 1rem; line-height: 1; }
+    @media (max-width: 768px) {
+      .evento-foto-wrap { height: 200px; }
+    }
+  </style>
 </head>
 <body>
 
@@ -26,6 +53,14 @@
 <script src="../static/js/api.js"></script>
 <script>
 var API_BASE = window.API_BASE;
+var INSTAGRAM_URL = 'https://www.instagram.com/grupoamoranimal/';
+
+function esc(s) {
+  if (!s) return '';
+  var e = document.createElement('div');
+  e.appendChild(document.createTextNode(s));
+  return e.innerHTML;
+}
 
 function imgEventoUrl(f) {
   if (!f) return '';
@@ -55,15 +90,17 @@ apiFetch('/eventos')
     eventos.forEach(function(ev) {
       var col = document.createElement('div');
       col.className = 'col-md-4 mb-4';
+      var instaUrl = ev.link || ev.url_instagram || INSTAGRAM_URL;
       col.innerHTML =
         '<div class="card h-100">' +
-          (ev.fotos || ev.arquivo ? '<img src="' + imgEventoUrl(ev.fotos || ev.arquivo) + '" class="card-img-top" alt="' + (ev.titulo || '') + '">' : '') +
+          (ev.fotos || ev.arquivo ? '<div class="evento-foto-wrap"><img src="' + imgEventoUrl(ev.fotos || ev.arquivo) + '" class="card-img-top" alt="' + esc(ev.titulo) + '" loading="lazy"></div>' : '') +
           '<div class="card-body">' +
-            '<h5 class="card-title">' + (ev.titulo || '') + '</h5>' +
+            '<h5 class="card-title">' + esc(ev.titulo) + '</h5>' +
             '<p class="card-subtitle text-muted">' + fmtData(ev.data_evento) + '</p>' +
-            '<p class="card-text">' + (ev.descricao || '') + '</p>' +
+            '<p class="card-text">' + esc(ev.descricao) + '</p>' +
+            '<a class="btn-evento-insta" href="' + instaUrl + '" target="_blank" rel="noopener noreferrer" title="Ver no Instagram"><i class="bi bi-instagram"></i> Ver no Instagram</a>' +
           '</div>' +
-          (ev.status ? '<div class="card-footer d-flex justify-content-between"><span class="badge" style="background: var(--brand-teal); color: white;">' + ev.status + '</span></div>' : '') +
+          (ev.status ? '<div class="card-footer d-flex justify-content-between"><span class="badge" style="background: var(--brand-teal); color: white;">' + esc(ev.status) + '</span></div>' : '') +
         '</div>';
       container.appendChild(col);
     });
