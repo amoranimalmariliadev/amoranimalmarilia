@@ -193,6 +193,27 @@ function renderAnimais(animais) {
         '<div class="carousel-detail" style="font-size:0.85rem;color:var(--text-color);margin-bottom:0.25rem;"><span style="font-weight:600;">Porte:</span> ' + esc(pet.porte) + '</div>' +
         '<div class="carousel-detail" style="font-size:0.85rem;color:var(--text-color);"><span style="font-weight:600;">Caracter\u00edsticas:</span> ' + esc(pet.caracteristicas) + '</div>' +
       '</div>';
+    var delBtn = d.querySelector('.btn-delete-pet');
+    if (delBtn) {
+      delBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        var id = delBtn.dataset.id;
+        if (!confirm('Tem certeza que deseja excluir este pet?')) return;
+        delBtn.disabled = true;
+        delBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
+        apiFetch('/adocao/' + encodeURIComponent(id), { method: 'DELETE' })
+          .then(function(r) {
+            if (!r.ok) throw new Error('Erro ao excluir');
+            d.remove();
+          })
+          .catch(function(err) {
+            alert('Erro ao excluir pet: ' + err.message);
+            delBtn.disabled = false;
+            delBtn.innerHTML = '<i class="bi bi-x-lg"></i>';
+          });
+      });
+    }
     return d;
   }
   animais.forEach(function (p) { container.appendChild(item(p)); });
