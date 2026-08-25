@@ -32,7 +32,11 @@ function renderEvents(events) {
     return;
   }
   var INSTAGRAM_URL = 'https://www.instagram.com/grupoamoranimal/';
-  events.forEach(function (ev) {
+  var criadoEm = function (ev) {
+    var t = ev.created_at ? new Date(ev.created_at).getTime() : NaN;
+    return isNaN(t) ? (parseInt(ev.id, 10) || 0) : t;
+  };
+  events.slice().sort(function (a, b) { return criadoEm(b) - criadoEm(a); }).forEach(function (ev) {
     var card = document.createElement('div');
     card.className = 'event-card-hover';
     var instaUrl = ev.link || ev.url_instagram || INSTAGRAM_URL;

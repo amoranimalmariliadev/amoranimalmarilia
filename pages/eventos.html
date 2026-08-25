@@ -115,7 +115,11 @@ apiFetch('/eventos')
       container.innerHTML = '<div class="col-12 text-center text-muted py-5">Nenhum evento cadastrado.</div>';
       return;
     }
-    eventos.forEach(function(ev) {
+    var criadoEm = function (ev) {
+      var t = ev.created_at ? new Date(ev.created_at).getTime() : NaN;
+      return isNaN(t) ? (parseInt(ev.id, 10) || 0) : t;
+    };
+    eventos.slice().sort(function (a, b) { return criadoEm(b) - criadoEm(a); }).forEach(function(ev) {
       var col = document.createElement('div');
       col.className = 'col-md-4 mb-4';
       var instaUrl = ev.link || ev.url_instagram || INSTAGRAM_URL;
