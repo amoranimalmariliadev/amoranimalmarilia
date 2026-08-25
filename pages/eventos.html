@@ -116,7 +116,8 @@ apiFetch('/eventos')
       return;
     }
     var criadoEm = function (ev) {
-      var t = ev.created_at ? new Date(ev.created_at).getTime() : NaN;
+      var t = ev.origem ? new Date(ev.origem).getTime() : NaN;
+      if (isNaN(t)) t = ev.created_at ? new Date(ev.created_at).getTime() : NaN;
       return isNaN(t) ? (parseInt(ev.id, 10) || 0) : t;
     };
     eventos.slice().sort(function (a, b) { return criadoEm(b) - criadoEm(a); }).forEach(function(ev) {
