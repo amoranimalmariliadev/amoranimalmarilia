@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sincronização Instagram - ONG Amor Animal Marília</title>
+  <link rel="stylesheet" href="../static/css/default.css">
+  <link rel="stylesheet" href="../static/css/icons/bootstrap-icons.min.css">
+  <link rel="icon" type="image/png" href="../static/css/favicon/ong.ico">
+  <style>
+    .doc-container { max-width: 900px; margin: 0 auto; }
+    .doc-header { text-align: center; padding: 3rem 1rem 2rem; }
+    .doc-header img { width: 120px; border-radius: 50%; margin-bottom: 1rem; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+    .doc-header h1 { font-size: 2rem; color: var(--brand-teal); margin: 0.5rem 0 0.3rem; }
+    .doc-header p { color: var(--text-muted); font-size: 1.05rem; margin: 0; }
+    .doc-header .badge-ver { display: inline-block; margin-top: 0.8rem; padding: 0.35rem 1rem; border-radius: 20px; background: var(--brand-teal); color: #fff; font-size: 0.8rem; font-weight: 600; }
+    .section-card { background: var(--card-bg); border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; border: 1px solid var(--border-color); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .section-card h2 { color: var(--brand-teal); font-size: 1.4rem; margin: 0 0 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--brand-teal); display: inline-block; }
+    .section-card h3 { color: var(--text-color); font-size: 1.1rem; margin: 1.5rem 0 0.6rem; }
+    .section-card p, .section-card li { color: var(--text-color); line-height: 1.7; }
+    .section-card ul { padding-left: 1.2rem; }
+    .section-card ul li { margin-bottom: 0.4rem; }
+    .info-box { background: #f0fdfa; border-left: 4px solid var(--brand-teal); border-radius: 0 8px 8px 0; padding: 1rem 1.2rem; margin: 1rem 0; }
+    .info-box .info-title { font-weight: 700; color: var(--brand-teal); margin-bottom: 0.3rem; font-size: 0.9rem; }
+    .info-box p { margin: 0; font-size: 0.92rem; color: #555; }
+    pre.code-block { background: #1e293b; color: #e2e8f0; padding: 1rem 1.2rem; border-radius: 8px; overflow-x: auto; font-size: 0.85rem; line-height: 1.5; margin: 0.8rem 0; font-family: 'Courier New', monospace; }
+    .flow-steps { counter-reset: step; list-style: none; padding: 0; }
+    .flow-steps li { counter-increment: step; position: relative; padding: 0.7rem 0 0.7rem 3rem; border-left: 2px solid var(--brand-teal); margin-left: 1rem; }
+    .flow-steps li::before { content: counter(step); position: absolute; left: -1rem; top: 0.6rem; width: 28px; height: 28px; background: var(--brand-teal); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; }
+    .flow-steps li:last-child { border-left-color: transparent; }
+    table.fields-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+    table.fields-table th { background: var(--brand-teal); color: #fff; padding: 0.6rem 0.8rem; text-align: left; font-weight: 600; }
+    table.fields-table td { padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--border-color); }
+    table.fields-table tr:hover td { background: var(--bg-alt); }
+    .badge-campo { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+    .badge-tipo { background: #dbeafe; color: #1e40af; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--brand-teal); text-decoration: none; font-weight: 600; margin-bottom: 1.5rem; }
+    .back-link:hover { text-decoration: underline; }
+    @media (max-width: 768px) {
+      .doc-header h1 { font-size: 1.5rem; }
+      .section-card { padding: 1.2rem; }
+      pre.code-block { font-size: 0.75rem; padding: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<script>var ROOT='..';</script>
+<script src="../components/header.js"></script>
+
+<main class="main-content">
+  <div class="container py-5">
+    <div class="doc-container">
+
+      <a href="../index.html" class="back-link"><i class="bi bi-arrow-left"></i> Voltar para o site</a>
+
+      <!-- Cabeçalho -->
+      <div class="doc-header">
+        <img src="../static/css/imagem/ong.jpg" alt="ONG Amor Animal Marília">
+        <h1><i class="bi bi-instagram"></i> Sincronização Instagram</h1>
+        <p>Documentação técnica — Seção de Eventos</p>
+        <span class="badge-ver">Agosto 2026</span>
+      </div>
+
+      <!-- 1. Visão Geral -->
+      <div class="section-card">
+        <h2><i class="bi bi-eye"></i> 1. Visão Geral</h2>
+        <p>A funcionalidade de <strong>Sincronização com Instagram</strong> permite importar automaticamente as postagens da conta oficial da ONG (<a href="https://www.instagram.com/grupoamoranimal/" target="_blank">@grupoamoranimal</a>) para a seção de <strong>Eventos</strong> do site <a href="https://www.amoranimal.ong.br">amoranimal.ong.br</a>, mantendo o conteúdo sempre atualizado sem necessidade de cadastro manual.</p>
+        <div class="info-box">
+          <div class="info-title"><i class="bi bi-link-45deg"></i> Conta sincronizada</div>
+          <p><a href="https://www.instagram.com/grupoamoranimal/" target="_blank">https://www.instagram.com/grupoamoranimal/</a></p>
+        </div>
+        <p>Quando o administrador clica no botão <strong>"Sincronizar Instagram"</strong>, o sistema consulta as postagens mais recentes da conta, seleciona aquelas que ainda não foram publicadas no site e cria automaticamente os respectivos registros de evento.</p>
+      </div>
+
+      <!-- 2. Onde Aparece -->
+      <div class="section-card">
+        <h2><i class="bi bi-layout-wtf"></i> 2. Onde Aparece na Interface</h2>
+
+        <h3><i class="bi bi-house-door"></i> Página Inicial (index.html)</h3>
+        <ul>
+          <li>Na seção "Eventos", ao lado do título, há um botão verde-água com ícone de refresh.</li>
+          <li>O botão possui a classe <code>admin-only</code> — só é visível para usuários autenticados como administradores.</li>
+          <li>Rótulo: <strong>"Sincronizar Instagram"</strong>.</li>
+        </ul>
+
+        <h3><i class="bi bi-calendar-event"></i> Página de Eventos (pages/eventos.html)</h3>
+        <ul>
+          <li>No topo da página, ao lado do título "Eventos", está o mesmo botão de sincronização.</li>
+          <li>Visível apenas no modo admin (<code>body.admin-mode</code>).</li>
+          <li>Ao clicar, exibe spinner e texto "Sincronizando…".</li>
+        </ul>
+
+        <div class="info-box">
+          <div class="info-title"><i class="bi bi-shield-lock"></i> Acesso restrito</div>
+          <p>O botão só aparece quando o usuário está logado com perfil de administrador. Na ausência de login, o botão permanece oculto (<code>display:none</code>).</p>
+        </div>
+      </div>
+
+      <!-- 3. Fluxo -->
+      <div class="section-card">
+        <h2><i class="bi bi-arrow-repeat"></i> 3. Fluxo da Sincronização</h2>
+        <ol class="flow-steps">
+          <li>O administrador clica em <strong>"Sincronizar Instagram"</strong>.</li>
+          <li>O botão fica desabilitado e exibe um spinner ("Sincronizando…").</li>
+          <li>Uma requisição <code>POST</code> é enviada para <code>/eventos/sync-instagram</code> na API.</li>
+          <li>O servidor busca as postagens recentes da conta <code>@grupoamoranimal</code>.</li>
+          <li>Para cada post com foto, o servidor cria um registro de evento (título, data, foto, link).</li>
+          <li>A API retorna um JSON com o resultado da operação.</li>
+          <li>Se houve novos posts, a página recarrega automaticamente.</li>
+          <li>Se não houve novidades, exibe-se a data da última publicação já existente.</li>
+        </ol>
+      </div>
+
+      <!-- 4. Detalhes Técnicos -->
+      <div class="section-card">
+        <h2><i class="bi bi-gear"></i> 4. Detalhes Técnicos</h2>
+
+        <h3>Endpoint da API</h3>
+        <pre class="code-block">POST  https://api.projetosdinamicos.com.br/amoranimal/eventos/sync-instagram</pre>
+        <p>Requer autenticação <strong>Bearer token</strong> no header <code>Authorization</code>.</p>
+
+        <h3>Requisição</h3>
+        <pre class="code-block">fetch(API_BASE + '/eventos/sync-instagram', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer &lt;token&gt;'
+  }
+})</pre>
+
+        <h3>Resposta — Sucesso com novos posts</h3>
+        <pre class="code-block">{
+  "success": true,
+  "publicados": 3,
+  "sem_foto": 1
+}</pre>
+        <p><code>publicados</code>: quantidade de novos eventos criados. <code>sem_foto</code>: posts que estavam sem imagem e foram ignorados.</p>
+
+        <h3>Resposta — Sem novidades</h3>
+        <pre class="code-block">{
+  "success": true,
+  "publicados": 0,
+  "cutoff": "2026-08-20T14:30:00.000Z"
+}</pre>
+        <p><code>cutoff</code>: data/hora da última publicação já existente no site.</p>
+
+        <h3>Resposta — Erro</h3>
+        <pre class="code-block">{
+  "success": false,
+  "error": "Falha na sincronização"
+}</pre>
+      </div>
+
+      <!-- 5. Estrutura do Evento -->
+      <div class="section-card">
+        <h2><i class="bi bi-database"></i> 5. Estrutura do Evento Criado</h2>
+        <p>Cada post sincronizado do Instagram gera um registro com os seguintes campos:</p>
+        <table class="fields-table">
+          <thead>
+            <tr><th>Campo</th><th>Tipo</th><th>Descrição</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>id</code></td><td><span class="badge-campo badge-tipo">INTEGER</span></td><td>Identificador único gerado pela API</td></tr>
+            <tr><td><code>titulo</code></td><td><span class="badge-campo badge-tipo">STRING</span></td><td>Legenda do post (truncada)</td></tr>
+            <tr><td><code>data_evento</code></td><td><span class="badge-campo badge-tipo">DATE</span></td><td>Data de publicação do post no Instagram</td></tr>
+            <tr><td><code>descricao</code></td><td><span class="badge-campo badge-tipo">TEXT</span></td><td>Texto completo da legenda do post</td></tr>
+            <tr><td><code>fotos</code></td><td><span class="badge-campo badge-tipo">STRING</span></td><td>URL ou base64 da imagem principal do post</td></tr>
+            <tr><td><code>link</code></td><td><span class="badge-campo badge-tipo">STRING</span></td><td>URL direta para o post no Instagram</td></tr>
+            <tr><td><code>url_instagram</code></td><td><span class="badge-campo badge-tipo">STRING</span></td><td>URL alternativa do Instagram (fallback)</td></tr>
+            <tr><td><code>status</code></td><td><span class="badge-campo badge-tipo">STRING</span></td><td>"Publicado" para posts sincronizados</td></tr>
+            <tr><td><code>origem</code></td><td><span class="badge-campo badge-tipo">STRING</span></td><td>"instagram-sync" — indica a origem da sincronização</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 6. Código JavaScript -->
+      <div class="section-card">
+        <h2><i class="bi bi-code-slash"></i> 6. Código JavaScript</h2>
+        <p>Função <code>sincronizarInstagram</code> completa:</p>
+        <pre class="code-block">async function sincronizarInstagram(btn) {
+  if (btn.disabled) return;
+  btn.disabled = true;
+  var htmlOriginal = btn.innerHTML;
+  btn.innerHTML = '&lt;span class="spinner-border"&gt;&lt;/span&gt; Sincronizando…';
+
+  try {
+    var r = await apiFetch('/eventos/sync-instagram', {
+      method: 'POST'
+    });
+    var d = await r.json();
+
+    if (d.success &amp;&amp; d.publicados > 0) {
+      alert('✅ ' + d.publicados + ' novo(s) post(s) publicado(s)!');
+      location.reload();
+    } else if (d.success) {
+      alert('Nenhuma novidade no Instagram.\nÚltima publicação: ' + (d.cutoff || '-'));
+      btn.disabled = false;
+      btn.innerHTML = htmlOriginal;
+    } else {
+      throw new Error(d.error || 'Falha na sincronização');
+    }
+  } catch (e) {
+    alert('Erro na sincronização: ' + e.message);
+    btn.disabled = false;
+    btn.innerHTML = htmlOriginal;
+  }
+}</pre>
+      </div>
+
+      <!-- 7. Exibição -->
+      <div class="section-card">
+        <h2><i class="bi bi-card-image"></i> 7. Exibição dos Eventos Sincronizados</h2>
+        <p>Após a sincronização, os eventos aparecem na seção "Eventos" da página inicial e na página dedicada, ordenados do mais recente ao mais antigo.</p>
+        <h3>Elementos visuais de cada card</h3>
+        <ul>
+          <li><i class="bi bi-image"></i> Foto do evento (imagem do post do Instagram)</li>
+          <li><i class="bi bi-card-heading"></i> Título (legenda do post)</li>
+          <li><i class="bi bi-calendar"></i> Data de publicação formatada (dd/mm/aaaa)</li>
+          <li><i class="bi bi-text-paragraph"></i> Descrição (texto completo da legenda)</li>
+          <li><i class="bi bi-box-arrow-up-right"></i> Botão "Ver no Instagram" — link direto para o post original</li>
+          <li><i class="bi bi-tag"></i> Badge de status ("Publicado") no rodapé do card</li>
+        </ul>
+
+        <div class="info-box">
+          <div class="info-title"><i class="bi bi-sort-down"></i> Ordem de exibição</div>
+          <p>Os eventos são ordenados por data de criação (<code>created_at</code> ou <code>origem</code>), do mais recente ao mais antigo.</p>
+        </div>
+      </div>
+
+      <!-- 8. Conta do Instagram -->
+      <div class="section-card">
+        <h2><i class="bi bi-instagram"></i> 8. Conta do Instagram Vinculada</h2>
+        <p>A URL da conta é definida diretamente no código-fonte das páginas:</p>
+        <pre class="code-block">var INSTAGRAM_URL = 'https://www.instagram.com/grupoamoranimal/';</pre>
+        <p>Essa URL é usada como fallback quando um evento não possui link próprio do Instagram. Também é exibida no botão "Ver no Instagram" de cada card.</p>
+      </div>
+
+      <!-- 9. Segurança -->
+      <div class="section-card">
+        <h2><i class="bi bi-shield-check"></i> 9. Controle de Acesso</h2>
+        <p>A funcionalidade de sincronização é restrita a administradores:</p>
+        <ul>
+          <li>O botão possui a classe CSS <code>admin-only</code> que o oculta por padrão.</li>
+          <li>Apenas quando o body do documento possui a classe <code>admin-mode</code> o botão é exibido.</li>
+          <li>A classe <code>admin-mode</code> é adicionada automaticamente quando um administrador faz login.</li>
+          <li>A requisição à API requer um token <strong>Bearer</strong> válido no header <code>Authorization</code>.</li>
+          <li>Tokens expirados são removidos do <code>localStorage</code> automaticamente.</li>
+        </ul>
+
+        <div class="info-box">
+          <div class="info-title"><i class="bi bi-key"></i> Autenticação</div>
+          <p>O token é armazenado em <code>localStorage</code> com a chave <code>amoranimal_token</code> e possui um tempo de expiração controlado por <code>amoranimal_session_expiry</code>.</p>
+        </div>
+      </div>
+
+      <!-- 10. Resumo -->
+      <div class="section-card" style="border-left: 4px solid var(--brand-teal);">
+        <h2><i class="bi bi-check-circle"></i> 10. Resumo</h2>
+        <p>A sincronização Instagram Eventos é uma ferramenta que automatiza a publicação de conteúdo no site da ONG Amor Animal Marília. Ao clicar em um único botão, o administrador importa todas as postagens recentes da conta <code>@grupoamoranimal</code>, criando eventos automaticamente com título, data, descrição, foto e link para o post original. O sistema evita duplicidades, filtra posts sem foto e mantém os eventos sempre ordenados cronologicamente. Todo o processo é seguro, restrito a administradores, e utiliza autenticação por token.</p>
+        <p style="text-align:center; margin-top:1.5rem;">
+          <a href="../sincronizacao_instagram_eventos.pdf" target="_blank" class="btn btn-primary" style="display:inline-flex;align-items:center;gap:0.5rem;">
+            <i class="bi bi-file-earmark-pdf"></i> Baixar PDF
+          </a>
+        </p>
+      </div>
+
+      <p style="text-align:center; color:var(--text-muted); font-size:0.85rem; margin-top:2rem;">
+        Documento gerado automaticamente — ONG Amor Animal Marília — Agosto 2026
+      </p>
+
+    </div>
+  </div>
+</main>
+
+<script src="../components/footer.js"></script>
+
+</body>
+</html>
