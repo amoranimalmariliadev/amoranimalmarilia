@@ -427,7 +427,7 @@
       if (isMutiraoInscricao) {
         html += '<th>Responsável</th><th>Contato</th><th>CPF</th><th>Endereço</th><th>Bairro</th><th>Cidade</th>';
       } else {
-        html += '<th>Responsável</th><th>Pet</th><th>Espécie</th><th>Sexo</th><th>Idade</th><th>Clínica</th><th>Data</th><th>Tipo</th>';
+        html += '<th>Responsável</th><th>Pet</th><th>Espécie</th><th>Sexo</th><th>Período</th><th>Idade</th><th>Clínica</th><th>Data</th><th>Tipo</th>';
       }
       html += '<th>Status</th>';
       html += '<th class="actions-col">Ações</th>';
@@ -452,6 +452,7 @@
           html += '<td><strong>' + (row.pet_nome || '-') + '</strong></td>';
           html += '<td><span class="badge-especie ' + especieClass + '">' + (row.pet_especie || '-') + '</span></td>';
           html += '<td>' + (row.pet_sexo || '-') + '</td>';
+          html += '<td>' + (row.pet_periodo || '-') + '</td>';
           html += '<td>' + (row.pet_idade || '-') + '</td>';
           html += '<td>' + (row.clinica || '-') + '</td>';
           html += '<td>' + fmtDataBR(row.data_agendamento || '-') + '</td>';
@@ -548,8 +549,8 @@
         columns = ['ticket', 'nome_responsavel', 'contato', 'cpf', 'endereco', 'numero', 'bairro', 'cidade', 'status'];
         labels = ['Ticket', 'Responsável', 'Contato', 'CPF', 'Endereço', 'Número', 'Bairro', 'Cidade', 'Status'];
       } else {
-        columns = ['ticket', 'tutor_nome', 'tutor_telefone', 'pet_nome', 'pet_especie', 'pet_sexo', 'pet_idade', 'clinica', 'data_agendamento', 'tipo', 'status'];
-        labels = ['Ticket', 'Responsável', 'Contato', 'Pet', 'Espécie', 'Sexo', 'Idade', 'Clínica', 'Data', 'Tipo', 'Status'];
+        columns = ['ticket', 'tutor_nome', 'tutor_telefone', 'pet_nome', 'pet_especie', 'pet_sexo', 'pet_periodo', 'pet_idade', 'clinica', 'data_agendamento', 'tipo', 'status'];
+        labels = ['Ticket', 'Responsável', 'Contato', 'Pet', 'Espécie', 'Sexo', 'Período', 'Idade', 'Clínica', 'Data', 'Tipo', 'Status'];
       }
 
       var csv = labels.map(function(l) { return '"' + l + '"'; }).join(',') + '\n';
@@ -590,8 +591,8 @@
         columns = ['ticket', 'nome_responsavel', 'contato', 'cpf', 'endereco', 'bairro', 'cidade', 'status'];
         labels = ['Ticket', 'Responsavel', 'Contato', 'CPF', 'Endereco', 'Bairro', 'Cidade', 'Status'];
       } else {
-        columns = ['ticket', 'tutor_nome', 'pet_nome', 'pet_especie', 'pet_sexo', 'pet_idade', 'clinica', 'data_agendamento', 'tipo', 'status'];
-        labels = ['Ticket', 'Responsavel', 'Pet', 'Especie', 'Sexo', 'Idade', 'Clinica', 'Data', 'Tipo', 'Status'];
+        columns = ['ticket', 'tutor_nome', 'pet_nome', 'pet_especie', 'pet_sexo', 'pet_periodo', 'pet_idade', 'clinica', 'data_agendamento', 'tipo', 'status'];
+        labels = ['Ticket', 'Responsavel', 'Pet', 'Especie', 'Sexo', 'Periodo', 'Idade', 'Clinica', 'Data', 'Tipo', 'Status'];
       }
 
       var ev = window._eventoRelatorio || null;

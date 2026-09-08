@@ -61,6 +61,7 @@
                 <th>Nome</th>
                 <th>Espécie</th>
                 <th>Sexo</th>
+                <th>Período</th>
                 <th>Idade</th>
                 <th>Peso</th>
                 <th>Vacinado</th>
@@ -142,6 +143,7 @@ function preencherDados() {
     cols += '<td><strong>' + (pet.nome || '-') + '</strong></td>';
     cols += '<td>' + (pet.especie ? pet.especie.charAt(0).toUpperCase() + pet.especie.slice(1) : '-') + '</td>';
     cols += '<td>' + (pet.sexo ? pet.sexo.charAt(0).toUpperCase() + pet.sexo.slice(1) : '-') + '</td>';
+    cols += '<td>' + (pet.periodo ? pet.periodo.charAt(0).toUpperCase() + pet.periodo.slice(1) : '-') + '</td>';
     cols += '<td>' + (pet.idade || '-') + '</td>';
     cols += '<td>' + (pet.peso || '-') + '</td>';
     cols += '<td>' + (pet.vacinado === true || pet.vacinado === 'true' ? '<span class="badge badge-success">Sim</span>' : '<span class="badge badge-danger">Não</span>') + '</td>';
@@ -231,20 +233,22 @@ async function gerarComprovante() {
       { text: 'DADOS DO PET', style: 'subHeader', margin: [0, 10, 0, 5] },
       {
         table: {
-          widths: ['*', '*', '*', '*'],
+          widths: ['*', '*', '*', '*', '*'],
           body: (function() {
             var rows = [[
               { text: 'Ticket', style: 'tableHeader' },
               { text: 'Nome', style: 'tableHeader' },
               { text: 'Espécie', style: 'tableHeader' },
-              { text: 'Sexo', style: 'tableHeader' }
+              { text: 'Sexo', style: 'tableHeader' },
+              { text: 'Período', style: 'tableHeader' }
             ]];
             dados.pets.forEach(function(pet) {
               rows.push([
                 { text: prefixo + pet.ticket, style: 'tableCell', bold: true },
                 { text: pet.nome || '-', style: 'tableCell' },
                 { text: pet.especie || '-', style: 'tableCell' },
-                { text: pet.sexo || '-', style: 'tableCell' }
+                { text: pet.sexo || '-', style: 'tableCell' },
+                { text: pet.periodo || '-', style: 'tableCell' }
               ]);
             });
             return rows;

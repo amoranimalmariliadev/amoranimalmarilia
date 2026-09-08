@@ -117,6 +117,23 @@
             </select>
             <small class="text-muted">Define qual espécie será pré-selecionada no formulário público</small>
           </div>
+          <div>
+            <label>Sexo Padrão</label>
+            <select id="admin-sexo-padrao">
+              <option value="Ambos">Ambos</option>
+              <option value="Macho">Macho</option>
+              <option value="Fêmea">Fêmea</option>
+            </select>
+            <small class="text-muted">Só serão aceitas inscrições de pets deste sexo no formulário público</small>
+          </div>
+          <div>
+            <label>Período</label>
+            <select id="admin-periodo">
+              <option value="Manhã">Manhã</option>
+              <option value="Tarde">Tarde</option>
+            </select>
+            <small class="text-muted">Só serão aceitas inscrições para este período no formulário público</small>
+          </div>
         </div>
         <div style="margin-top:0.75rem;">
           <button type="submit" class="btn btn-warning"><i class="bi bi-plus-circle me-1"></i>Cadastrar Mutirão</button>
@@ -236,6 +253,10 @@ function renderizarEventos() {
     else if (especieNorm) especieLabel = '<span class="badge" style="background:#10b981;color:white;margin-top:4px;"><i class="bi bi-tag-fill me-1"></i>' + especieNorm + '</span>';
     else especieLabel = '<span class="badge" style="background:#10b981;color:white;margin-top:4px;"><i class="bi bi-tag-fill me-1"></i>Gatos e Cachorros</span>';
 
+    var sexoPadraoNorm = (ev.sexoPadrao || 'Ambos').charAt(0).toUpperCase() + (ev.sexoPadrao || 'Ambos').slice(1).toLowerCase();
+    var sexoLabel = '<span class="badge" style="background:#0ea5e9;color:white;margin-top:4px;margin-left:4px;"><i class="bi bi-gender-ambiguous me-1"></i>' + sexoPadraoNorm + '</span>';
+    var periodoLabel = ev.periodo ? '<span class="badge" style="background:#f43f5e;color:white;margin-top:4px;margin-left:4px;"><i class="bi bi-sun me-1"></i>' + (ev.periodo.charAt(0).toUpperCase() + ev.periodo.slice(1).toLowerCase()) + '</span>' : '';
+
     if (isIndisponivel) {
       badgeHtml = '<span class="badge badge-info"><i class="bi bi-clock me-1"></i>Em breve</span>';
       botoesHtml = '<span class="badge badge-secondary d-block text-center mt-2"><i class="bi bi-x-circle me-1"></i>Indisponível</span>';
@@ -247,7 +268,7 @@ function renderizarEventos() {
       }
     } else {
       badgeHtml = '<span class="badge badge-success"><i class="bi bi-people-fill me-1"></i>' + (ev.vagas || 0) + ' vagas disponíveis</span>';
-      botoesHtml = '<a href="castracao_mutirao_form.html" onclick="event.preventDefault();sessionStorage.setItem(\'mutirao_evento\',JSON.stringify({data:\'' + ev.data + '\',local:\'' + ev.local.replace(/'/g,"\\'") + '\',endereco:\'' + ev.endereco.replace(/'/g,"\\'") + '\',vagas:' + ev.vagas + ',dataLimite:\'' + ev.dataLimite + '\',especiePadrao:\'' + ev.especiePadrao + '\'}));location.href=this.href;" class="btn btn-primary w-100"><i class="bi bi-pencil-square me-2"></i>Inscrever-se</a>';
+      botoesHtml = '<a href="castracao_mutirao_form.html" onclick="event.preventDefault();sessionStorage.setItem(\'mutirao_evento\',JSON.stringify({data:\'' + ev.data + '\',local:\'' + ev.local.replace(/'/g,"\\'") + '\',endereco:\'' + ev.endereco.replace(/'/g,"\\'") + '\',vagas:' + ev.vagas + ',dataLimite:\'' + ev.dataLimite + '\',especiePadrao:\'' + ev.especiePadrao + '\',sexoPadrao:\'' + (ev.sexoPadrao || 'Ambos') + '\',periodo:\'' + (ev.periodo || 'Manhã') + '\'}));location.href=this.href;" class="btn btn-primary w-100"><i class="bi bi-pencil-square me-2"></i>Inscrever-se</a>';
       botoesHtml += '<a href="../relatorio/castracao.html" onclick="event.preventDefault();sessionStorage.setItem(\'relatorio_evento\',JSON.stringify({data:\'' + ev.data + '\',local:\'' + ev.local.replace(/'/g,"\\'") + '\',id:' + (ev._id || 'null') + '}));location.href=this.href;" class="btn btn-secondary btn-sm w-100 mt-1"><i class="bi bi-bar-chart-steps me-1"></i>Ver Inscrições</a>';
     }
 
@@ -267,7 +288,7 @@ function renderizarEventos() {
           '<h6 class="card-subtitle mb-2 text-muted"><i class="bi bi-geo-alt me-1"></i>' + ev.local + '</h6>' +
           '<p class="card-text small text-muted">' + ev.endereco + '</p>' +
           '<p class="card-text">' + badgeHtml + '</p>' +
-          especieLabel +
+          especieLabel + sexoLabel + periodoLabel +
           (ev.dataLimite ? '<p class="text-muted small mt-2"><i class="bi bi-clock me-1"></i>Inscrições até: ' + ev.dataLimite + '</p>' : '<p class="text-muted small mt-2"><i class="bi bi-info-circle me-1"></i>' + (isIndisponivel ? 'Aguardando confirmação' : 'Evento realizado') + '</p>') +
           botoesHtml +
         '</div>' +
@@ -405,6 +426,8 @@ function carregarEventos() {
       vagas: ev.vagas || 0,
       dataLimite: ev.data_limite ? formatarDataBR(ev.data_limite) : '',
       especiePadrao: ev.especie_padrao || '',
+      sexoPadrao: ev.sexo_padrao || 'Ambos',
+      periodo: ev.periodo || 'Manhã',
       status: ev.arquivado ? 'encerrado' : (ev.status || 'aberto')
     };
   });
@@ -531,6 +554,8 @@ function cadastrarEventoAdmin(e) {
     vagas: parseInt(document.getElementById('admin-vagas').value) || 30,
     dataLimite: formatarDataISO(dataLimiteISO),
     especiePadrao: document.getElementById('admin-especie-padrao').value,
+    sexoPadrao: document.getElementById('admin-sexo-padrao').value,
+    periodo: document.getElementById('admin-periodo').value,
     status: 'aberto'
   };
 
@@ -547,6 +572,8 @@ function cadastrarEventoAdmin(e) {
         endereco: evento.endereco,
         vagas: evento.vagas,
         especie_padrao: evento.especiePadrao,
+        sexo_padrao: evento.sexoPadrao,
+        periodo: evento.periodo,
         arquivado: false
       })
     }).then(function(r) { if (r.ok) carregarEventosAPI(); });
@@ -589,6 +616,8 @@ function atualizarAdminLista() {
     '<th style="padding:6px;text-align:left;border-bottom:1px solid var(--border-color);">Data</th>' +
     '<th style="padding:6px;text-align:left;border-bottom:1px solid var(--border-color);">Local</th>' +
     '<th style="padding:6px;text-align:left;border-bottom:1px solid var(--border-color);">Espécie</th>' +
+    '<th style="padding:6px;text-align:left;border-bottom:1px solid var(--border-color);">Sexo</th>' +
+    '<th style="padding:6px;text-align:left;border-bottom:1px solid var(--border-color);">Período</th>' +
     '<th style="padding:6px;text-align:left;border-bottom:1px solid var(--border-color);">Vagas</th>' +
     '<th style="padding:6px;text-align:center;border-bottom:1px solid var(--border-color);">Ações</th>' +
     '</tr></thead><tbody>';
@@ -598,6 +627,8 @@ function atualizarAdminLista() {
       '<td style="padding:6px;border-bottom:1px solid var(--border-color);">' + ev.data + '</td>' +
       '<td style="padding:6px;border-bottom:1px solid var(--border-color);">' + ev.local + '</td>' +
       '<td style="padding:6px;border-bottom:1px solid var(--border-color);">' + especieLabel + '</td>' +
+      '<td style="padding:6px;border-bottom:1px solid var(--border-color);">' + (ev.sexoPadrao || 'Ambos') + '</td>' +
+      '<td style="padding:6px;border-bottom:1px solid var(--border-color);">' + (ev.periodo || 'Manhã') + '</td>' +
       '<td style="padding:6px;border-bottom:1px solid var(--border-color);">' + ev.vagas + '</td>' +
       '<td style="padding:6px;border-bottom:1px solid var(--border-color);text-align:center;"><button onclick="removerEventoAdmin(' + i + ')" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button></td>' +
       '</tr>';

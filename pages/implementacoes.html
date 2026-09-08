@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resumo das Implementações - ONG Amor Animal Marília</title>
+  <link rel="stylesheet" href="../static/css/default.css">
+  <link rel="stylesheet" href="../static/css/icons/bootstrap-icons.min.css">
+  <link rel="icon" type="image/png" href="../static/css/favicon/ong.ico">
+  <style>
+  .resumo-container { max-width: 960px; margin: 0 auto; padding: 2rem 1rem; }
+  .resumo-container h1 { margin-bottom: 0.25rem; }
+  .resumo-container > p.lead { color: var(--muted-color); margin-bottom: 2rem; }
+
+  .section-block { background: var(--container-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.25rem; margin-bottom: 1.5rem; }
+  .section-block h2 { font-size: 1.05rem; margin: 0 0 0.25rem; display: flex; align-items: center; gap: 8px; }
+  .section-block .section-sub { color: var(--muted-color); font-size: 0.85rem; margin: 0 0 1rem; }
+
+  .req-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+  .req-card { border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; background: var(--bg-alt); }
+  .req-card i { font-size: 1.4rem; display: block; margin-bottom: 0.5rem; }
+  .req-card h3 { font-size: 0.95rem; margin: 0 0 0.4rem; }
+  .req-card p { font-size: 0.85rem; color: var(--text-color); margin: 0; }
+
+  table.sum { width: 100%; border-collapse: collapse; font-size: 0.86rem; margin-top: 0.6rem; }
+  table.sum th { text-align: left; padding: 7px 8px; border-bottom: 2px solid var(--border-color); background: var(--bg-alt); }
+  table.sum td { padding: 7px 8px; border-bottom: 1px solid var(--border-color); vertical-align: top; }
+  table.sum code { background: var(--bg-alt); border: 1px solid var(--border-color); padding: 1px 5px; border-radius: 4px; font-size: 0.8rem; white-space: nowrap; }
+
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.75rem; margin: 1rem 0; }
+  .stat-card { border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; text-align: center; }
+  .stat-card .num { font-size: 1.5rem; font-weight: 700; }
+  .stat-card .lbl { font-size: 0.78rem; color: var(--muted-color); }
+  .stat-card.green .num { color: #16a34a; }
+  .stat-card.blue .num { color: #0284c7; }
+  .stat-card.orange .num { color: #ea580c; }
+  .stat-card.red .num { color: #dc2626; }
+
+  .cmd { background: #0f172a; color: #e2e8f0; border-radius: 6px; padding: 0.75rem 1rem; font-family: monospace; font-size: 0.8rem; overflow-x: auto; margin: 0.5rem 0; white-space: pre; }
+  .cmd .cm { color: #64748b; }
+  .cmd .hd { color: #fbbf24; }
+  .cmd .ct { color: #22d3ee; }
+  .badge { display: inline-block; padding: 3px 9px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; white-space: nowrap; }
+  .badge.ok { background: #f0fdf4; color: #16a34a; }
+  .badge.info { background: #eff6ff; color: #0369a1; }
+  .badge.warn { background: #fffbeb; color: #b45309; }
+  .file { font-family: monospace; font-size: 0.82rem; }
+  .ok-icon { color: #16a34a; }
+  </style>
+</head>
+<body>
+
+<script>var ROOT='..';</script>
+<script src="../components/header.js"></script>
+<script src="../static/js/api.js"></script>
+
+<main class="container mt-4 mb-5">
+  <div class="resumo-container">
+    <h1><i class="bi bi-clipboard-check"></i> Resumo das Implementações</h1>
+    <p class="lead">Ações realizadas na seção <strong>Pets para Adoção</strong> e no módulo de <strong>Mutirão de Castração</strong>, com testes executados em 07/09/2026.</p>
+
+    <!-- 1. Exclusão de pets -->
+    <div class="section-block">
+      <h2><i class="bi bi-paw" style="color:#f59e0b;"></i> 1. Seção "Pets para Adoção" - Limpeza via API</h2>
+      <p class="section-sub">Foram removidas todas as postagens de adoção do dashboard (site público) usando a API <code>api.projetosdinamicos.com.br/amoranimal</code>.</p>
+
+      <div class="stat-grid">
+        <div class="stat-card green"><div class="num">28</div><div class="lbl">Posts apagados</div></div>
+        <div class="stat-card blue"><div class="num">26</div><div class="lbl">Posts do Instagram</div></div>
+        <div class="stat-card orange"><div class="num">2</div><div class="lbl">Pets manuais (Nami)</div></div>
+        <div class="stat-card red"><div class="num">0</div><div class="lbl">Falhas</div></div>
+      </div>
+
+      <table class="sum">
+        <thead><tr><th>Endpoint</th><th>Método</th><th>Descrição</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><code>/auth/login</code></td><td>POST</td><td>Login e geração do token de acesso</td><td><span class="badge ok">OK</span></td></tr>
+          <tr><td><code>/adocao</code></td><td>GET</td><td>Lista todas as postagens de adoção (IDs encontrados)</td><td><span class="badge ok">OK</span></td></tr>
+          <tr><td><code>/adocao/{id}</code></td><td>DELETE</td><td>Exclui um post por vez (1 a 28)</td><td><span class="badge ok">28/28 HTTP 200</span></td></tr>
+          <tr><td><code>/adocao</code></td><td>GET</td><td>Verificação final - retornou <code>[]</code></td><td><span class="badge ok">Vazio</span></td></tr>
+        </tbody>
+      </table>
+
+      <p style="margin:1rem 0 0.25rem;font-size:0.9rem;"><strong>Exemplo de comandos curl</strong></p>
+      <div class="cmd"><span class="cm"># 1. Login (retorna o token)</span>
+curl -X POST <span class="hd">https://api.projetosdinamicos.com.br/amoranimal/auth/login</span> \
+  -H <span class="ct">"Content-Type: application/json"</span> \
+  -d <span class="ct">'{"usuario":"SEU_USUARIO","senha":"SUA_SENHA"}'</span>
+
+<span class="cm"># 2. Listar postagens de adoção</span>
+curl <span class="hd">https://api.projetosdinamicos.com.br/amoranimal/adocao</span> -H <span class="ct">"Authorization: Bearer SEU_TOKEN"</span>
+
+<span class="cm"># 3. Deletar um post pelo id</span>
+curl -X DELETE <span class="hd">https://api.projetosdinamicos.com.br/amoranimal/adocao/29</span> -H <span class="ct">"Authorization: Bearer SEU_TOKEN"</span></div>
+    </div>
+
+    <!-- 2. Cadastro admin -->
+    <div class="section-block">
+      <h2><i class="bi bi-gear-fill" style="color:#f59e0b;"></i> 2. Mutirão de Castração - Novo Cadastro (Administração)</h2>
+      <p class="section-sub">No modo administrador de <span class="file">pages/castracao_mutirao.html</span>, o formulário <strong>Cadastrar Novo Mutirão</strong> ganhou dois campos.</p>
+
+      <table class="sum">
+        <thead><tr><th>Campo</th><th>Opções</th><th>Padrão</th><th>Efeito</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Sexo Padrão</strong> <code>sexo_padrao</code></td>
+            <td><span class="badge info">Ambos</span> <span class="badge info">Macho</span> <span class="badge info">Fêmea</span></td>
+            <td>Ambos</td>
+            <td>Define o sexo aceito no formulário público</td>
+          </tr>
+          <tr>
+            <td><strong>Período</strong> <code>periodo</code></td>
+            <td><span class="badge warn">Manhã</span> <span class="badge warn">Tarde</span></td>
+            <td>Manhã</td>
+            <td>Define o período fixo do mutirão</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style="margin:0.75rem 0 0;font-size:0.9rem;">Os valores são salvos via <code>POST /calendario_mutirao</code> e repassados ao formulário público. Os cards e a lista de mutirões da administração agora exibem badges/colunas de <strong>Sexo</strong> e <strong>Período</strong>.</p>
+    </div>
+
+    <!-- 3. Requisitos do formulário público -->
+    <div class="section-block">
+      <h2><i class="bi bi-person-check" style="color:#10b981;"></i> 3. Formulário Público - Requisitos de Inscrição</h2>
+      <p class="section-sub">&ldquo;Com base nestas configurações, só serão aceitas inscrições que atendam aos requisitos&rdquo; (<span class="file">pages/castracao_mutirao_form.html</span>).</p>
+
+      <div class="req-grid">
+        <div class="req-card">
+          <i class="bi bi-gender-ambiguous" style="color:#0ea5e9;"></i>
+          <h3>Restrição de Sexo</h3>
+          <p>Se o mutirão for <strong>Macho</strong> ou <strong>Fêmea</strong>, o select de sexo é travado nessa opção. <strong>Ambos</strong> aceita qualquer sexo.</p>
+        </div>
+        <div class="req-card">
+          <i class="bi bi-sun" style="color:#f43f5e;"></i>
+          <h3>Período de Inscrição</h3>
+          <p>Novo campo <strong>Período</strong> (Manhã/Tarde) por pet, exibido na grade e no comprovante.</p>
+        </div>
+        <div class="req-card">
+          <i class="bi bi-pin-angle" style="color:#b45309;"></i>
+          <h3>Período Fixo</h3>
+          <p>O select de período fica travado no período configurado no cadastro do mutirão.</p>
+        </div>
+        <div class="req-card">
+          <i class="bi bi-speedometer2" style="color:#dc2626;"></i>
+          <h3>Bloqueio Dinâmico</h3>
+          <p>No envio, são contadas as vagas já usadas no período; se <code>usadas + pets &gt; vagas</code>, a inscrição é bloqueada com aviso.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Arquivos alterados -->
+    <div class="section-block">
+      <h2><i class="bi bi-file-earmark-code" style="color:#0284c7;"></i> 4. Arquivos Alterados</h2>
+      <table class="sum">
+        <thead><tr><th>Arquivo</th><th>Alterações</th></tr></thead>
+        <tbody>
+          <tr><td class="file">pages/castracao_mutirao.html</td><td>Selects Sexo Padrão e Período no cadastro; envio de <code>sexo_padrao</code>/<code>periodo</code>; badges nos cards; colunas na lista admin.</td></tr>
+          <tr><td class="file">pages/castracao_mutirao_form.html</td><td>Campo Período por pet; restrição de sexo; período fixo; bloqueio dinâmico; envio de <code>pet_periodo</code>.</td></tr>
+          <tr><td class="file">pages/castracao_sucesso.html</td><td>Coluna Período na tabela e no PDF (comprovante).</td></tr>
+          <tr><td class="file">relatorio/castracao.html</td><td>Coluna Período na tabela, exportação CSV e PDF.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 5. Testes -->
+    <div class="section-block">
+      <h2><i class="bi bi-check2-circle" style="color:#16a34a;"></i> 5. Testes Realizados</h2>
+      <table class="sum">
+        <thead><tr><th>Teste</th><th>Método</th><th>Resultado</th></tr></thead>
+        <tbody>
+          <tr><td>Exclusão dos 28 posts de adoção</td><td><code>DELETE /adocao/{id}</code> via API</td><td><span class="badge ok">28/28 OK</span></td></tr>
+          <tr><td>Persistência dos campos novos</td><td><code>POST</code> + <code>GET</code> em <code>/calendario_mutirao</code> (registro de teste criado e removido)</td><td><span class="badge ok">sexo_padrao e periodo salvos</span></td></tr>
+          <tr><td>Sintaxe JavaScript dos 4 arquivos</td><td><code>node --check</code></td><td><span class="badge ok">Sem erros</span></td></tr>
+          <tr><td>Lógica de restrições (sexo/período)</td><td>Harness em Node (DOM simulado)</td><td><span class="badge ok">Travamento e liberação corretos</span></td></tr>
+          <tr><td>Bloqueio dinâmico por período</td><td>Harness em Node com 29 usadas + 2 novas &gt; 30 vagas</td><td><span class="badge ok">Bloqueado com aviso</span></td></tr>
+        </tbody>
+      </table>
+
+      <p style="margin:1rem 0 0;font-size:0.85rem;color:var(--muted-color);">
+        <i class="bi bi-info-circle me-1"></i>Observação: o formulário público grava em <code>/castracao</code> e o &ldquo;Relatório Geral&rdquo; do admin lê <code>/mutirao_inscricao</code> - inconsistência pré-existente, fora do escopo desta atualização.
+      </p>
+    </div>
+  </div>
+</main>
+
+<script src="../components/footer.js"></script>
+
+</body>
+</html>
