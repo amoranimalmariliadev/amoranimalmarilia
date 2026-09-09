@@ -31,6 +31,47 @@
   .badge.info { background: #eff6ff; color: #0369a1; }
   .badge.warn { background: #fffbeb; color: #b45309; }
   .file { font-family: monospace; font-size: 0.82rem; }
+
+  @media (max-width: 720px) {
+    .resumo-container { padding: 1.5rem 0.9rem; }
+    .resumo-container h1 { font-size: 1.35rem; }
+    .section-block { padding: 1rem; }
+    .req-grid { grid-template-columns: 1fr; gap: 0.75rem; }
+
+    table.sum thead { display: none; }
+    table.sum, table.sum tbody { display: block; }
+    table.sum tr {
+      display: block;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      margin-bottom: 0.7rem;
+      background: var(--bg-alt);
+    }
+    table.sum td {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      padding: 5px 0;
+      border: none;
+      text-align: right;
+    }
+    table.sum td:first-child { text-align: right; }
+    table.sum td::before {
+      content: attr(data-label);
+      flex: 0 0 auto;
+      font-weight: 600;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--muted-color);
+      text-align: left;
+    }
+    table.sum td > * { text-align: right; }
+    table.sum code { white-space: normal; word-break: break-word; }
+    .section-block p { overflow-wrap: break-word; }
+  }
   </style>
 </head>
 <body>
@@ -53,16 +94,16 @@
         <thead><tr><th>Campo</th><th>Opções</th><th>Padrão</th><th>Efeito</th></tr></thead>
         <tbody>
           <tr>
-            <td><strong>Sexo Padrão</strong> <code>sexo_padrao</code></td>
-            <td><span class="badge info">Ambos</span> <span class="badge info">Macho</span> <span class="badge info">Fêmea</span></td>
-            <td>Ambos</td>
-            <td>Define o sexo aceito no formulário público</td>
+            <td data-label="Campo"><strong>Sexo Padrão</strong> <code>sexo_padrao</code></td>
+            <td data-label="Opções"><span class="badge info">Ambos</span> <span class="badge info">Macho</span> <span class="badge info">Fêmea</span></td>
+            <td data-label="Padrão">Ambos</td>
+            <td data-label="Efeito">Define o sexo aceito no formulário público</td>
           </tr>
           <tr>
-            <td><strong>Período Padrão</strong> <code>periodo</code></td>
-            <td><span class="badge warn">Manhã</span> <span class="badge warn">Tarde</span></td>
-            <td>Manhã</td>
-            <td>Define o período fixo do mutirão</td>
+            <td data-label="Campo"><strong>Período Padrão</strong> <code>periodo</code></td>
+            <td data-label="Opções"><span class="badge warn">Manhã</span> <span class="badge warn">Tarde</span></td>
+            <td data-label="Padrão">Manhã</td>
+            <td data-label="Efeito">Define o período fixo do mutirão</td>
           </tr>
         </tbody>
       </table>
