@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Últimas Implementações — Mutirão de Castração | ONG Amor Animal Marília</title>
+  <link rel="stylesheet" href="static/css/default.css">
+  <link rel="stylesheet" href="static/css/icons/bootstrap-icons.min.css">
+  <link rel="icon" type="image/png" href="static/css/favicon/ong.ico">
+  <style>
+  .resumo-container { max-width: 860px; margin: 0 auto; padding: 2rem 1rem; }
+  .resumo-container h1 { margin-bottom: 0.25rem; }
+  .resumo-container > p.lead { color: var(--muted-color); margin-bottom: 2rem; }
+
+  .section-block { background: var(--container-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 1.25rem; margin-bottom: 1.5rem; }
+  .section-block h2 { font-size: 1.05rem; margin: 0 0 0.25rem; display: flex; align-items: center; gap: 8px; }
+  .section-block .section-sub { color: var(--muted-color); font-size: 0.85rem; margin: 0 0 1rem; }
+
+  .req-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+  .req-card { border: 1px solid var(--border-color); border-radius: 8px; padding: 1rem; background: var(--bg-alt); }
+  .req-card i { font-size: 1.4rem; display: block; margin-bottom: 0.5rem; }
+  .req-card h3 { font-size: 0.95rem; margin: 0 0 0.4rem; }
+  .req-card p { font-size: 0.85rem; color: var(--text-color); margin: 0; }
+
+  table.sum { width: 100%; border-collapse: collapse; font-size: 0.86rem; margin-top: 0.6rem; }
+  table.sum th { text-align: left; padding: 7px 8px; border-bottom: 2px solid var(--border-color); background: var(--bg-alt); }
+  table.sum td { padding: 7px 8px; border-bottom: 1px solid var(--border-color); vertical-align: top; }
+  table.sum code { background: var(--bg-alt); border: 1px solid var(--border-color); padding: 1px 5px; border-radius: 4px; font-size: 0.8rem; white-space: nowrap; }
+
+  .badge { display: inline-block; padding: 3px 9px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; white-space: nowrap; }
+  .badge.info { background: #eff6ff; color: #0369a1; }
+  .badge.warn { background: #fffbeb; color: #b45309; }
+  .file { font-family: monospace; font-size: 0.82rem; }
+  </style>
+</head>
+<body>
+
+<script>var ROOT='.';</script>
+<script src="components/header.js"></script>
+<script src="static/js/api.js"></script>
+
+<main class="container mt-4 mb-5">
+  <div class="resumo-container">
+    <h1><i class="bi bi-clipboard-check"></i> Últimas Implementações</h1>
+    <p class="lead">Destaques na criação de novas datas de <strong>Mutirão de Castração</strong>: os campos <strong>Sexo Padrão</strong> e <strong>Período Padrão</strong>, aplicados a partir de 07/09/2026.</p>
+
+    <!-- Campos novos no cadastro -->
+    <div class="section-block">
+      <h2><i class="bi bi-gear-fill" style="color:#f59e0b;"></i> Novo Cadastro de Mutirão (Administração)</h2>
+      <p class="section-sub">No modo administrador de <span class="file">pages/castracao_mutirao.html</span>, o formulário <strong>Cadastrar Novo Mutirão</strong> ganhou dois campos que definem as regras de cada data.</p>
+
+      <table class="sum">
+        <thead><tr><th>Campo</th><th>Opções</th><th>Padrão</th><th>Efeito</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Sexo Padrão</strong> <code>sexo_padrao</code></td>
+            <td><span class="badge info">Ambos</span> <span class="badge info">Macho</span> <span class="badge info">Fêmea</span></td>
+            <td>Ambos</td>
+            <td>Define o sexo aceito no formulário público</td>
+          </tr>
+          <tr>
+            <td><strong>Período Padrão</strong> <code>periodo</code></td>
+            <td><span class="badge warn">Manhã</span> <span class="badge warn">Tarde</span></td>
+            <td>Manhã</td>
+            <td>Define o período fixo do mutirão</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style="margin:0.75rem 0 0;font-size:0.9rem;">Os valores são salvos via <code>POST /calendario_mutirao</code> e repassados ao formulário público de inscrição. Os cards e a lista de mutirões da administração agora exibem badges/colunas de <strong>Sexo</strong> e <strong>Período</strong>.</p>
+    </div>
+
+    <!-- Requisitos na inscrição -->
+    <div class="section-block">
+      <h2><i class="bi bi-person-check" style="color:#10b981;"></i> Formulário Público — Requisitos de Inscrição</h2>
+      <p class="section-sub">&ldquo;Com base nestas configurações, só serão aceitas inscrições que atendam aos requisitos&rdquo; (<span class="file">pages/castracao_mutirao_form.html</span>).</p>
+
+      <div class="req-grid">
+        <div class="req-card">
+          <i class="bi bi-gender-ambiguous" style="color:#0ea5e9;"></i>
+          <h3>Restrição de Sexo</h3>
+          <p>Se o mutirão for <strong>Macho</strong> ou <strong>Fêmea</strong>, o select de sexo é travado nessa opção. <strong>Ambos</strong> aceita qualquer sexo.</p>
+        </div>
+        <div class="req-card">
+          <i class="bi bi-sun" style="color:#f43f5e;"></i>
+          <h3>Período de Inscrição</h3>
+          <p>Novo campo <strong>Período</strong> (Manhã/Tarde) por pet, exibido na grade e no comprovante.</p>
+        </div>
+        <div class="req-card">
+          <i class="bi bi-pin-angle" style="color:#b45309;"></i>
+          <h3>Período Fixo</h3>
+          <p>O select de período fica travado no período configurado no cadastro do mutirão.</p>
+        </div>
+        <div class="req-card">
+          <i class="bi bi-speedometer2" style="color:#dc2626;"></i>
+          <h3>Bloqueio Dinâmico</h3>
+          <p>No envio, são contadas as vagas já usadas no período; se <code>usadas + pets &gt; vagas</code>, a inscrição é bloqueada com aviso.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="components/footer.js"></script>
+
+</body>
+</html>

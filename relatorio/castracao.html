@@ -299,18 +299,18 @@
       `;
 
       var ev = window._eventoRelatorio;
-      var useMutiraoInscricao = ev && ev.id && !isNaN(Number(ev.id));
+      var isEvento = ev && ev.id && !isNaN(Number(ev.id));
 
-      var url;
-      if (useMutiraoInscricao) {
-        url = '/mutirao_inscricao?calendario_mutirao_id=' + Number(ev.id);
+      var url = '/castracao';
+      var params = [];
+      if (isEvento) {
+        params.push('tipo=mutirao');
+        params.push('calendario_mutirao_id=' + Number(ev.id));
       } else {
-        url = '/castracao';
-        var params = [];
         if (tipo) params.push('tipo=' + encodeURIComponent(tipo));
-        if (status) params.push('status=' + encodeURIComponent(status));
-        if (params.length) url += '?' + params.join('&');
       }
+      if (status) params.push('status=' + encodeURIComponent(status));
+      if (params.length) url += '?' + params.join('&');
 
       apiFetch(url)
         .then(function(r) {
@@ -320,9 +320,10 @@
         .then(function(data) {
           var filtered = Array.isArray(data) ? data : [];
 
-          if (useMutiraoInscricao) {
+          if (isEvento) {
             filtered = filtered.filter(function(item) {
-              return Number(item.calendario_mutirao_id) === Number(ev.id);
+              return Number(item.calendario_mutirao_id || 0) === Number(ev.id) ||
+                (!item.calendario_mutirao_id && String(item.agenda || '').trim() === String(ev.data || '').trim());
             });
           }
 
@@ -332,13 +333,13 @@
             });
           }
 
-          if (dataInicio && !useMutiraoInscricao) {
+          if (dataInicio && !(ev && ev.data)) {
             filtered = filtered.filter(function(item) {
               return item.data_agendamento && item.data_agendamento >= dataInicio;
             });
           }
 
-          if (dataFim && !useMutiraoInscricao) {
+          if (dataFim && !(ev && ev.data)) {
             filtered = filtered.filter(function(item) {
               return item.data_agendamento && item.data_agendamento <= dataFim;
             });
@@ -373,28 +374,17 @@
         statsEl.style.display = 'none';
         return;
       }
-      var isMutiraoInscricao = data[0].hasOwnProperty('nome_responsavel') && data[0].hasOwnProperty('calendario_mutirao_id');
-
       statsEl.style.display = 'flex';
       var total = data.length;
       var html = '<div class="stat-card"><div class="stat-value">' + total + '</div><div class="stat-label">Total</div></div>';
-
-      if (isMutiraoInscricao) {
-        var atendidos = data.filter(function(d) { return (d.status || '').toLowerCase() === 'atendido'; }).length;
-        var pendentes = data.filter(function(d) { return (d.status || '').toLowerCase() === 'pendente'; }).length;
-        html += '<div class="stat-card"><div class="stat-value">' + atendidos + '</div><div class="stat-label">Atendidos</div></div>';
-        html += '<div class="stat-card"><div class="stat-value">' + pendentes + '</div><div class="stat-label">Pendentes</div></div>';
-      } else {
-        var gatos = data.filter(function(d) { return (d.pet_especie || '').toLowerCase() === 'gato'; }).length;
-        var cachorros = data.filter(function(d) { return (d.pet_especie || '').toLowerCase() === 'cachorro'; }).length;
-        var agendados = data.filter(function(d) { return (d.status || '').toLowerCase() === 'agendado'; }).length;
-        var realizados = data.filter(function(d) { return (d.status || '').toLowerCase() === 'realizado'; }).length;
-        html += '<div class="stat-card"><div class="stat-value">' + gatos + '</div><div class="stat-label">Gatos</div></div>';
-        html += '<div class="stat-card"><div class="stat-value">' + cachorros + '</div><div class="stat-label">Cachorros</div></div>';
-        html += '<div class="stat-card"><div class="stat-value">' + agendados + '</div><div class="stat-label">Agendados</div></div>';
-        html += '<div class="stat-card"><div class="stat-value">' + realizados + '</div><div class="stat-label">Realizados</div></div>';
-      }
-
+      var gatos = data.filter(function(d) { return (d.pet_especie || '').toLowerCase() === 'gato'; }).length;
+      var cachorros = data.filter(function(d) { return (d.pet_especie || '').toLowerCase() === 'cachorro'; }).length;
+      var agendados = data.filter(function(d) { return (d.status || '').toLowerCase() === 'agendado'; }).length;
+      var realizados = data.filter(function(d) { return (d.status || '').toLowerCase() === 'realizado'; }).length;
+      html += '<div class="stat-card"><div class="stat-value">' + gatos + '</div><div class="stat-label">Gatos</div></div>';
+      html += '<div class="stat-card"><div class="stat-value">' + cachorros + '</div><div class="stat-label">Cachorros</div></div>';
+      html += '<div class="stat-card"><div class="stat-value">' + agendados + '</div><div class="stat-label">Agendados</div></div>';
+      html += '<div class="stat-card"><div class="stat-value">' + realizados + '</div><div class="stat-label">Realizados</div></div>';
       statsEl.innerHTML = html;
     }
 
@@ -415,8 +405,6 @@
         return;
       }
 
-      var isMutiraoInscricao = data[0].hasOwnProperty('nome_responsavel') && data[0].hasOwnProperty('calendario_mutirao_id');
-
       countEl.textContent = data.length + ' registros';
       selectedIds.clear();
       document.getElementById('btnDeleteSelected').disabled = true;
@@ -424,11 +412,7 @@
       var html = '<div class="table-wrapper"><table class="table-modern"><thead><tr>';
       html += '<th class="checkbox-col"><input type="checkbox" id="checkAll" onchange="toggleAll(event)"></th>';
       html += '<th>Ticket</th>';
-      if (isMutiraoInscricao) {
-        html += '<th>Responsável</th><th>Contato</th><th>CPF</th><th>Endereço</th><th>Bairro</th><th>Cidade</th>';
-      } else {
-        html += '<th>Responsável</th><th>Pet</th><th>Espécie</th><th>Sexo</th><th>Período</th><th>Idade</th><th>Clínica</th><th>Data</th><th>Tipo</th>';
-      }
+      html += '<th>Responsável</th><th>Pet</th><th>Espécie</th><th>Sexo</th><th>Período</th><th>Idade</th><th>Clínica</th><th>Data</th><th>Tipo</th>';
       html += '<th>Status</th>';
       html += '<th class="actions-col">Ações</th>';
       html += '</tr></thead><tbody>';
@@ -439,25 +423,16 @@
         html += '<tr id="row-' + row.id + '">';
         html += '<td class="checkbox-col"><input type="checkbox" value="' + row.id + '" onchange="onCheckChange(event)"></td>';
         html += '<td><strong>' + (row.ticket || '-') + '</strong></td>';
-        if (isMutiraoInscricao) {
-          html += '<td>' + (row.nome_responsavel || '-') + '</td>';
-          html += '<td>' + (row.contato || '-') + '</td>';
-          html += '<td>' + (row.cpf || '-') + '</td>';
-          html += '<td>' + (row.endereco || '-') + ', ' + (row.numero || '') + '</td>';
-          html += '<td>' + (row.bairro || '-') + '</td>';
-          html += '<td>' + (row.cidade || '-') + '</td>';
-        } else {
-          var especieClass = (row.pet_especie || '').toLowerCase() === 'gato' ? 'badge-gato' : 'badge-cachorro';
-          html += '<td>' + (row.tutor_nome || '-') + '</td>';
-          html += '<td><strong>' + (row.pet_nome || '-') + '</strong></td>';
-          html += '<td><span class="badge-especie ' + especieClass + '">' + (row.pet_especie || '-') + '</span></td>';
-          html += '<td>' + (row.pet_sexo || '-') + '</td>';
-          html += '<td>' + (row.pet_periodo || '-') + '</td>';
-          html += '<td>' + (row.pet_idade || '-') + '</td>';
-          html += '<td>' + (row.clinica || '-') + '</td>';
-          html += '<td>' + fmtDataBR(row.data_agendamento || '-') + '</td>';
-          html += '<td><span style="text-transform:capitalize;">' + ((row.tipo || '').replace(/_/g, ' ') || '-') + '</span></td>';
-        }
+        var especieClass = (row.pet_especie || '').toLowerCase() === 'gato' ? 'badge-gato' : 'badge-cachorro';
+        html += '<td>' + (row.tutor_nome || row.nome || '-') + '</td>';
+        html += '<td><strong>' + (row.pet_nome || '-') + '</strong></td>';
+        html += '<td><span class="badge-especie ' + especieClass + '">' + (row.pet_especie || '-') + '</span></td>';
+        html += '<td>' + (row.pet_sexo || '-') + '</td>';
+        html += '<td>' + (row.pet_periodo || '-') + '</td>';
+        html += '<td>' + (row.pet_idade || '-') + '</td>';
+        html += '<td>' + (row.clinica || '-') + '</td>';
+        html += '<td>' + fmtDataBR(row.agenda || row.data_agendamento || '-') + '</td>';
+        html += '<td><span style="text-transform:capitalize;">' + ((row.tipo || '').replace(/_/g, ' ') || '-') + '</span></td>';
         html += '<td><span class="badge-status ' + statusClass + '">' + (row.status || '-') + '</span></td>';
         html += '<td class="actions-col">';
         html += '<button class="btn-action btn-delete" title="Excluir" onclick="excluirRegistro(' + row.id + ')"><i class="bi bi-trash"></i></button>';
@@ -488,8 +463,7 @@
     }
 
     function tabelaAtual() {
-      var ev = window._eventoRelatorio;
-      return (ev && ev.id && !isNaN(Number(ev.id))) ? 'mutirao_inscricao' : 'castracao';
+      return 'castracao';
     }
 
     function excluirRegistro(id) {
@@ -543,20 +517,13 @@
 
     function exportarCSV() {
       if (!currentData.length) return;
-      var isMutiraoInscricao = currentData[0].hasOwnProperty('nome_responsavel') && currentData[0].hasOwnProperty('calendario_mutirao_id');
-      var columns, labels;
-      if (isMutiraoInscricao) {
-        columns = ['ticket', 'nome_responsavel', 'contato', 'cpf', 'endereco', 'numero', 'bairro', 'cidade', 'status'];
-        labels = ['Ticket', 'Responsável', 'Contato', 'CPF', 'Endereço', 'Número', 'Bairro', 'Cidade', 'Status'];
-      } else {
-        columns = ['ticket', 'tutor_nome', 'tutor_telefone', 'pet_nome', 'pet_especie', 'pet_sexo', 'pet_periodo', 'pet_idade', 'clinica', 'data_agendamento', 'tipo', 'status'];
-        labels = ['Ticket', 'Responsável', 'Contato', 'Pet', 'Espécie', 'Sexo', 'Período', 'Idade', 'Clínica', 'Data', 'Tipo', 'Status'];
-      }
+      var columns = ['ticket', 'tutor_nome', 'tutor_telefone', 'pet_nome', 'pet_especie', 'pet_sexo', 'pet_periodo', 'pet_idade', 'clinica', 'data_agendamento', 'tipo', 'status'];
+      var labels = ['Ticket', 'Responsável', 'Contato', 'Pet', 'Espécie', 'Sexo', 'Período', 'Idade', 'Clínica', 'Data', 'Tipo', 'Status'];
 
       var csv = labels.map(function(l) { return '"' + l + '"'; }).join(',') + '\n';
       currentData.forEach(function(row) {
         csv += columns.map(function(col) {
-          var val = row[col];
+          var val = col === 'data_agendamento' && !row[col] ? row.agenda : row[col];
           if (val === null || val === undefined) val = '';
           val = fmtDataBR(val);
           return '"' + String(val).replace(/"/g, '""') + '"';
@@ -585,15 +552,8 @@
     function exportarPDF() {
       if (!currentData.length) return;
 
-      var isMutiraoInscricao = currentData[0].hasOwnProperty('nome_responsavel') && currentData[0].hasOwnProperty('calendario_mutirao_id');
-      var columns, labels;
-      if (isMutiraoInscricao) {
-        columns = ['ticket', 'nome_responsavel', 'contato', 'cpf', 'endereco', 'bairro', 'cidade', 'status'];
-        labels = ['Ticket', 'Responsavel', 'Contato', 'CPF', 'Endereco', 'Bairro', 'Cidade', 'Status'];
-      } else {
-        columns = ['ticket', 'tutor_nome', 'pet_nome', 'pet_especie', 'pet_sexo', 'pet_periodo', 'pet_idade', 'clinica', 'data_agendamento', 'tipo', 'status'];
-        labels = ['Ticket', 'Responsavel', 'Pet', 'Especie', 'Sexo', 'Periodo', 'Idade', 'Clinica', 'Data', 'Tipo', 'Status'];
-      }
+      var columns = ['ticket', 'tutor_nome', 'pet_nome', 'pet_especie', 'pet_sexo', 'pet_periodo', 'pet_idade', 'clinica', 'data_agendamento', 'tipo', 'status'];
+      var labels = ['Ticket', 'Responsavel', 'Pet', 'Especie', 'Sexo', 'Periodo', 'Idade', 'Clinica', 'Data', 'Tipo', 'Status'];
 
       var ev = window._eventoRelatorio || null;
       if (!ev) {
@@ -628,7 +588,7 @@
           }));
           currentData.forEach(function(row) {
             tableBody.push(columns.map(function(col) {
-              var val = row[col];
+              var val = col === 'data_agendamento' && !row[col] ? row.agenda : row[col];
               if (val === null || val === undefined) val = '-';
               val = fmtDataBR(val);
               return { text: String(val).substring(0, 80), style: 'tableCell' };

@@ -5,14 +5,10 @@ document.addEventListener('DOMContentLoaded', function () {
     .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
     .then(function (data) { if (data && Array.isArray(data)) renderEvents(data); })
     .catch(function () {});
-  Promise.all([
-    apiFetch('/castracao').then(function (r) { if (!r.ok) throw new Error(); return r.json(); }).catch(function () { return []; }),
-    apiFetch('/mutirao_inscricao').then(function (r) { if (!r.ok) throw new Error(); return r.json(); }).catch(function () { return []; }),
-    apiFetch('/mutirao_pet').then(function (r) { if (!r.ok) throw new Error(); return r.json(); }).catch(function () { return []; }),
-    apiFetch('/calendario_mutirao').then(function (r) { if (!r.ok) throw new Error(); return r.json(); }).catch(function () { return []; })
-  ]).then(function (results) {
-    renderCastracoes(mergeCastracoes(results[0], results[1], results[2], results[3]));
-  });
+  apiFetch('/castracao')
+    .then(function (r) { if (!r.ok) throw new Error(); return r.json(); })
+    .catch(function () { return []; })
+    .then(function (data) { renderCastracoes(mergeCastracoes(data || [])); });
   apiFetch('/adocao')
     .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
     .then(function (data) { if (data && Array.isArray(data)) renderAnimais(data); })
@@ -59,15 +55,7 @@ function renderEvents(events) {
   });
 }
 
-function mergeCastracoes(castracoes, inscricoes, pets, calendarios) {
-  var calMap = {};
-  if (Array.isArray(calendarios)) calendarios.forEach(function (c) { calMap[c.id] = c; });
-  var petsByIns = {};
-  if (Array.isArray(pets)) pets.forEach(function (p) {
-    var k = p.mutirao_inscricao_id;
-    if (!petsByIns[k]) petsByIns[k] = [];
-    petsByIns[k].push(p);
-  });
+function mergeCastracoes(castracoes) {
   var all = [];
   if (Array.isArray(castracoes)) castracoes.forEach(function (c) {
     all.push({ _origem: 'castracao', _raw: c, id: c.id,
@@ -78,31 +66,6 @@ function mergeCastracoes(castracoes, inscricoes, pets, calendarios) {
       cpf: c.tutor_cpf || c.cpf || '', endereco: c.tutor_endereco || c.endereco || '', numero: c.tutor_numero || c.numero || '',
       bairro: c.tutor_bairro || c.bairro || '', cidade: c.tutor_cidade || c.cidade || '', estado: c.tutor_estado || c.estado || '',
       cep: c.tutor_cep || c.cep || '', agenda: c.dia_semana || c.agenda || '' });
-  });
-  if (Array.isArray(inscricoes)) inscricoes.forEach(function (ins) {
-    var cal = calMap[ins.calendario_mutirao_id] || {};
-    var lista = petsByIns[ins.id] || [];
-    if (!lista.length) {
-      all.push({ _origem: 'mutirao', _raw: ins, id: 'mutirao_' + ins.id,
-        ticket: ins.ticket, pet_nome: '', tutor_nome: ins.nome_responsavel,
-        especie: '', sexo: '', porte: '', idade: '',
-        clinica: cal.clinica || '', data: cal.data || ins.created_at,
-        status: ins.status, contato: ins.contato || '', tipo: 'Mutirão',
-        cpf: ins.cpf || '', endereco: ins.endereco || '', numero: ins.numero || '',
-        bairro: ins.bairro || '', cidade: ins.cidade || '', estado: ins.estado || '',
-        cep: ins.cep || '', agenda: cal.data || '' });
-    } else {
-      lista.forEach(function (pet) {
-        all.push({ _origem: 'mutirao', _raw: { ins: ins, pet: pet }, id: 'mutirao_' + ins.id + '_' + pet.id,
-          ticket: pet.ticket || ins.ticket, pet_nome: pet.nome, tutor_nome: ins.nome_responsavel,
-          especie: pet.especie, sexo: pet.sexo, porte: '', idade: pet.idade,
-          clinica: cal.clinica || '', data: cal.data || ins.created_at,
-          status: ins.status, contato: ins.contato || '', tipo: 'Mutirão',
-          cpf: ins.cpf || '', endereco: ins.endereco || '', numero: ins.numero || '',
-          bairro: ins.bairro || '', cidade: ins.cidade || '', estado: ins.estado || '',
-          cep: ins.cep || '', agenda: cal.data || '' });
-      });
-    }
   });
   all.sort(function (a, b) { return (b.data || '') > (a.data || '') ? 1 : -1; });
   return all;

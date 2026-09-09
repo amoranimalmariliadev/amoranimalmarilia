@@ -228,6 +228,7 @@ if (stored) {
 } else {
   var params = new URLSearchParams(location.search);
   eventoData = {
+    id: params.get('id') || '',
     data: params.get('data') || '',
     local: params.get('local') || '',
     endereco: params.get('endereco') || '',
@@ -242,6 +243,7 @@ if (stored) {
 
 eventoData.sexoPadrao = eventoData.sexoPadrao || 'Ambos';
 eventoData.periodo = eventoData.periodo || 'Manhã';
+eventoData.calendario_mutirao_id = eventoData.calendario_mutirao_id || eventoData.id || '';
 
 vagasTotal = eventoData.vagas;
 
@@ -286,8 +288,12 @@ function verificarVagas() {
     .then(function(r) { return r.json(); })
     .then(function(data) {
       var inscricoes = Array.isArray(data) ? data : [];
+var evenData = eventoData.agenda || eventoData.data;
 var countData = inscricoes.filter(function(item) {
-  if (item.tipo !== 'mutirao' || item.agenda !== eventoData.data) return false;
+  if (item.tipo !== 'mutirao') return false;
+  var mesmoEvento = (eventoData.calendario_mutirao_id && Number(item.calendario_mutirao_id || 0) === Number(eventoData.calendario_mutirao_id)) ||
+    (!item.calendario_mutirao_id && item.agenda === evenData);
+  if (!mesmoEvento) return false;
   if (eventoData.periodo && item.pet_periodo && item.pet_periodo !== eventoData.periodo) return false;
   return true;
 }).length;
@@ -552,11 +558,16 @@ function cadastrarMutirao(e) {
       .then(function(data) {
         var inscricoes = Array.isArray(data) ? data : [];
         var total = vagasTotal || 30;
+        var evenData = eventoData.agenda || eventoData.data;
         var periodos = {};
         pets.forEach(function(p) { periodos[p.periodo] = (periodos[p.periodo] || 0) + 1; });
         Object.keys(periodos).forEach(function(periodo) {
           var usadas = inscricoes.filter(function(item) {
-            return item.tipo === 'mutirao' && item.agenda === eventoData.data && (!item.pet_periodo || item.pet_periodo === periodo);
+            if (item.tipo !== 'mutirao') return false;
+            var mesmoEvento = (eventoData.calendario_mutirao_id && Number(item.calendario_mutirao_id || 0) === Number(eventoData.calendario_mutirao_id)) ||
+              (!item.calendario_mutirao_id && item.agenda === evenData);
+            if (!mesmoEvento) return false;
+            return !item.pet_periodo || item.pet_periodo === periodo;
           }).length;
           if (usadas + periodos[periodo] > total) {
             throw new Error('Não há vagas suficientes no período ' + periodo + '. Vagas restantes: ' + Math.max(0, total - usadas) + '.');
@@ -572,6 +583,7 @@ function cadastrarMutirao(e) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           tipo: 'mutirao',
+          calendario_mutirao_id: eventoData.calendario_mutirao_id || null,
           tutor_nome: nome,
           cpf: document.getElementById('f_cpf').value.trim() || null,
           tutor_telefone: contato,
