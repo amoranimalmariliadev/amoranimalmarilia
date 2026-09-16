@@ -241,13 +241,13 @@
 <div id="cookie-consent-banner" class="cookie-consent-banner" style="display:none; padding:14px 10px; position:fixed; bottom:20px; left:50%; transform:translateX(-50%); max-width:800px; width:calc(100% - 40px); z-index:9999; box-shadow:0 6px 20px rgba(0,0,0,0.08); border-radius:8px;">
   <div style="max-width:1100px; margin:0 auto; width:100%; display:flex; gap:16px; align-items:center; justify-content:space-between; flex-wrap:wrap;">
     <div style="flex:1; min-width:260px;">
-      <strong style="font-size:0.95em;">Usamos cookies para melhorar sua experiência</strong>
-      <p style="margin:6px 0 0; font-size:0.9em;">Utilizamos cookies essenciais para o funcionamento do site e, com seu consentimento, cookies adicionais para análises e melhorias. Consulte nossa <a href="pages/policy.html" style="color:inherit; text-decoration:underline;">Política de Privacidade</a>.</p>
+      <strong style="font-size:0.95em;">Privacidade dos seus dados</strong>
+      <p style="margin:6px 0 0; font-size:0.9em;">Este site <strong>não utiliza cookies de rastreamento ou análise de terceiros</strong>. Armazenamos apenas preferências locais no seu navegador (acessibilidade, sessão e seu consentimento), no próprio dispositivo. Consulte nossa <a href="pages/policy.html" style="color:inherit; text-decoration:underline;">Política de Privacidade</a>.</p>
     </div>
     <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
       <button id="accept-essential-btn" class="btn-cookie btn-cookie-essential">Apenas essenciais</button>
-      <button id="open-preferences-btn" class="btn-cookie btn-cookie-config">Configurar</button>
-      <button id="accept-all-btn" class="btn-cookie btn-cookie-accept">Aceitar todas</button>
+      <button id="open-preferences-btn" class="btn-cookie btn-cookie-config">Ler Política</button>
+      <button id="accept-all-btn" class="btn-cookie btn-cookie-accept">Aceitar preferências</button>
     </div>
   </div>
 </div>
@@ -905,7 +905,7 @@ async function sincronizarInstagram(btn) {
   banner.style.display = 'block';
   function setPref(level) {
     banner.style.display = 'none';
-    localStorage.setItem('cookiePreference', JSON.stringify({ level: level, ts: Date.now() }));
+    localStorage.setItem('cookiePreference', JSON.stringify({ level: level, ts: Date.now(), versao_politica: 'v1.0' }));
   }
   var el = document.getElementById('accept-essential-btn');
   if (el) el.addEventListener('click', function() { setPref('essential'); });

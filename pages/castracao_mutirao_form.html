@@ -18,6 +18,7 @@
 <script>var ROOT='..';</script>
 <script src="../components/header.js"></script>
 <script src="../static/js/api.js"></script>
+<script src="../static/js/lgpd.js"></script>
 
 <main class="container mt-4 mb-5">
   <nav style="margin-bottom:1rem;font-size:0.85rem;">
@@ -201,6 +202,13 @@
               <i class="bi bi-paw" style="font-size:2rem;"></i>
               <p>Nenhum pet cadastrado ainda. Adicione os pets acima.</p>
             </div>
+          </div>
+
+          <div class="lgpd-consent" style="margin:1rem 0;padding:0.9rem 1rem;border:1px solid #d1d5db;border-radius:8px;background:#f9fafb;">
+            <label style="display:flex;gap:0.6rem;align-items:flex-start;font-size:0.85rem;color:#374151;cursor:pointer;line-height:1.5;">
+              <input type="checkbox" id="lgpd-consent" class="lgpd-consent-input" required style="width:18px;height:18px;margin-top:2px;flex-shrink:0;accent-color:#0d9488;">
+              <span>Li e aceito a <a href="policy.html" target="_blank" rel="noopener" style="color:#0d9488;text-decoration:underline;">Política de Privacidade</a> da ONG Amor Animal Marília e consinto, nos termos da Lei nº 13.709/2018 (LGPD), com o tratamento dos meus dados pessoais e de saúde dos meus animais informados neste formulário, exclusivamente para a inscrição no mutirão de castração. <strong style="color:#b45309;">Obrigatório.</strong></span>
+            </label>
           </div>
 
           <div class="form-actions" style="display:flex;gap:1rem;justify-content:space-between;align-items:center;border-top:1px solid var(--border-color);padding-top:1rem;">
@@ -544,6 +552,7 @@ function atualizarTabela() {
 
 function cadastrarMutirao(e) {
   e.preventDefault();
+  if (!LGPD.validar('lgpd-consent')) return false;
   var nome = document.getElementById('f_tutor_nome').value.trim();
   var contato = document.getElementById('f_contato').value.trim();
   if (!nome || !contato) { alert('Preencha Nome e Contato do responsável.'); return false; }
@@ -581,7 +590,7 @@ function cadastrarMutirao(e) {
       return apiFetch('/castracao', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+        body: JSON.stringify(Object.assign({
           tipo: 'mutirao',
           calendario_mutirao_id: eventoData.calendario_mutirao_id || null,
           tutor_nome: nome,
@@ -604,7 +613,7 @@ function cadastrarMutirao(e) {
           pet_medicamento: pet.medicamento || null,
           clinica: eventoData.local || null,
           agenda: eventoData.data || null
-        })
+        }, LGPD.dados()))
       }).then(function(r) { return r.json().then(function(d) { if (!r.ok) throw new Error(d.erro || 'Erro'); return d; }); });
     }));
   })
@@ -639,6 +648,7 @@ function cadastrarMutirao(e) {
         })
       };
 
+      Object.assign(successData, LGPD.dados());
       sessionStorage.setItem('castracao_resultado', JSON.stringify(successData));
       window.location.href = 'castracao_sucesso.html';
     })

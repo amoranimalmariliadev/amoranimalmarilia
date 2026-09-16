@@ -16,6 +16,7 @@
 <script>var ROOT='..';</script>
 <script src="../components/header.js"></script>
 <script src="../static/js/api.js"></script>
+<script src="../static/js/lgpd.js"></script>
 
 <main class="container mt-4 mb-5">
   <nav style="margin-bottom:1rem;font-size:0.85rem;">
@@ -102,6 +103,13 @@
             </div>
           </div>
 
+          <div class="lgpd-consent" style="margin:1rem 0;padding:0.9rem 1rem;border:1px solid #d1d5db;border-radius:8px;background:#f9fafb;">
+            <label style="display:flex;gap:0.6rem;align-items:flex-start;font-size:0.85rem;color:#374151;cursor:pointer;line-height:1.5;">
+              <input type="checkbox" id="lgpd-consent" class="lgpd-consent-input" required style="width:18px;height:18px;margin-top:2px;flex-shrink:0;accent-color:#0d9488;">
+              <span>Li e aceito a <a href="policy.html" target="_blank" rel="noopener" style="color:#0d9488;text-decoration:underline;">Política de Privacidade</a> da ONG Amor Animal Marília e consinto, nos termos da Lei nº 13.709/2018 (LGPD), com o tratamento dos meus dados pessoais informados neste formulário, exclusivamente para a finalidade deste cadastro. <strong style="color:#b45309;">Obrigatório.</strong></span>
+            </label>
+          </div>
+
           <div class="form-actions" style="display:flex;gap:1rem;justify-content:space-between;border-top:1px solid var(--border-color);padding-top:1rem;">
             <a href="procura_se.html" class="btn btn-secondary">Cancelar</a>
             <button type="submit" class="btn btn-primary" id="btn-submit">
@@ -119,6 +127,7 @@ var API_BASE = window.API_BASE;
 
 function cadastrarProcuraSe(e) {
   e.preventDefault();
+  if (!LGPD.validar('lgpd-consent')) return false;
   var btn = document.getElementById('btn-submit');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span> Publicando...';
@@ -136,6 +145,7 @@ function cadastrarProcuraSe(e) {
       local_desaparecimento: document.getElementById('local_desaparecimento').value.trim(),
       data_desaparecimento: document.getElementById('data_desaparecimento').value || null
     };
+    Object.assign(payload, LGPD.dados());
     if (fotoBase64) payload.foto_url = fotoBase64;
 
     apiFetch('/procura_se', {
@@ -177,7 +187,7 @@ function cadastrarProcuraSe(e) {
 
   return false;
 }
-<\/script>
+</script>
 
 <script src="../components/footer.js"></script>
 

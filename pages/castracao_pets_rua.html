@@ -18,6 +18,7 @@
 <script>var ROOT='..';</script>
 <script src="../components/header.js"></script>
 <script src="../static/js/api.js"></script>
+<script src="../static/js/lgpd.js"></script>
 
 <main class="container mt-4 mb-5">
   <nav style="margin-bottom:1rem;font-size:0.85rem;">
@@ -195,6 +196,13 @@
           </div>
         </div>
 
+        <div class="lgpd-consent" style="margin:1rem 0;padding:0.9rem 1rem;border:1px solid #d1d5db;border-radius:8px;background:#f9fafb;">
+          <label style="display:flex;gap:0.6rem;align-items:flex-start;font-size:0.85rem;color:#374151;cursor:pointer;line-height:1.5;">
+            <input type="checkbox" id="lgpd-consent" class="lgpd-consent-input" required style="width:18px;height:18px;margin-top:2px;flex-shrink:0;accent-color:#0d9488;">
+            <span>Li e aceito a <a href="policy.html" target="_blank" rel="noopener" style="color:#0d9488;text-decoration:underline;">Política de Privacidade</a> da ONG Amor Animal Marília e consinto, nos termos da Lei nº 13.709/2018 (LGPD), com o tratamento dos meus dados pessoais informados neste formulário, exclusivamente para a finalidade deste agendamento. <strong style="color:#b45309;">Obrigatório.</strong></span>
+          </label>
+        </div>
+
         <div style="border-top:1px solid var(--border-color);padding-top:1rem;">
           <a href="castracao.html" class="btn-cancel">Cancelar</a>
           <button type="submit" id="r_btn_submit" disabled class="btn-submit-pet">
@@ -349,6 +357,7 @@ function atualizarTabelaPR() {
 
 function cadastrarPetsRua(e) {
   e.preventDefault();
+  if (!LGPD.validar('lgpd-consent')) return false;
   const nome = document.getElementById('r_tutor_nome').value.trim();
   const tel = document.getElementById('r_tutor_telefone').value.trim();
   if (!nome || !tel) { alert('Preencha Nome e Telefone do protetor.'); return false; }
@@ -361,7 +370,7 @@ function cadastrarPetsRua(e) {
     return apiFetch('/castracao', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+      body: JSON.stringify(Object.assign({
         tipo: 'pets_rua',
         tutor_nome: nome,
         cpf: document.getElementById('r_cpf').value.trim() || null,
@@ -378,7 +387,7 @@ function cadastrarPetsRua(e) {
         pet_sexo: pet.sexo,
         pet_idade: pet.idade || null,
         clinica: document.getElementById('r_clinica').value || null
-      })
+      }, LGPD.dados()))
     }).then(function(r) { return r.json().then(function(d) { if (!r.ok) throw new Error(d.erro || 'Erro'); return d; }); });
   });
 

@@ -7,8 +7,9 @@
     '<script src="' + ROOT + '/static/js/main.js"><\/script>' +
     '<footer>' +
     '  <div class="footer-content">' +
-    '    <p class="footer-copyright">&copy; 2026 - ONG Amor Animal Marilia.</p>' +
-    '  </div>' +
+'    <p class="footer-copyright">&copy; 2026 - ONG Amor Animal Marilia.</p>' +
+'    <p class="footer-policy"><a href="' + ROOT + '/pages/policy.html" style="color:inherit;text-decoration:underline;">Política de Privacidade (LGPD)</a></p>' +
+'  </div>' +
     '  <div class="footer-social">' +
     '    <a href="https://www.instagram.com/grupoamoranimal/?hl=pt" target="_blank">' +
     '      <img src="' + ROOT + '/static/css/favicon/insta.png" alt="Instagram">' +

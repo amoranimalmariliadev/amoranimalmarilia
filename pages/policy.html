@@ -7,6 +7,46 @@
   <link rel="stylesheet" href="../static/css/default.css">
   <link rel="stylesheet" href="../static/css/icons/bootstrap-icons.min.css">
   <link rel="icon" type="image/png" href="../static/css/favicon/ong.ico">
+  <style>
+    .policy-container { max-width: 860px; margin: 0 auto; padding: 0 1rem 3rem; }
+    .policy-section {
+      background: var(--container-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .policy-section h2 {
+      font-size: 1.05rem;
+      color: var(--brand-teal);
+      margin: 0 0 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 0.5rem;
+    }
+    .policy-section p, .policy-section li { font-size: 0.93rem; line-height: 1.7; }
+    .policy-section ul, .policy-section ol { padding-left: 1.3rem; }
+    .policy-section li { margin-bottom: 0.5rem; }
+    .policy-meta {
+      text-align: center;
+      color: var(--muted-color);
+      font-size: 0.85rem;
+      margin-top: 2rem;
+    }
+    .policy-contact {
+      background: #f0fdf4;
+      border: 1px solid var(--brand-teal);
+      border-radius: 8px;
+      padding: 1rem;
+      font-size: 0.9rem;
+    }
+    .policy-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin: 0.75rem 0; }
+    .policy-table th { text-align: left; padding: 8px; background: var(--bg-alt); border-bottom: 2px solid var(--border-color); }
+    .policy-table td { padding: 8px; border-bottom: 1px solid var(--border-color); vertical-align: top; }
+    code { background: var(--bg-alt); border: 1px solid var(--border-color); padding: 1px 5px; border-radius: 4px; font-size: 0.8rem; }
+  </style>
 </head>
 <body>
 
@@ -14,46 +54,161 @@
 <script src="../components/header.js"></script>
 
 <div class="container mt-4 mb-4">
-  <a href="../index.html" class="btn btn-primary">Voltar para a página inicial</a>
+  <a href="../index.html" class="btn btn-primary"><i class="bi bi-arrow-left"></i> Voltar para a página inicial</a>
 </div>
 
-<div class="container">
-  <h1 class="text-center mb-4">Nossa Política de Privacidade</h1>
-  <p>
-    Bem-vindo à Política de Privacidade da ONG Amor Animal. Sua privacidade é de extrema importância para nós. Esta política explica como coletamos, usamos, divulgamos e protegemos suas informações pessoais quando você visita nosso site e utiliza nossos serviços.
-    Ao acessar ou usar nosso site, você concorda com a coleta e uso de suas informações de acordo com esta política.
+<div class="policy-container">
+  <h1 class="text-center mb-3">Política de Privacidade — LGPD</h1>
+  <p class="text-center" style="color:var(--muted-color);margin-bottom:2rem;">
+    Versão <strong id="policy-versao"></strong> · Atualizada em <span id="policy-data-extenso"></span> · Conforme a Lei nº 13.709/2018 (LGPD)
   </p>
-  <p>
-    Nossa política de privacidade visa proteger a sua privacidade e garantir que as informações pessoais que venham a ser coletadas sejam tratadas de forma segura e transparente. Nós coletamos seu nome, endereço de e-mail e outras informações para executar nossos serviços e garantimos que estes dados:
-  </p>
-  <ul>
-    <li>São exclusivos do usuário.</li>
-    <li><strong>NÃO</strong> serão compartilhados, modificados ou venham a sofrer qualquer tipo de modificação sem o consentimento do usuário.</li>
-    <li>São utilizados apenas para os fins especificados nesta política.</li>
-    <li>São armazenados de forma segura e protegidos contra acesso não autorizado.</li>
-    <li>Serão excluídos mediante solicitação do usuário.</li>
-  </ul>
-  <p>
-    Seus dados são utilizados para personalizar a sua experiência e para enviarmos informações relevantes. Seus dados são armazenados de forma segura e protegidos por medidas de segurança adequadas. Você tem o direito de acessar, corrigir e excluir seus dados. Caso tenha alguma dúvida, entre em contato conosco.
-  </p>
-  <p>
-    Esta Política de Privacidade pode ser atualizada periodicamente. Recomendamos que você revise esta política regularmente para se manter informado sobre como protegemos suas informações pessoais.
-  </p>
-  <p>
-    Se você tiver alguma dúvida ou preocupação sobre esta Política de Privacidade, entre em contato conosco através do nosso e-mail de contato.
-  </p>
-  <p>Em Acordo com a LGPD.</p>
-  <p class="mt-4">A ONG AMOR ANIMAL DE MARÍLIA.</p>
-  <p>Respeito pelos seus dados.</p>
-  <a href="mailto:amoranimalmariliadev@gmail.com?subject=PrivacyPolicyONGAmorAnimal" class="btn btn-link p-0">Email para o Desenvolvedor</a>
-  <p class="mt-3">Marília, <span id="policy-data-extenso"></span>.</p>
+
+  <div class="policy-section">
+    <h2><i class="bi bi-shield-lock"></i> 1. Quem é o controlador dos seus dados</h2>
+    <p>A <strong>ONG Amor Animal Marília</strong>, também identificada como <strong>Controladora</strong>, é a instituição responsável pelas decisões referentes ao tratamento de dados pessoais realizados por meio deste site.</p>
+    <ul>
+      <li><strong>Site:</strong> https://amoranimal.ong.br</li>
+      <li><strong>E-mail de contato:</strong> <a href="mailto:amoranimalmariliadev@gmail.com">amoranimalmariliadev@gmail.com</a></li>
+      <li><strong>WhatsApp:</strong> (14) 99815-1723</li>
+      <li><strong>Endereço:</strong> Rua Pascoal Eugênio Brasini, 701 — Jd. Eldorado, Marília/SP</li>
+    </ul>
+  </div>
+
+  <div class="policy-section">
+    <h2><i class="bi bi-person-vcard"></i> 2. Encarregado pelo tratamento de dados (DPO)</h2>
+    <p>Nos termos do art. 41 da LGPD, a ONG disponibiliza um canal dedicado para atendimento de dúvidas, reclamações e exercício de direitos sobre dados pessoais:</p>
+    <div class="policy-contact">
+      <strong>Encarregado de Dados:</strong> Equipe de Proteção de Dados da ONG Amor Animal Marília<br>
+      <strong>E-mail:</strong> <a href="mailto:amoranimalmariliadev@gmail.com?subject=LGPD%20-%20Encarregado%20de%20Dados">amoranimalmariliadev@gmail.com</a> (assunto: “LGPD”)<br>
+      <strong>Horário de atendimento:</strong> em até 15 dias úteis, conforme o art. 19 da LGPD
+    </div>
+  </div>
+
+  <div class="policy-section">
+    <h2><i class="bi bi-database"></i> 3. Quais dados coletamos e para que finalidade</h2>
+    <p>Coletamos apenas os dados estritamente necessários para a prestação de cada serviço. A tabela abaixo resume as finalidades e os dados utilizados.</p>
+    <table class="policy-table">
+      <thead>
+        <tr><th>Serviço/Formulário</th><th>Dados coletados</th><th>Finalidade</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Castração (baixo custo, pets de rua e mutirões)</td><td>Nome, CPF, telefone, endereço, dados do pet (incluindo saúde: vacinação e medicamentos)</td><td>Agendamento da castração, emissão de comprovante/ticket e contato para confirmação</td></tr>
+        <tr><td>Cadastro de animal desaparecido ("Procura-se")</td><td>Nome, telefone/WhatsApp, local e data do desaparecimento, dados e foto do pet</td><td>Publicação e divulgação do anúncio, contato entre o responsável e a ONG</td></tr>
+        <tr><td>Adoção (cadastro de pet e termo de responsabilidade)</td><td>Nome, CPF, telefone, endereço completo e dados do pet</td><td>Triagem da adoção, emissão do Termo de Responsabilidade e acompanhamento pós-adoção</td></tr>
+        <tr><td>Voluntariado e interesse em voluntariar</td><td>Nome, telefone, localidade, habilidades, disponibilidade e mensagem</td><td>Captação, análise de perfil e contato com voluntários</td></tr>
+        <tr><td>Parcerias</td><td>Empresa, representante, telefone, e-mail e proposta</td><td>Análise e formalização de parcerias, contato comercial</td></tr>
+        <tr><td>Coleta de doações</td><td>Nome, telefone, endereço e detalhes do item doado</td><td>Agendamento da coleta da doação em domicílio</td></tr>
+        <tr><td>Doação financeira (PIX)</td><td>Nome e dados do doador informados voluntariamente</td><td>Registro da doação e emissão de recibo</td></tr>
+        <tr><td>Login administrativo</td><td>Usuário e senha de membros/colaboradores autorizados</td><td>Controle de acesso restrito à administração do site</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:0.75rem;">Os dados de <strong>saúde dos animais</strong> são tratados de forma restrita e somente quando necessários para o procedimento de castração, sendo acessíveis apenas à equipe responsável.</p>
+  </div>
+
+  <div class="policy-section">
+    <h2><i class="bi bi-file-earmark-check"></i> 4. Base legal do tratamento</h2>
+    <p>Tratamos seus dados pessoais com fundamento nas hipóteses do art. 7º da LGPD:</p>
+    <ul>
+      <li><strong>Consentimento (art. 7º, I):</strong> o seu aceite explícito na <a href="policy.html">Política de Privacidade</a> no momento do envio de formulários;</li>
+      <li><strong>Execução de contrato ou procedimentos preliminares (art. 7º, V):</strong> para a prestação do serviço solicitado (castração, adoção, coleta, etc.);</li>
+      <li><strong>Cumprimento de obrigação legal (art. 7º, II):</strong> para a guarda de documentos e registros exigidos por lei e responsabilização da entidade.</li>
+    </ul>
+    <p>O consentimento é livre, informado, inequívoco e pode ser <strong>revogado a qualquer momento</strong> pelo titular, sem prejuízo da licitude dos tratamentos já realizados (art. 8º, § 5º).</p>
+  </div>
+
+  <div class="policy-section">
+    <h2><i class="bi bi-share"></i> 5. Compartilhamento de dados com terceiros</h2>
+    <p>Não vendemos e não comercializamos dados pessoais. Podemos compartilhar dados apenas quando necessário para a execução dos serviços:</p>
+    <ul>
+      <li><strong>ViaCEP (<code>viacep.com.br</code>):</strong> o CEP informado é consultado para preenchimento automático do endereço (apenas o CEP é enviado);</li>
+      <li><strong>Hospedagem e infraestrutura da API (<code>api.projetosdinamicos.com.br</code> / provedores de nuvem):</strong> onde os dados são armazenados com segurança;</li>
+      <li><strong>WhatsApp e Instagram (Meta):</strong> utilizados como canais de contato e divulgação pública de eventos (a sincronização de eventos publica apenas informações de eventos, sem dados pessoais);</li>
+      <li><strong>Autoridades e órgãos reguladores:</strong> exclusivamente para cumprimento de obrigação legal ou ordem judicial.</li>
+    </ul>
+  </div>
+
+  <div class="policy-section">
+    <h2><i class="bi bi-cookie"></i> 6. Cookies e tecnologias de armazenamento no navegador</h2>
+    <p>Este site <strong>não utiliza cookies de rastreamento, publicidade ou análise de terceiros</strong>. Utilizamos apenas o armazenamento local do navegador (<code>localStorage</code>/<code>sessionStorage</code>) para:</p>
+    <ul>
+      <li>Manter a sua sessão de login (token com expiração automática em 10 minutos);</li>
+      <li>Guardar preferências de acessibilidade, como o alto contraste;</li>
+      <li>Registrar seu consentimento de privacidade e preenchimentos temporários de formulários;</li>
+      <li>Estatísticas de navegação <em>exclusivamente no seu dispositivo</em> (as páginas mais visitadas, usadas no campo de busca);</li>
+    </ul>
+    <p>Esses dados permanecem no seu próprio navegador e podem ser apagados a qualquer momento nas configurações do navegador. O banner exibido no site permite aceitar apenas o essencial, configurar suas preferências ou recusar, sem prejuízo do funcionamento básico do site.</p>
+  </div>
+
+  <div class="policy-section">
+    <h2><i class="bi bi-person-check"></i> 7. Direitos do titular (art. 18 da LGPD)</h2>
+    <p>Você pode solicitar, a qualquer momento e gratuitamente:</p>
+    <ol>
+      <li>Confirmação da existência de tratamento;</li>
+      <li>Acesso aos dados;</li>
+      <li>Correção de dados incompletos, inexatos ou desatualizados;</li>
+      <li>Anonimização, bloqueio ou eliminação de dados desnecessários, excessivos ou tratados em desconformidade com a lei;</li>
+      <li>Portabilidade dos dados a outro fornecedor;</li>
+      <li>Eliminação dos dados tratados com consentimento;</li>
+      <li>Informação sobre o compartilhamento com entidades públicas e privadas;</li>
+      <li>Revogação do consentimento;</li>
+      <li>Revisão de decisões automatizadas, quando aplicável.</li>
+    </ol>
+    <p>Para exercer seus direitos, envie um e-mail para o <a href="mailto:amoranimalmariliadev@gmail.com?subject=LGPD%20-%20Direitos%20do%20Titular">Encarregado de Dados</a>, identificando-se e informando o direito que deseja exercer. Responderemos no prazo legal de até 15 dias úteis.</p>
+  </div>
+
+  <div class="policy-section">
+    <h2><i class="bi bi-clock-history"></i> 8. Prazo de guarda e eliminação</h2>
+    <p>Os dados são mantidos somente pelo tempo necessário ao cumprimento das finalidades, observados os prazos legais:</p>
+    <ul>
+      <li><strong>Cadastros (castração, adoção, voluntariado, parcerias, coleta):</strong> enquanto durar a finalidade e pelos prazos de responsabilização da entidade;</li>
+      <li><strong>Termo de Adoção:</strong> guardado conforme o prazo legal para comprovação da responsabilidade, podendo ser eliminado mediante solicitação do titular, salvo obrigação legal;</li>
+      <li><strong>Sessão administrativa:</strong> 10 minutos de validade do token, com expiração automática.</li>
+    </ul>
+    <p>Ao final do prazo, os dados são eliminados ou anonimizados de forma segura, salvo hipóteses legais de retenção.</p>
+  </div>
+
+  <div class="policy-section">
+    <h2><i class="bi bi-lock"></i> 9. Segurança das informações</h2>
+    <p>Aplicamos medidas técnicas e organizacionais para proteger seus dados, entre elas:</p>
+    <ul>
+      <li>Transmissão de dados por conexão segura (HTTPS);</li>
+      <li>Controle de acesso restrito e por autenticação (login com token expirável);</li>
+      <li>Coleta do mínimo de dados necessários e tratamento com fins determinados (minimização);</li>
+      <li>Restrição de acesso aos dados de saúde dos animais apenas à equipe autorizada.</li>
+    </ul>
+    <p>Em caso de incidente de segurança que possa acarretar risco ou dano aos titulares, comunicaremos à Autoridade Nacional de Proteção de Dados (ANPD) e aos titulares afetados, conforme o art. 48 da LGPD.</p>
+  </div>
+
+  <div class="policy-section">
+    <h2><i class="bi bi-globe2"></i> 10. Transferência internacional de dados</h2>
+    <p>Seus dados podem ser armazenados em servidores localizados fora do Brasil (provedores de nuvem). Nessas hipóteses, adotamos salvaguardas compatíveis com a LGPD, incluindo cláusulas contratuais que garantem nível de proteção adequado, conforme os arts. 33 a 36.</p>
+  </div>
+
+  <div class="policy-section">
+    <h2><i class="bi bi-pencil-square"></i> 11. Alterações desta política</h2>
+    <p>Esta Política de Privacidade pode ser atualizada para refletir mudanças legais, de serviços ou de boas práticas. A versão vigente estará sempre publicada nesta página, com a data de atualização indicada no topo. Alterações relevantes serão comunicadas pelos canais oficiais da ONG.</p>
+  </div>
+
+  <div class="policy-section">
+    <h2><i class="bi bi-chat-dots"></i> 12. Dúvidas e contato</h2>
+    <p>Em caso de dúvidas sobre esta Política ou sobre o tratamento dos seus dados, fale conosco:</p>
+    <ul>
+      <li><strong>Encarregado de Dados (LGPD):</strong> <a href="mailto:amoranimalmariliadev@gmail.com?subject=LGPD">amoranimalmariliadev@gmail.com</a></li>
+      <li><strong>WhatsApp:</strong> (14) 99815-1723</li>
+      <li><strong>Site:</strong> https://amoranimal.ong.br</li>
+      <li><strong>ANPD:</strong> Caso necessário, você também pode registrar reclamação junto à <a href="https://www.gov.br/anpd" target="_blank" rel="noopener">Autoridade Nacional de Proteção de Dados</a>.</li>
+    </ul>
+  </div>
+
+  <p class="policy-meta">ONG Amor Animal Marília — Respeito pelos seus dados.</p>
 </div>
 
 <script>
   (function() {
-    var data = new Date();
+    var data = new Date(2026, 8, 15);
     var meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
     document.getElementById('policy-data-extenso').textContent = data.getDate() + ' de ' + meses[data.getMonth()] + ' de ' + data.getFullYear();
+    document.getElementById('policy-versao').textContent = 'v1.0';
   })();
 </script>
 

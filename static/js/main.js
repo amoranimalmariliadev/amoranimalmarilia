@@ -181,7 +181,7 @@ function updateEmptyState() {
 
     function setPreference(level) {
         cookieBanner.style.display = 'none';
-        localStorage.setItem('cookiePreference', JSON.stringify({ level: level, ts: Date.now() }));
+        localStorage.setItem('cookiePreference', JSON.stringify({ level: level, ts: Date.now(), versao_politica: 'v1.0' }));
     }
 
     var acceptEssential = document.getElementById('accept-essential-btn');

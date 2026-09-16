@@ -19,6 +19,7 @@
 <script>var ROOT='..';</script>
 <script src="../components/header.js"></script>
 <script src="../static/js/api.js"></script>
+<script src="../static/js/lgpd.js"></script>
 
 <div class="adocao-container">
   <div class="alert-important">
@@ -81,6 +82,12 @@
             <textarea id="caracteristicas-pet" rows="3" placeholder="Ex: Amigável, brincalhão, bom com crianças..."></textarea>
           </div>
         </div>
+        <div class="lgpd-consent" style="margin:1rem 0;padding:0.9rem 1rem;border:1px solid #d1d5db;border-radius:8px;background:#f9fafb;">
+          <label style="display:flex;gap:0.6rem;align-items:flex-start;font-size:0.85rem;color:#374151;cursor:pointer;line-height:1.5;">
+            <input type="checkbox" id="lgpd-consent" class="lgpd-consent-input" required style="width:18px;height:18px;margin-top:2px;flex-shrink:0;accent-color:#0d9488;">
+            <span>Li e aceito a <a href="policy.html" target="_blank" rel="noopener" style="color:#0d9488;text-decoration:underline;">Política de Privacidade</a> da ONG Amor Animal Marília e consinto, nos termos da Lei nº 13.709/2018 (LGPD), com o tratamento dos dados informados neste formulário, exclusivamente para a divulgação do anúncio de adoção. <strong style="color:#b45309;">Obrigatório.</strong></span>
+          </label>
+        </div>
         <button type="submit" class="btn btn-primary" style="width:100%;margin-top:0.5rem;">
           <i class="bi bi-send me-2"></i>Enviar
         </button>
@@ -100,6 +107,7 @@
 <script>
 document.getElementById('form-adocao-cadastro').addEventListener('submit', async function(e) {
   e.preventDefault();
+  if (!LGPD.validar('lgpd-consent')) return;
   const btn = this.querySelector('button[type="submit"]');
   const msgDiv = document.getElementById('msg-adocao');
   const preview = document.getElementById('preview-foto');
@@ -128,6 +136,7 @@ document.getElementById('form-adocao-cadastro').addEventListener('submit', async
       foto_url: foto_url,
       status: 'disponivel'
     };
+    Object.assign(data, LGPD.dados());
 
     const resp = await apiFetch('/adocao', {
       method: 'POST',

@@ -194,6 +194,13 @@
         </div>
       </div>
 
+      <div class="lgpd-consent" style="margin:1rem 0;padding:0.9rem 1rem;border:1px solid #d1d5db;border-radius:8px;background:#f9fafb;">
+        <label style="display:flex;gap:0.6rem;align-items:flex-start;font-size:0.85rem;color:#374151;cursor:pointer;line-height:1.5;">
+          <input type="checkbox" id="lgpd-consent" class="lgpd-consent-input" required style="width:18px;height:18px;margin-top:2px;flex-shrink:0;accent-color:#0d9488;">
+          <span>Li e aceito a <a href="policy.html" target="_blank" rel="noopener" style="color:#0d9488;text-decoration:underline;">Política de Privacidade</a> da ONG Amor Animal Marília e consinto, nos termos da Lei nº 13.709/2018 (LGPD), com o tratamento dos meus dados pessoais informados neste termo, exclusivamente para a formalização da adoção. <strong style="color:#b45309;">Obrigatório.</strong></span>
+        </label>
+      </div>
+
       <button type="button" class="btn-submit" id="btn-termo-submit" onclick="gerarPDFTermo()">
         <i class="bi bi-file-pdf"></i> Gerar PDF e Compartilhar
       </button>
@@ -203,6 +210,7 @@
 
 <script src="../components/footer.js"></script>
 <script src="../static/js/adote.js"></script>
+<script src="../static/js/lgpd.js"></script>
 <script>
 function formatPhone(input) {
   var v = input.value.replace(/\D/g, '').slice(0, 11);
@@ -267,6 +275,7 @@ function coletarDados() {
 }
 
 function gerarPDFTermo() {
+  if (!LGPD.validar('lgpd-consent')) return;
   var d = coletarDados();
 
   if (!d.nome || !d.cpf || !d.contato || !d.endereco || !d.numero || !d.bairro || !d.cidade || !d.pet_nome || !d.pet_especie || !d.pet_sexo || !d.pet_porte || !d.pet_castrado || !d.pet_vermifugado || !d.pet_vacinado || !d.pet_endereco) {
@@ -352,6 +361,7 @@ function gerarPDFTermo() {
           { text: '2. Depois de doado fazemos um acompanhamento ate a adaptacao.', style: 'value', margin: [0, 3, 0, 10] },
           { text: 'Para mais informacoes, entre em contato: (14) 99815-1723 - ONG Amor Animal.', style: 'value', margin: [0, 0, 0, 20] },
           { text: 'Marilia, ' + agora.toLocaleDateString('pt-BR') + '.', style: 'value', alignment: 'center', margin: [0, 0, 0, 30] },
+          { text: 'Consentimento LGPD (Lei nº 13.709/2018): autorizo o tratamento dos meus dados pessoais informados neste termo, exclusivamente para a formalizacao da adocao, tendo aceito a Política de Privacidade (versao ' + LGPD.VERSAO + ') em ' + dataHora + '. Política disponivel em https://amoranimal.ong.br/pages/policy.html', style: 'value', fontSize: 8, alignment: 'center', margin: [0, 0, 0, 30] },
           { table: { widths: ['*', '*'], body: [
             [{ text: '', border: [false, true, false, false], margin: [20, 20, 20, 0] },
              { text: '', border: [false, true, false, false], margin: [20, 20, 20, 0] }],
@@ -390,7 +400,8 @@ function gerarPDFTermo() {
         'Especie: ' + d.pet_especie + '\n' +
         'Sexo: ' + d.pet_sexo + '\n' +
         'Porte: ' + d.pet_porte + '\n\n' +
-        'Arquivo PDF anexado. Guarde para seu controle.'
+        'Arquivo PDF anexado. Guarde para seu controle.\n\n' +
+        'Consentimento LGPD: Política de Privacidade (v' + LGPD.VERSAO + ') aceita em ' + dataHora + ' - https://amoranimal.ong.br/pages/policy.html'
       );
 
       pdfGenerator.getBlob(function(blob) {

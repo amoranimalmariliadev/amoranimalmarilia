@@ -320,6 +320,7 @@
             <code>https://api.projetosdinamicos.com.br/amoranimal/eventos/sync-instagram</code>
         </div>
         <p>Requer autenticação Bearer token no header <span class="inline-code">Authorization</span>.</p>
+        <p>No servidor, as postagens são obtidas pela <strong>API oficial do Instagram (Graph API)</strong> da conta <span class="inline-code">@grupoamoranimal</span>. Para a sincronização funcionar, a API precisa das variáveis de ambiente <span class="inline-code">IG_ACCESS_TOKEN</span> (token de longa duração da Meta) e <span class="inline-code">IG_USER_ID</span> (ID numérico da conta conectada ao app da Meta).</p>
 
         <h3>Requisição</h3>
         <pre><code>fetch(API_BASE + '/eventos/sync-instagram', {
