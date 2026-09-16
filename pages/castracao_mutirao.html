@@ -569,6 +569,7 @@ function cadastrarEventoAdmin(e) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         data_evento: formatarDataISOInverso(evento.data),
+        data_limite: formatarDataISOInverso(evento.dataLimite),
         clinica: evento.local,
         endereco: evento.endereco,
         vagas: evento.vagas,
