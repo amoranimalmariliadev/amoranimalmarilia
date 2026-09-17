@@ -105,10 +105,6 @@
             <input type="number" id="admin-vagas" placeholder="30" min="1" required>
           </div>
           <div>
-            <label>Data Limite Inscrição *</label>
-            <input type="date" id="admin-data-limite" required>
-          </div>
-          <div>
             <label>Espécie Padrão</label>
             <select id="admin-especie-padrao">
               <option value="">Gatos e Cachorros</option>
@@ -433,6 +429,7 @@ function carregarEventos() {
     };
   });
   return apiEventos.concat(adminEventos).filter(function(ev) {
+    if (ev._admin) return true;
     return ocultos.indexOf(ev.data + '|' + ev.local) === -1;
   });
 }
@@ -543,9 +540,12 @@ document.getElementById('btn-add-clinica').addEventListener('click', abrirModalC
 function cadastrarEventoAdmin(e) {
   e.preventDefault();
   var dataISO = document.getElementById('admin-data').value;
-  var dataLimiteISO = document.getElementById('admin-data-limite').value;
-  if (!dataISO || !dataLimiteISO) { alert('Preencha a data e a data limite.'); return false; }
-  if (dataLimiteISO >= dataISO) { alert('A data limite deve ser anterior à data do mutirão.'); return false; }
+  if (!dataISO) { alert('Preencha a data do mutirão.'); return false; }
+
+  // Data limite automática: 1 dia antes da data do mutirão
+  var data = new Date(dataISO + 'T00:00:00');
+  data.setDate(data.getDate() - 1);
+  var dataLimiteISO = data.toISOString().slice(0, 10);
 
   var evento = {
     _admin: true,
@@ -578,16 +578,28 @@ function cadastrarEventoAdmin(e) {
         periodo: evento.periodo,
         arquivado: false
       })
-    }).then(function(r) { if (r.ok) carregarEventosAPI(); });
+    }).then(function(r) {
+      if (r.ok) carregarEventosAPI();
+      else alert('Atenção: o mutirão foi salvo apenas localmente.\nErro do servidor: ' + r.status);
+    }).catch(function() {
+      alert('Atenção: não foi possível salvar no servidor.\nO mutirão foi salvo apenas localmente.');
+    });
   }
 
   var eventos = carregarEventos();
   eventos.push(evento);
   salvarEventosAdmin(eventos);
+  // Remove a chave "data|local" dos ocultos, garantindo que o card reapareça
+  var ocultos = JSON.parse(localStorage.getItem('mutirao_eventos_ocultos') || '[]');
+  var chave = evento.data + '|' + evento.local;
+  if (ocultos.indexOf(chave) > -1) {
+    ocultos = ocultos.filter(function(o) { return o !== chave; });
+    localStorage.setItem('mutirao_eventos_ocultos', JSON.stringify(ocultos));
+  }
   renderizarEventos();
   atualizarAdminLista();
   document.getElementById('admin-form').reset();
-  alert('Mutirão cadastrado com sucesso!');
+  alert('Mutirão cadastrado com sucesso! Inscrições até ' + evento.dataLimite + '.');
   return false;
 }
 
