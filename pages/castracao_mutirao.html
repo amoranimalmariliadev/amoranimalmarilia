@@ -187,11 +187,6 @@
 <script>
 var API_BASE = window.API_BASE;
 
-function salvarEventosAdmin(eventos) {
-  var apenasAdmin = eventos.filter(function(e) { return e._admin; });
-  localStorage.setItem('mutirao_eventos_admin', JSON.stringify(apenasAdmin));
-}
-
 function formatarDataISO(dataISO) {
   if (!dataISO) return '';
   var partes = dataISO.split('T')[0].split('-');
@@ -384,35 +379,21 @@ function excluirEvento(index, btn) {
 
   excluirInscricoes()
     .then(function() { return excluirEventoAPI(); })
-    .then(function() { removerEventoLocal(ev); })
+    .then(function() {
+      return carregarEventosAPI().then(function() {
+        renderizarEventos();
+        atualizarAdminLista();
+      });
+    })
     .catch(function(err) {
       alert('Erro ao excluir: ' + err.message);
       if (btn) btn.disabled = false;
     });
 }
 
-function removerEventoLocal(ev) {
-  var eventos = carregarEventos();
-  if (ev._admin) {
-    var adminEventos = eventos.filter(function(e) { return e._admin; });
-    var target = adminEventos.indexOf(ev);
-    if (target > -1) {
-      adminEventos.splice(target, 1);
-      salvarEventosAdmin(adminEventos);
-    }
-  } else {
-    var ocultos = JSON.parse(localStorage.getItem('mutirao_eventos_ocultos') || '[]');
-    ocultos.push(ev.data + '|' + ev.local);
-    localStorage.setItem('mutirao_eventos_ocultos', JSON.stringify(ocultos));
-  }
-  renderizarEventos();
-  atualizarAdminLista();
-}
-
 function carregarEventos() {
   var salvos = localStorage.getItem('mutirao_eventos_admin');
   var adminEventos = salvos ? JSON.parse(salvos) : [];
-  var ocultos = JSON.parse(localStorage.getItem('mutirao_eventos_ocultos') || '[]');
   var apiEventos = eventosAPI.map(function(ev) {
     return {
       _api: true,
@@ -428,10 +409,7 @@ function carregarEventos() {
       status: ev.arquivado ? 'encerrado' : (ev.status || 'aberto')
     };
   });
-  return apiEventos.concat(adminEventos).filter(function(ev) {
-    if (ev._admin) return true;
-    return ocultos.indexOf(ev.data + '|' + ev.local) === -1;
-  });
+  return apiEventos.concat(adminEventos);
 }
 
 var clinicasCache = [];
@@ -562,6 +540,9 @@ function cadastrarEventoAdmin(e) {
 
   if (!evento.local || !evento.endereco) { alert('Preencha o local e endereço.'); return false; }
 
+  var btnSubmit = document.querySelector('#admin-form button[type="submit"]');
+  if (btnSubmit) { btnSubmit.disabled = true; btnSubmit.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Cadastrando...'; }
+
   var token = localStorage.getItem('amoranimal_token');
   if (token) {
     apiFetch('/calendario_mutirao', {
@@ -579,50 +560,36 @@ function cadastrarEventoAdmin(e) {
         arquivado: false
       })
     }).then(function(r) {
-      if (r.ok) carregarEventosAPI();
-      else alert('Atenção: o mutirão foi salvo apenas localmente.\nErro do servidor: ' + r.status);
-    }).catch(function() {
-      alert('Atenção: não foi possível salvar no servidor.\nO mutirão foi salvo apenas localmente.');
+      if (r.ok) {
+        return carregarEventosAPI().then(function() {
+          renderizarEventos();
+          atualizarAdminLista();
+          document.getElementById('admin-form').reset();
+          alert('Mutirão cadastrado com sucesso! Inscrições até ' + evento.dataLimite + '.');
+        });
+      } else {
+        return r.json().catch(function() { return {}; }).then(function(d) {
+          alert('Erro ao salvar no servidor (' + r.status + '): ' + (d.erro || d.message || 'Erro desconhecido') + '\nO mutirão NÃO foi salvo. Tente novamente.');
+        });
+      }
+    }).catch(function(err) {
+      alert('Não foi possível salvar no servidor. Verifique sua conexão e tente novamente.\nDetalhes: ' + (err.message || err));
+    }).finally(function() {
+      if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.innerHTML = '<i class="bi bi-plus-circle me-1"></i>Cadastrar Mutirão'; }
     });
+  } else {
+    alert('Faça login primeiro para cadastrar mutirões.');
+    if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.innerHTML = '<i class="bi bi-plus-circle me-1"></i>Cadastrar Mutirão'; }
   }
-
-  var eventos = carregarEventos();
-  eventos.push(evento);
-  salvarEventosAdmin(eventos);
-  // Remove a chave "data|local" dos ocultos, garantindo que o card reapareça
-  var ocultos = JSON.parse(localStorage.getItem('mutirao_eventos_ocultos') || '[]');
-  var chave = evento.data + '|' + evento.local;
-  if (ocultos.indexOf(chave) > -1) {
-    ocultos = ocultos.filter(function(o) { return o !== chave; });
-    localStorage.setItem('mutirao_eventos_ocultos', JSON.stringify(ocultos));
-  }
-  renderizarEventos();
-  atualizarAdminLista();
-  document.getElementById('admin-form').reset();
-  alert('Mutirão cadastrado com sucesso! Inscrições até ' + evento.dataLimite + '.');
   return false;
-}
-
-function removerEventoAdmin(index) {
-  var eventos = carregarEventos();
-  var adminEventos = eventos.filter(function(e) { return e._admin; });
-  var target = adminEventos[index];
-  var idx = eventos.indexOf(target);
-  if (idx === -1) return;
-  if (!confirm('Remover mutirão de ' + target.data + ' (' + target.local + ')?')) return;
-  eventos.splice(idx, 1);
-  salvarEventosAdmin(eventos);
-  renderizarEventos();
-  atualizarAdminLista();
 }
 
 function atualizarAdminLista() {
   var eventos = carregarEventos();
-  var adminEventos = eventos.filter(function(e) { return e._admin; });
-  document.getElementById('admin-count').textContent = '(' + adminEventos.length + ' cadastrado(s))';
+  document.getElementById('admin-count').textContent = '(' + eventos.length + ' cadastrado(s))';
   var container = document.getElementById('admin-eventos-list');
-  if (adminEventos.length === 0) {
-    container.innerHTML = '<p class="text-muted small">Nenhum mutirão cadastrado pela administração.</p>';
+  if (eventos.length === 0) {
+    container.innerHTML = '<p class="text-muted small">Nenhum mutirão cadastrado.</p>';
     return;
   }
   var html = '<table style="width:100%;border-collapse:collapse;font-size:0.85rem;">' +
@@ -635,7 +602,7 @@ function atualizarAdminLista() {
     '<th style="padding:6px;text-align:left;border-bottom:1px solid var(--border-color);">Vagas</th>' +
     '<th style="padding:6px;text-align:center;border-bottom:1px solid var(--border-color);">Ações</th>' +
     '</tr></thead><tbody>';
-  adminEventos.forEach(function(ev, i) {
+  eventos.forEach(function(ev, i) {
     var especieLabel = ev.especiePadrao || 'Gatos e Cachorros';
     html += '<tr>' +
       '<td style="padding:6px;border-bottom:1px solid var(--border-color);">' + ev.data + '</td>' +
@@ -644,7 +611,7 @@ function atualizarAdminLista() {
       '<td style="padding:6px;border-bottom:1px solid var(--border-color);">' + (ev.sexoPadrao || 'Ambos') + '</td>' +
       '<td style="padding:6px;border-bottom:1px solid var(--border-color);">' + (ev.periodo || 'Manhã') + '</td>' +
       '<td style="padding:6px;border-bottom:1px solid var(--border-color);">' + ev.vagas + '</td>' +
-      '<td style="padding:6px;border-bottom:1px solid var(--border-color);text-align:center;"><button onclick="removerEventoAdmin(' + i + ')" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button></td>' +
+      '<td style="padding:6px;border-bottom:1px solid var(--border-color);text-align:center;"><button onclick="excluirEvento(' + i + ',this)" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button></td>' +
       '</tr>';
   });
   html += '</tbody></table>';
@@ -659,15 +626,16 @@ function carregarEventosAPI() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-  carregarEventosAPI().then(function() {
-    renderizarEventos();
-  });
-  if (localStorage.getItem('amoranimal_token')) {
+  var isAdminLogin = !!localStorage.getItem('amoranimal_token');
+  if (isAdminLogin) {
     isAdmin = true;
     document.getElementById('admin-section').style.display = 'block';
     popularSelectsClinicas();
-    atualizarAdminLista();
   }
+  carregarEventosAPI().then(function() {
+    renderizarEventos();
+    if (isAdminLogin) atualizarAdminLista();
+  });
 });
 </script>
 
