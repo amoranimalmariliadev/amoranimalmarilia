@@ -453,7 +453,22 @@ document.addEventListener('DOMContentLoaded', function() {
 <section class="landing-section landing-section-alt" id="section-castracao">
   <div class="landing-container">
     <h2 class="text-center mb-4">Agendamentos de Castração</h2>
-    <div class="text-end mb-2">
+  </div>
+
+  <div class="landing-container">
+    <h3 class="mb-2"><i class="bi bi-people me-2" style="color:var(--brand-green);"></i>Mutirão de Castração</h3>
+    <p style="color:var(--muted-color);font-size:0.9rem;">Próximas datas ativas do mutirão de castração. Garanta sua vaga!</p>
+    <div class="mutirao-carrossel" id="mutiroesGrid">
+      <!-- Mutirões carregados dinamicamente via API -->
+    </div>
+    <div class="text-center mt-3 mb-4">
+      <a href="pages/castracao_mutirao.html" class="btn btn-primary"><i class="bi bi-calendar-event me-2"></i>Ver todos os mutirões</a>
+    </div>
+  </div>
+
+  <div class="landing-container">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;">
+      <h3 style="margin:0;"><i class="bi bi-person-heart me-2" style="color:var(--brand-teal);"></i>Agendamentos</h3>
       <label style="cursor: pointer; font-size: 0.85rem;">
         <input type="checkbox" id="toggleAtendidos" onchange="var cb=document.getElementById('toggleAtendidos');document.querySelectorAll('.status-atendido').forEach(function(el){el.style.display=cb.checked?'table-row':'none'})" style="margin-right:5px;">
         Mostrar atendidos

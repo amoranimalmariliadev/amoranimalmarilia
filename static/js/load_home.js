@@ -9,6 +9,10 @@ document.addEventListener('DOMContentLoaded', function () {
     .then(function (r) { if (!r.ok) throw new Error(); return r.json(); })
     .catch(function () { return []; })
     .then(function (data) { renderCastracoes(mergeCastracoes(data || [])); });
+  apiFetch('/calendario_mutirao')
+    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function (data) { if (data && Array.isArray(data)) renderMutiroes(data); })
+    .catch(function () {});
   apiFetch('/adocao')
     .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
     .then(function (data) { if (data && Array.isArray(data)) renderAnimais(data); })
@@ -58,6 +62,7 @@ function renderEvents(events) {
 function mergeCastracoes(castracoes) {
   var all = [];
   if (Array.isArray(castracoes)) castracoes.forEach(function (c) {
+    if ((c.tipo || '').toLowerCase() === 'mutirao') return;
     all.push({ _origem: 'castracao', _raw: c, id: c.id,
       ticket: c.ticket, pet_nome: c.nome_pet || c.pet_nome, tutor_nome: c.nome || c.tutor_nome,
       especie: c.especie || c.pet_especie, sexo: c.sexo || c.pet_sexo, porte: c.porte || c.pet_porte,
@@ -79,6 +84,8 @@ function renderCastracoes(castracoes) {
     tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">Nenhum agendamento de castração.</td></tr>';
     return;
   }
+  var secCastracao = document.getElementById('section-castracao');
+  if (secCastracao) secCastracao.style.display = 'block';
   castracoes.forEach(function (c) {
     var ticketNum = c.ticket || '';
     var isAtendido = (c.status || '').toLowerCase() === 'atendido';
@@ -127,6 +134,89 @@ function renderCastracoes(castracoes) {
           : '') +
       '</td>';
     tbody.appendChild(tr);
+  });
+}
+
+function renderMutiroes(eventos) {
+  var container = document.getElementById('mutiroesGrid');
+  if (!container) return;
+  container.innerHTML = '';
+
+  var diasSemana = ['Domingo', 'Segunda-feira', 'Ter\u00e7a-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'S\u00e1bado'];
+
+  var hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+  var hojeISO = hoje.getFullYear() + '-' + String(hoje.getMonth() + 1).padStart(2, '0') + '-' + String(hoje.getDate()).padStart(2, '0');
+
+  var ativos = eventos.filter(function (ev) {
+    if (ev.arquivado) return false;
+    var dataISO = (ev.data_evento || ev.data || '').split('T')[0];
+    if (!dataISO) return false;
+    return dataISO >= hojeISO;
+  }).sort(function (a, b) {
+    return (a.data_evento || a.data || '') > (b.data_evento || b.data || '') ? 1 : -1;
+  });
+
+  var sec = document.getElementById('section-castracao');
+  if (ativos.length > 0 && sec) sec.style.display = 'block';
+
+  if (ativos.length === 0) {
+    container.innerHTML = '<p class="text-muted" style="width:100%;"><i class="bi bi-info-circle me-1"></i>Nenhum mutir\u00e3o ativo no momento.</p>';
+    return;
+  }
+
+  ativos.forEach(function (ev) {
+    var dataISO = (ev.data_evento || ev.data || '').split('T')[0];
+    var dataBR = fmtDate(dataISO);
+    var diaSem = '';
+    var partes = dataISO.split('-');
+    if (partes.length === 3) diaSem = diasSemana[new Date(+partes[0], +partes[1] - 1, +partes[2]).getDay()] || '+';
+    var limiteBR = ev.data_limite ? fmtDate(ev.data_limite) : '';
+    var local = ev.clinica || ev.local || '';
+    var endereco = ev.endereco || '';
+    var especie = (ev.especie_padrao || '');
+    var sexo = (ev.sexo_padrao || 'Ambos');
+    var periodo = (ev.periodo || '');
+
+    var badgeHtml = '';
+    if (especie.toLowerCase() === 'gato') badgeHtml += '<span class="badge" style="background:#a855f7;color:#fff;">Gatos</span>';
+    else if (especie.toLowerCase() === 'cachorro') badgeHtml += '<span class="badge" style="background:#f59e0b;color:#fff;">Cachorros</span>';
+    else badgeHtml += '<span class="badge" style="background:#10b981;color:#fff;">Gatos e Cachorros</span>';
+    if (sexo.toLowerCase() === 'macho' || sexo.toLowerCase() === 'f\u00eamea') badgeHtml += '<span class="badge" style="background:#0ea5e9;color:#fff;">' + esc(sexo) + '</span>';
+    if (periodo) badgeHtml += '<span class="badge" style="background:#f43f5e;color:#fff;">' + esc(periodo.charAt(0).toUpperCase() + periodo.slice(1).toLowerCase()) + '</span>';
+
+    var jsonEv = JSON.stringify({
+      id: ev.id || '',
+      data: dataBR,
+      local: local,
+      endereco: endereco,
+      vagas: ev.vagas || 0,
+      dataLimite: limiteBR,
+      especiePadrao: especie,
+      sexoPadrao: sexo,
+      periodo: periodo || 'Manh\u00e3'
+    }).replace(/'/g, "\\'");
+
+    var d = document.createElement('div');
+    d.className = 'mutirao-card';
+    d.innerHTML =
+      '<div class="mutirao-card-header">' +
+        '<div class="mutirao-data"><i class="bi bi-calendar-event"></i> ' + dataBR + '</div>' +
+        (diaSem ? '<div class="mutirao-dia-semana">' + diaSem + '</div>' : '') +
+      '</div>' +
+      '<div class="mutirao-card-body">' +
+        '<div class="mutirao-local"><i class="bi bi-geo-alt"></i> ' + esc(local) + '</div>' +
+        (endereco ? '<div class="mutirao-meta">' + esc(endereco) + '</div>' : '') +
+        '<div class="mutirao-meta"><i class="bi bi-people"></i> ' + (ev.vagas || 0) + ' vagas</div>' +
+        (limiteBR
+          ? '<div class="mutirao-meta"><i class="bi bi-clock"></i> Inscri\u00e7\u00f5es at\u00e9: <strong>' + limiteBR + '</strong></div>'
+          : '<div class="mutirao-meta"><i class="bi bi-info-circle"></i> Aguardando confirma\u00e7\u00e3o</div>') +
+        '<div class="mutirao-card-badges">' + badgeHtml + '</div>' +
+      '</div>' +
+      '<div class="mutirao-card-footer">' +
+        '<a class="btn btn-primary" href="pages/castracao_mutirao_form.html" onclick="event.preventDefault();sessionStorage.setItem(\'mutirao_evento\',\'' + jsonEv + '\');location.href=\'pages/castracao_mutirao_form.html\';"><i class="bi bi-pencil-square"></i> Inscrever-se</a>' +
+      '</div>';
+    container.appendChild(d);
   });
 }
 

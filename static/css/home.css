@@ -898,6 +898,119 @@
     overflow-y: auto;
 }
 
+/* Mutirão de Castração Carrossel */
+.mutirao-carrossel {
+    display: flex;
+    gap: 1.25rem;
+    overflow-x: auto;
+    padding: 1rem 0.5rem 1rem 0;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    align-items: stretch;
+}
+
+.mutirao-carrossel::-webkit-scrollbar {
+    height: 8px;
+}
+
+.mutirao-carrossel::-webkit-scrollbar-track {
+    background: var(--bg-alt);
+    border-radius: 4px;
+}
+
+.mutirao-carrossel::-webkit-scrollbar-thumb {
+    background: var(--brand-green);
+    border-radius: 4px;
+}
+
+.mutirao-card {
+    flex: 0 0 280px;
+    min-width: 280px;
+    max-width: 280px;
+    display: flex;
+    flex-direction: column;
+    background: var(--container-bg);
+    border-radius: 16px;
+    overflow: visible;
+    box-shadow: var(--container-shadow);
+    transition: all 0.3s ease;
+    position: relative;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.mutirao-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--brand-green), #10b981, var(--brand-teal));
+    border-radius: 16px 16px 0 0;
+}
+
+.mutirao-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+    border-color: var(--brand-green);
+}
+
+.mutirao-card-header {
+    background: linear-gradient(135deg, #047857 0%, #10b981 100%);
+    color: #fff;
+    padding: 1rem 1.25rem;
+    text-align: center;
+}
+
+.mutirao-card-header .mutirao-data {
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.mutirao-card-header .mutirao-dia-semana {
+    font-size: 0.8rem;
+    opacity: 0.9;
+}
+
+.mutirao-card-body {
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    flex: 1;
+}
+
+.mutirao-card-body .mutirao-local {
+    font-weight: 700;
+    color: var(--text-color);
+    font-size: 0.95rem;
+}
+
+.mutirao-card-body .mutirao-meta {
+    font-size: 0.82rem;
+    color: var(--muted-color);
+}
+
+.mutirao-card-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 4px;
+}
+
+.mutirao-card-footer {
+    padding: 0.75rem 1.25rem 1.25rem;
+    border-top: 1px solid var(--border-color);
+    background: var(--bg-alt);
+    border-radius: 0 0 16px 16px;
+}
+
+.mutirao-card-footer .btn {
+    width: 100%;
+    display: block;
+    text-align: center;
+}
+
 /* Hero Section Moderna */
 .hero-landing {
     background: linear-gradient(135deg, rgba(13, 148, 136, 0.9), rgba(14, 165, 233, 0.85));
