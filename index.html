@@ -185,7 +185,7 @@
   .btn-excluir-castracao:hover { background: rgb(185,28,28); }
   body.admin-mode .btn-excluir-castracao { display: inline-block; }
 
-  #section-eventos, #section-castracao, #section-pets, #section-voluntarios { display: none; }
+  #section-eventos, #section-castracao, #section-pets, #section-voluntarios { display: block; }
 
   .cookie-consent-banner {
     background: #0d9488;
@@ -314,8 +314,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (el) el.textContent = count;
     var card = el ? el.closest('.stat-card') : null;
     if (card) card.style.display = count > 0 ? '' : 'none';
-    var sec = document.getElementById(sectionId);
-    if (sec) sec.style.display = count > 0 ? 'block' : 'none';
   }
   function fetchCount(url, endpoint, sectionId, filtro) {
     apiFetch(url || '/' + endpoint)
@@ -329,15 +327,6 @@ document.addEventListener('DOMContentLoaded', function() {
   fetchCount('/voluntario', 'voluntario', 'section-voluntarios');
   fetchCount('/adocao', 'adocao');
   fetchCount('/adocao', 'adotado', null, function(a) { return (a.status || '').toLowerCase() === 'adotado'; });
-  (function() {
-    apiFetch('/adocao')
-      .then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
-      .then(function(data) {
-        var sec = document.getElementById('section-pets');
-        if (sec) sec.style.display = (Array.isArray(data) && data.length > 0) ? 'block' : 'none';
-      })
-      .catch(function() {});
-  })();
   fetchCount('/procura_se', 'procura_se');
   fetchCount('/parceria', 'parceria');
   fetchCount('/mutirao_pet', 'mutirao_pet', 'section-castracao');
@@ -383,14 +372,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   apiFetch('/eventos')
     .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-    .then(function(data) {
-      var eventosEl = document.getElementById('section-eventos');
-      if (data && Array.isArray(data) && data.length > 0) {
-        eventosEl.style.display = 'block';
-      } else {
-        eventosEl.style.display = 'none';
-      }
-    })
     .catch(function() {});
 });
 </script>

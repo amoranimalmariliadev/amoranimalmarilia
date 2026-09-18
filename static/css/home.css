@@ -1011,6 +1011,35 @@
     text-align: center;
 }
 
+/* Convite de Marketing - Seções Vazias */
+.section-empty-cta {
+    background: linear-gradient(135deg, var(--bg-alt) 0%, var(--container-bg) 100%);
+    border: 2px dashed var(--border-color);
+    border-radius: 16px;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.section-empty-cta h3 {
+    margin: 0.75rem 0 0.35rem;
+    color: var(--heading-color);
+}
+
+.section-empty-cta p {
+    color: var(--muted-color);
+    max-width: 560px;
+    margin: 0 auto 1.25rem;
+    line-height: 1.6;
+}
+
+.section-empty-cta .cta-botoes {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
 /* Hero Section Moderna */
 .hero-landing {
     background: linear-gradient(135deg, rgba(13, 148, 136, 0.9), rgba(14, 165, 233, 0.85));

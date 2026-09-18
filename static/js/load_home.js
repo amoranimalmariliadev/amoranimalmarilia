@@ -27,11 +27,20 @@ function renderEvents(events) {
   var container = document.querySelector('.events-grid');
   if (!container) return;
   container.innerHTML = '';
+  var INSTAGRAM_URL = 'https://www.instagram.com/grupoamoranimal/';
   if (!events.length) {
-    container.innerHTML = '<p class="text-center text-muted" style="grid-column:1/-1;">Nenhum evento cadastrado.</p>';
+    container.innerHTML =
+      '<div class="section-empty-cta" style="width:100%;">' +
+        '<i class="bi bi-calendar-heart" style="font-size:2.5rem;color:var(--brand-purple);"></i>' +
+        '<h3>Eventos em breve</h3>' +
+        '<p>Damos a largada de novos eventos em breve: feiras de ado\u00e7\u00e3o, bazares e mutir\u00f5es de castra\u00e7\u00e3o. Enquanto isso, acompanhe nosso Instagram e fique por dentro!</p>' +
+        '<div class="cta-botoes">' +
+          '<a class="btn btn-primary" href="pages/eventos.html"><i class="bi bi-calendar-event me-1"></i> Ver agenda de eventos</a>' +
+          '<a class="btn-evento-insta" href="' + INSTAGRAM_URL + '" target="_blank" rel="noopener noreferrer"><i class="bi bi-instagram"></i> Seguir no Instagram</a>' +
+        '</div>' +
+      '</div>';
     return;
   }
-  var INSTAGRAM_URL = 'https://www.instagram.com/grupoamoranimal/';
   var criadoEm = function (ev) {
     var t = ev.origem ? new Date(ev.origem).getTime() : NaN;
     if (isNaN(t)) t = ev.created_at ? new Date(ev.created_at).getTime() : NaN;
@@ -80,12 +89,14 @@ function renderCastracoes(castracoes) {
   var tbody = document.querySelector('.castracao-table table tbody');
   if (!tbody) return;
   tbody.innerHTML = '';
-  if (!castracoes.length) {
-    tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">Nenhum agendamento de castração.</td></tr>';
-    return;
-  }
   var secCastracao = document.getElementById('section-castracao');
   if (secCastracao) secCastracao.style.display = 'block';
+  if (!castracoes.length) {
+    tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">' +
+      '<i class="bi bi-info-circle me-1"></i>Nenhum agendamento no momento. ' +
+      '<a href="pages/castracao.html" class="btn btn-primary btn-sm" style="margin-left:6px;"><i class="bi bi-plus-circle me-1"></i>Fazer agendamento</a></td></tr>';
+    return;
+  }
   castracoes.forEach(function (c) {
     var ticketNum = c.ticket || '';
     var isAtendido = (c.status || '').toLowerCase() === 'atendido';
@@ -161,7 +172,16 @@ function renderMutiroes(eventos) {
   if (ativos.length > 0 && sec) sec.style.display = 'block';
 
   if (ativos.length === 0) {
-    container.innerHTML = '<p class="text-muted" style="width:100%;"><i class="bi bi-info-circle me-1"></i>Nenhum mutir\u00e3o ativo no momento.</p>';
+    container.innerHTML =
+      '<div class="section-empty-cta" style="width:100%;">' +
+        '<i class="bi bi-calendar-heart" style="font-size:2.5rem;color:var(--brand-green);"></i>' +
+        '<h3>Novas datas em breve</h3>' +
+        '<p>Nenhum mutir\u00e3o ativo no momento. Acompanhe nosso calend\u00e1rio \u2014 novas datas de castra\u00e7\u00e3o gratuita chegam em breve!</p>' +
+        '<div class="cta-botoes">' +
+          '<a class="btn btn-primary" href="pages/castracao_mutirao.html"><i class="bi bi-calendar-event me-1"></i> Ver calend\u00e1rio de mutir\u00f5es</a>' +
+          '<a class="button button-highlight" href="pages/castracao.html"><i class="bi bi-plus-circle me-1"></i> Novo Agendamento</a>' +
+        '</div>' +
+      '</div>';
     return;
   }
 
@@ -185,7 +205,7 @@ function renderMutiroes(eventos) {
     if (sexo.toLowerCase() === 'macho' || sexo.toLowerCase() === 'f\u00eamea') badgeHtml += '<span class="badge" style="background:#0ea5e9;color:#fff;">' + esc(sexo) + '</span>';
     if (periodo) badgeHtml += '<span class="badge" style="background:#f43f5e;color:#fff;">' + esc(periodo.charAt(0).toUpperCase() + periodo.slice(1).toLowerCase()) + '</span>';
 
-    var jsonEv = JSON.stringify({
+    var eventoData = {
       id: ev.id || '',
       data: dataBR,
       local: local,
@@ -195,7 +215,7 @@ function renderMutiroes(eventos) {
       especiePadrao: especie,
       sexoPadrao: sexo,
       periodo: periodo || 'Manh\u00e3'
-    }).replace(/'/g, "\\'");
+    };
 
     var d = document.createElement('div');
     d.className = 'mutirao-card';
@@ -212,10 +232,21 @@ function renderMutiroes(eventos) {
           ? '<div class="mutirao-meta"><i class="bi bi-clock"></i> Inscri\u00e7\u00f5es at\u00e9: <strong>' + limiteBR + '</strong></div>'
           : '<div class="mutirao-meta"><i class="bi bi-info-circle"></i> Aguardando confirma\u00e7\u00e3o</div>') +
         '<div class="mutirao-card-badges">' + badgeHtml + '</div>' +
-      '</div>' +
-      '<div class="mutirao-card-footer">' +
-        '<a class="btn btn-primary" href="pages/castracao_mutirao_form.html" onclick="event.preventDefault();sessionStorage.setItem(\'mutirao_evento\',\'' + jsonEv + '\');location.href=\'pages/castracao_mutirao_form.html\';"><i class="bi bi-pencil-square"></i> Inscrever-se</a>' +
       '</div>';
+
+    var footer = document.createElement('div');
+    footer.className = 'mutirao-card-footer';
+    var link = document.createElement('a');
+    link.className = 'btn btn-primary';
+    link.href = 'pages/castracao_mutirao_form.html';
+    link.innerHTML = '<i class="bi bi-pencil-square"></i> Inscrever-se';
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+      sessionStorage.setItem('mutirao_evento', JSON.stringify(eventoData));
+      location.href = 'pages/castracao_mutirao_form.html';
+    });
+    footer.appendChild(link);
+    d.appendChild(footer);
     container.appendChild(d);
   });
 }
@@ -225,7 +256,23 @@ function renderAnimais(animais) {
   if (!container) return;
   container.innerHTML = '';
   if (!animais.length) {
-    container.innerHTML = '<p class="text-center text-muted" style="width:100%;">Nenhum pet dispon\u00edvel para ado\u00e7\u00e3o no momento.</p>';
+    var cta = document.createElement('div');
+    cta.className = 'section-empty-cta';
+    cta.style.width = '100%';
+    cta.innerHTML =
+      '<i class="bi bi-paw" style="font-size:2.5rem;color:#dc2626;"></i>' +
+      '<h3>Nossos peludos te esperam</h3>' +
+      '<p>Nenhum pet dispon\u00edvel para ado\u00e7\u00e3o no momento. Se voc\u00ea tem um pet para doar, cadastre-o; e se quer adotar, fique de olho aqui!</p>' +
+      '<div class="cta-botoes">' +
+        '<a class="btn btn-primary" href="pages/adocao.html"><i class="bi bi-house-heart me-1"></i> Quero Adotar</a>' +
+        '<a class="btn btn-outline" href="pages/adocao.html#cadastro-pet"><i class="bi bi-plus-circle me-1"></i> Cadastrar Pet</a>' +
+      '</div>';
+    var wrapper = container.parentNode;
+    if (wrapper && wrapper.parentNode) {
+      wrapper.parentNode.replaceChild(cta, wrapper);
+    } else {
+      container.appendChild(cta);
+    }
     return;
   }
   function item(pet) {
@@ -282,7 +329,16 @@ function renderVoluntarios(voluntarios) {
   if (!container) return;
   container.innerHTML = '';
   if (!voluntarios.length) {
-    container.innerHTML = '<p class="text-center text-muted" style="width:100%;">Nenhum volunt\u00e1rio cadastrado.</p>';
+    container.innerHTML =
+      '<div class="section-empty-cta" style="width:100%;">' +
+        '<i class="bi bi-people" style="font-size:2.5rem;color:var(--brand-teal);"></i>' +
+        '<h3>Fa\u00e7a parte do nosso time</h3>' +
+        '<p>Nosso time de volunt\u00e1rios est\u00e1 crescendo! Junte-se a n\u00f3s resgatando, cuidando e dando visibilidade aos animais \u2014 ou seja um parceiro da causa.</p>' +
+        '<div class="cta-botoes">' +
+          '<a class="btn btn-primary" href="pages/voluntario.html"><i class="bi bi-people-fill me-1"></i> Seja Volunt\u00e1rio</a>' +
+          '<a class="button btn" style="background:var(--brand-coral);" href="pages/parceria.html"><i class="bi bi-hand-thumbs-up me-1"></i> Seja um Parceiro</a>' +
+        '</div>' +
+      '</div>';
     return;
   }
   var cores = ['var(--brand-teal)', 'var(--brand-coral)', 'var(--brand-purple)', 'var(--brand-blue)', 'var(--brand-green)', 'var(--brand-yellow)'];
