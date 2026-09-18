@@ -99,7 +99,7 @@
               <label for="f_cep">CEP *</label>
               <div style="display:flex;gap:0.5rem;">
                 <input type="text" id="f_cep" placeholder="00000-000" required style="flex:1;">
-                <button type="button" onclick="buscarCep()" class="btn btn-primary btn-sm" style="white-space:nowrap;"><i class="bi bi-search"></i></button>
+                <button type="button" id="f_btn_cep" onclick="buscarCep()" class="btn btn-primary btn-sm" style="white-space:nowrap;"><i class="bi bi-search"></i></button>
               </div>
             </div>
             <div class="form-group">
@@ -403,19 +403,43 @@ function aplicarRestricoesMutirao() {
   atualizarNotaRestricoes();
 }
 
-function buscarCep() {
+var ultimoCepBuscado = '';
+
+function setCepCarregando(carregando) {
+  var btn = document.getElementById('f_btn_cep');
+  if (!btn) return;
+  btn.disabled = carregando;
+  btn.innerHTML = carregando
+    ? '<span class="spinner-border spinner-border-sm" role="status"></span>'
+    : '<i class="bi bi-search"></i>';
+}
+
+function buscarCep(silencioso) {
   var cep = document.getElementById('f_cep').value.replace(/\D/g, '');
-  if (cep.length !== 8) { alert('CEP inválido. Digite 8 dígitos.'); return; }
+  if (cep.length !== 8) { if (!silencioso) alert('CEP inválido. Digite 8 dígitos.'); return; }
+  if (cep === ultimoCepBuscado) return;
+
+  setCepCarregando(true);
   fetch('https://viacep.com.br/ws/' + cep + '/json/')
     .then(function(r) { return r.json(); })
     .then(function(data) {
-      if (data.erro) { alert('CEP não encontrado.'); return; }
+      if (data.erro) {
+        ultimoCepBuscado = '';
+        if (!silencioso) alert('CEP não encontrado.');
+        return;
+      }
+      ultimoCepBuscado = cep;
       document.getElementById('f_endereco').value = data.logradouro || '';
       document.getElementById('f_bairro').value = data.bairro || '';
       document.getElementById('f_cidade').value = data.localidade || '';
       document.getElementById('f_estado').value = data.uf || '';
+      document.getElementById('f_numero').focus();
     })
-    .catch(function() { alert('Erro ao buscar CEP.'); });
+    .catch(function() {
+      ultimoCepBuscado = '';
+      if (!silencioso) alert('Erro ao buscar CEP.');
+    })
+    .finally(function() { setCepCarregando(false); });
 }
 
 document.getElementById('f_cep').addEventListener('keypress', function(e) {
@@ -429,6 +453,9 @@ document.getElementById('f_cep').addEventListener('input', function(e) {
   if (v.length > 0) f = v.slice(0, 5);
   if (v.length > 5) f += '-' + v.slice(5, 8);
   e.target.value = f;
+  if (v.length === 8) {
+    buscarCep(true);
+  }
 });
 
 document.getElementById('f_cpf').addEventListener('input', function(e) {
