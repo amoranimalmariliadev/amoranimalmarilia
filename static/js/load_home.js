@@ -71,11 +71,12 @@ function renderEvents(events) {
 function mergeCastracoes(castracoes) {
   var all = [];
   if (Array.isArray(castracoes)) castracoes.forEach(function (c) {
-    if ((c.tipo || '').toLowerCase() === 'mutirao') return;
+    var tipo = (c.tipo || '').toLowerCase();
+    var data = (tipo === 'mutirao') ? (c.agenda || c.origem || c.created_at) : (c.origem || c.created_at);
     all.push({ _origem: 'castracao', _raw: c, id: c.id,
       ticket: c.ticket, pet_nome: c.nome_pet || c.pet_nome, tutor_nome: c.nome || c.tutor_nome,
       especie: c.especie || c.pet_especie, sexo: c.sexo || c.pet_sexo, porte: c.porte || c.pet_porte,
-      idade: c.idade || c.pet_idade, clinica: c.clinica, data: c.origem || c.created_at,
+      idade: c.idade || c.pet_idade, clinica: c.clinica, data: data,
       status: c.status, contato: c.contato || c.tutor_telefone, tipo: c.tipo || '',
       cpf: c.tutor_cpf || c.cpf || '', endereco: c.tutor_endereco || c.endereco || '', numero: c.tutor_numero || c.numero || '',
       bairro: c.tutor_bairro || c.bairro || '', cidade: c.tutor_cidade || c.cidade || '', estado: c.tutor_estado || c.estado || '',
@@ -130,8 +131,13 @@ function renderCastracoes(castracoes) {
       : (c._origem === 'castracao'
         ? '<button class="btn-status-atender" onclick="atenderCastracao(this)" data-id="' + c.id + '"><i class="bi bi-check-lg"></i> Atender</button>'
         : '<button class="btn-status-atendido" disabled style="opacity:0.5;"><i class="bi bi-check-circle-fill"></i> ' + esc(c.status) + '</button>');
+    var tipoLabel = '';
+    var tipoNorm = (c.tipo || '').toLowerCase();
+    if (tipoNorm === 'mutirao') tipoLabel = '<span class="badge" style="background:#10b981;color:#fff;"><i class="bi bi-people me-1"></i>Mutir\u00e3o</span>';
+    else if (tipoNorm === 'baixo_custo') tipoLabel = '<span class="badge" style="background:#0ea5e9;color:#fff;"><i class="bi bi-tag me-1"></i>Baixo Custo</span>';
+    else if (tipoNorm === 'pets_rua') tipoLabel = '<span class="badge" style="background:#f59e0b;color:#fff;"><i class="bi bi-paw me-1"></i>Pet de Rua</span>';
     tr.innerHTML =
-      '<td data-label="Ticket"><strong>' + esc(ticketNum) + '</strong></td>' +
+      '<td data-label="Ticket"><strong>' + esc(ticketNum) + '</strong>' + (tipoLabel ? '<br>' + tipoLabel : '') + '</td>' +
       '<td data-label="Pet">' + esc(c.pet_nome) + '</td>' +
       '<td data-label="Respons\u00e1vel">' + esc(c.tutor_nome) + '</td>' +
       '<td data-label="Esp\u00e9cie">' + badgeCor + '</td>' +
