@@ -11,8 +11,14 @@ document.addEventListener('DOMContentLoaded', function () {
     .then(function (data) { renderCastracoes(mergeCastracoes(data || [])); });
   apiFetch('/calendario_mutirao')
     .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-    .then(function (data) { if (data && Array.isArray(data)) renderMutiroes(data); })
-    .catch(function () {});
+    .catch(function () { return []; })
+    .then(function (dados) {
+      var eventos = Array.isArray(dados) ? dados : [];
+      return apiFetch('/castracao')
+        .then(function (r) { return r.ok ? r.json() : []; })
+        .catch(function () { return []; })
+        .then(function (inscricoes) { renderMutiroes(eventos, Array.isArray(inscricoes) ? inscricoes : []); });
+    });
   apiFetch('/adocao')
     .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
     .then(function (data) { if (data && Array.isArray(data)) renderAnimais(data); })
@@ -162,7 +168,7 @@ function renderCastracoes(castracoes) {
   });
 }
 
-function renderMutiroes(eventos) {
+function renderMutiroes(eventos, inscricoes) {
   var container = document.getElementById('mutiroesGrid');
   if (!container) return;
   container.innerHTML = '';
@@ -219,6 +225,21 @@ function renderMutiroes(eventos) {
     if (sexo.toLowerCase() === 'macho' || sexo.toLowerCase() === 'f\u00eamea') badgeHtml += '<span class="badge" style="background:#0ea5e9;color:#fff;">' + esc(sexo) + '</span>';
     if (periodo) badgeHtml += '<span class="badge" style="background:#f43f5e;color:#fff;">' + esc(periodo.charAt(0).toUpperCase() + periodo.slice(1).toLowerCase()) + '</span>';
 
+    var usadas = 0;
+    if (inscricoes && inscricoes.length) {
+      inscricoes.forEach(function (ins) {
+        if ((ins.tipo || '').toLowerCase() !== 'mutirao') return;
+        var mesmoEvento =
+          (ev.id != null && ev.id !== '' && ins.calendario_mutirao_id != null && ins.calendario_mutirao_id !== '' &&
+            Number(ins.calendario_mutirao_id) === Number(ev.id)) ||
+          ((ins.calendario_mutirao_id == null || ins.calendario_mutirao_id === '') && ins.agenda === dataBR);
+        if (mesmoEvento) usadas++;
+      });
+    }
+    var totalVagas = ev.vagas || 30;
+    var restantes = Math.max(0, totalVagas - usadas);
+    var esgotado = restantes <= 0;
+
     var eventoData = {
       id: ev.id || '',
       data: dataBR,
@@ -241,25 +262,33 @@ function renderMutiroes(eventos) {
       '<div class="mutirao-card-body">' +
         '<div class="mutirao-local"><i class="bi bi-geo-alt"></i> ' + esc(local) + '</div>' +
         (endereco ? '<div class="mutirao-meta">' + esc(endereco) + '</div>' : '') +
-        '<div class="mutirao-meta"><i class="bi bi-people"></i> ' + (ev.vagas || 0) + ' vagas</div>' +
+        '<div class="mutirao-meta"><i class="bi bi-people"></i> ' +
+          (esgotado
+            ? '<span style="color:#dc2626;font-weight:700;"><i class="bi bi-x-circle-fill me-1"></i>Vagas esgotadas</span>'
+            : restantes + ' vaga' + (restantes === 1 ? '' : 's') + ' restante' + (restantes === 1 ? '' : 's')) +
+          '</div>' +
         (limiteBR
           ? '<div class="mutirao-meta"><i class="bi bi-clock"></i> Inscri\u00e7\u00f5es at\u00e9: <strong>' + limiteBR + '</strong></div>'
           : '<div class="mutirao-meta"><i class="bi bi-info-circle"></i> Aguardando confirma\u00e7\u00e3o</div>') +
-        '<div class="mutirao-card-badges">' + badgeHtml + '</div>' +
+        '<div class="mutirao-card-badges">' + (esgotado ? '<span class="badge badge-danger"><i class="bi bi-x-circle-fill me-1"></i>Esgotado</span>' : '') + badgeHtml + '</div>' +
       '</div>';
 
     var footer = document.createElement('div');
     footer.className = 'mutirao-card-footer';
-    var link = document.createElement('a');
-    link.className = 'btn btn-primary';
-    link.href = 'pages/castracao_mutirao_form.html';
-    link.innerHTML = '<i class="bi bi-pencil-square"></i> Inscrever-se';
-    link.addEventListener('click', function (e) {
-      e.preventDefault();
-      sessionStorage.setItem('mutirao_evento', JSON.stringify(eventoData));
-      location.href = 'pages/castracao_mutirao_form.html';
-    });
-    footer.appendChild(link);
+    if (esgotado) {
+      footer.innerHTML = '<button type="button" class="btn btn-disabled" disabled><i class="bi bi-x-circle me-1"></i> Vagas esgotadas</button>';
+    } else {
+      var link = document.createElement('a');
+      link.className = 'btn btn-primary';
+      link.href = 'pages/castracao_mutirao_form.html';
+      link.innerHTML = '<i class="bi bi-pencil-square"></i> Inscrever-se';
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+        sessionStorage.setItem('mutirao_evento', JSON.stringify(eventoData));
+        location.href = 'pages/castracao_mutirao_form.html';
+      });
+      footer.appendChild(link);
+    }
     d.appendChild(footer);
     container.appendChild(d);
   });
