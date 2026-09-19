@@ -260,7 +260,9 @@ function renderizarEventos() {
     } else {
       badgeHtml = '<span class="badge badge-success"><i class="bi bi-people-fill me-1"></i>' + (ev.vagas || 0) + ' vagas disponíveis</span>';
       botoesHtml = '<a href="castracao_mutirao_form.html" onclick="event.preventDefault();sessionStorage.setItem(\'mutirao_evento\',JSON.stringify({id:\'' + (ev._id || '') + '\',data:\'' + ev.data + '\',local:\'' + ev.local.replace(/'/g,"\\'") + '\',endereco:\'' + ev.endereco.replace(/'/g,"\\'") + '\',vagas:' + ev.vagas + ',dataLimite:\'' + ev.dataLimite + '\',especiePadrao:\'' + ev.especiePadrao + '\',sexoPadrao:\'' + (ev.sexoPadrao || 'Ambos') + '\',periodo:\'' + (ev.periodo || 'Manhã') + '\'}));location.href=this.href;" class="btn btn-primary w-100"><i class="bi bi-pencil-square me-2"></i>Inscrever-se</a>';
-      botoesHtml += '<a href="../relatorio/castracao.html" onclick="event.preventDefault();sessionStorage.setItem(\'relatorio_evento\',JSON.stringify({data:\'' + ev.data + '\',local:\'' + ev.local.replace(/'/g,"\\'") + '\',id:' + (ev._id || 'null') + '}));location.href=this.href;" class="btn btn-secondary btn-sm w-100 mt-1"><i class="bi bi-bar-chart-steps me-1"></i>Ver Inscrições</a>';
+      if (isAdmin) {
+        botoesHtml += '<a href="../relatorio/castracao.html" onclick="event.preventDefault();sessionStorage.setItem(\'relatorio_evento\',JSON.stringify({data:\'' + ev.data + '\',local:\'' + ev.local.replace(/'/g,"\\'") + '\',id:' + (ev._id || 'null') + '}));location.href=this.href;" class="btn btn-secondary btn-sm w-100 mt-1"><i class="bi bi-bar-chart-steps me-1"></i>Ver Inscrições</a>';
+      }
     }
 
     if (isAdmin) {

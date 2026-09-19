@@ -1405,9 +1405,177 @@ body:has(#toggleAtendidos:checked) .status-atendido { display: table-row; }
 
 @media (max-width: 480px) {
     .events-grid > .event-card-hover { flex: 0 0 calc(100vw - 3rem); }
-    .voluntario-card { flex: 0 0 calc(100vw - 3rem); width: calc(100vw - 3rem); }
+    .voluntario-card { flex: 0 0 calc(100vw - 3rem) !important; width: calc(100vw - 3rem) !important; }
     .parceria-card { flex: 0 0 calc(100vw - 3rem); min-width: calc(100vw - 3rem); }
     .procura-card { flex: 0 0 calc(100vw - 3rem); min-width: calc(100vw - 3rem); }
+    .mutirao-card { flex: 0 0 calc(100vw - 3rem); min-width: calc(100vw - 3rem); }
+    .pet-carousel-item { flex: 0 0 calc(100vw - 2.5rem); width: calc(100vw - 2.5rem); }
+    .event-card-hover { min-height: 280px; }
+    .cookie-consent-banner {
+        left: 10px !important;
+        transform: none !important;
+        width: calc(100% - 20px) !important;
+        bottom: 10px !important;
+        padding: 12px 14px !important;
+    }
+    .cookie-consent-banner .btn-cookie { width: 100%; }
+    .section-empty-cta { padding: 2rem 1.25rem; }
+    .section-empty-cta .cta-botoes .btn,
+    .section-empty-cta .cta-botoes a { width: 100%; }
+}
+
+/* ==========================================================================
+   Melhorias Mobile - Landing Page
+   ========================================================================== */
+
+/* Ajuste do grid "Nossa Missão" (usa estilo inline 1fr 1fr) */
+@media (max-width: 768px) {
+    .landing-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.5rem;
+    }
+
+    .landing-section {
+        padding: 2.5rem 0;
+    }
+
+    .landing-section h2 {
+        font-size: 1.45rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Hero */
+    .hero-landing {
+        padding: 3rem 1.25rem;
+    }
+    .hero-landing h1 {
+        font-size: 1.8rem;
+        line-height: 1.25;
+    }
+    .hero-landing p {
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+    .hero-landing .btn {
+        display: flex;
+        width: min(100%, 320px);
+        margin: 0 auto;
+        padding: 0.9rem 1.25rem;
+        font-size: 1rem;
+    }
+    .hero-landing .btn + .btn {
+        margin: 0.75rem auto 0;
+        margin-left: 0;
+    }
+
+    /* Stats */
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin: 1.5rem 0;
+    }
+    .stat-card {
+        padding: 18px 8px;
+        border-radius: 12px;
+    }
+    .stat-card-icon {
+        font-size: 1.75rem;
+        margin-bottom: 0.5rem;
+    }
+    .stat-card-number {
+        font-size: 1.6rem;
+    }
+    .stat-card-label {
+        font-size: 0.75rem;
+        margin-top: 0.35rem;
+    }
+    .stat-card-year-nav {
+        gap: 4px;
+    }
+    #card-mutirao_pet {
+        grid-column: 1 / -1;
+    }
+
+    /* Navegação por palavras-chave */
+    .quicknav-bar {
+        gap: 0.4rem;
+        scrollbar-width: none;
+    }
+    .quicknav-bar::-webkit-scrollbar {
+        display: none;
+    }
+    .quicknav-bar a {
+        padding: 7px 12px;
+        font-size: 0.8rem;
+    }
+
+    /* Carrosséis - swipe com scroll-snap e sem scrollbar */
+    .events-grid,
+    .mutirao-carrossel,
+    .voluntarios-carrossel,
+    .parcerias-grid,
+    .procura-grid {
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scroll-padding-left: 1rem;
+        scrollbar-width: none;
+    }
+    .events-grid::-webkit-scrollbar,
+    .mutirao-carrossel::-webkit-scrollbar,
+    .voluntarios-carrossel::-webkit-scrollbar,
+    .parcerias-grid::-webkit-scrollbar,
+    .procura-grid::-webkit-scrollbar {
+        display: none;
+    }
+    .event-card-hover,
+    .mutirao-card,
+    .voluntario-card,
+    .parceria-card,
+    .procura-card {
+        scroll-snap-align: center;
+    }
+    .voluntario-card {
+        flex: 0 0 calc(100vw - 3rem) !important;
+        width: calc(100vw - 3rem) !important;
+        max-width: 320px;
+    }
+    .mutirao-card {
+        flex: 0 0 85vw;
+        min-width: 85vw;
+        max-width: 320px;
+    }
+
+    /* Pets - troca marquee automático por swipe */
+    .pet-carousel {
+        animation: none;
+        width: auto;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+        scroll-padding-left: 1rem;
+        padding-bottom: 10px;
+    }
+    .pet-carousel::-webkit-scrollbar { height: 6px; }
+    .pet-carousel-item {
+        scroll-snap-align: center;
+        flex: 0 0 80vw;
+        width: 80vw;
+    }
+    .pet-carousel-item:hover {
+        transform: none;
+        box-shadow: var(--container-shadow);
+    }
+
+    /* Compensar header + quicknav fixos ao navegar pelos links */
+    section[id] {
+        scroll-margin-top: 165px;
+    }
+}
+
+@media (min-width: 769px) {
+    section[id] {
+        scroll-margin-top: 150px;
+    }
 }
 
 /* Animations */
