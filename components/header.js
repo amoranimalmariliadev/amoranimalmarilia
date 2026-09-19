@@ -7,33 +7,18 @@
   var isLanding = _file === '' || _file === 'index.html';
 
   s.insertAdjacentHTML('afterend',
-    /* --- Hidden toggles (CSS-only) --- */
-    '<input type="checkbox" id="search-panel-toggle" class="css-toggle-checkbox">' +
+/* --- Hidden toggles (CSS-only) --- */
     '<input type="checkbox" id="contrast-toggle" class="css-toggle-checkbox">' +
-    '<input type="checkbox" id="mobile-menu-toggle" class="css-toggle-checkbox">' +
+    (isLanding ? '' : '<input type="checkbox" id="mobile-menu-toggle" class="css-toggle-checkbox">') +
 
     /* --- Site Header --- */
     '<header class="site-header" id="site-header">' +
     '  <div class="header-inner">' +
 
-    /* Logo + Name */
-    '    <a href="' + ROOT + '/index.html" class="header-logo">' +
+    /* Logo (centralizada) */
+    '    <a href="' + ROOT + '/index.html" class="header-logo" title="ONG Amor Animal Marilia">' +
     '      <img src="' + ROOT + '/static/css/imagem/ong.jpg" alt="ONG Amor Animal Marilia">' +
-    '      <span class="header-logo-text">ONG Amor Animal Marilia</span>' +
     '    </a>' +
-
-    /* Search centered */
-    '    <div class="header-search-wrap" id="header-search-wrap">' +
-    '      <div class="header-search-bar" id="header-search-bar">' +
-    '        <div class="search-bar-row">' +
-    '          <div class="search-inner">' +
-    '            <input type="text" id="site-search" class="search-input" autocomplete="off" aria-label="Pesquisar" role="combobox" aria-expanded="false" aria-controls="search-results" placeholder="Pesquisar em todo o site...">' +
-    '            <i class="bi bi-search search-icon"></i>' +
-    '            <button type="button" id="search-clear" class="search-clear-btn" aria-label="Limpar pesquisa" style="display:none;position:absolute;right:36px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted-color);font-size:0.9rem;"><i class="bi bi-x-lg"></i></button>' +
-    '          </div>' +
-    '        </div>' +
-    '      </div>' +
-    '    </div>' +
 
     /* Actions */
     '    <div class="header-actions">' +
@@ -62,17 +47,6 @@
     '  </div>' +
     '</header>' +
 
-    /* --- Search Results Section --- */
-    '<div class="search-results-section" id="search-results-section" style="display:none;">' +
-    '  <div class="search-results-section-inner">' +
-    '    <div class="search-results-header">' +
-    '      <span id="search-results-count"></span>' +
-    '      <button type="button" class="search-results-close" id="search-results-close" aria-label="Fechar resultados"><i class="bi bi-x-lg"></i></button>' +
-    '    </div>' +
-    '    <div id="search-results" class="search-results-list" role="listbox"></div>' +
-    '  </div>' +
-    '</div>' +
-
     /* --- Help Section (fixed on page) --- */
     '<section class="help-section" id="help-section">' +
     '  <div class="help-section-inner">' +
@@ -95,16 +69,6 @@
     '    </div>' +
     '  </div>' +
     '</section>' +
-
-    /* --- Search Panel (mobile bottom sheet) --- */
-    '<label for="search-panel-toggle" id="search-overlay" class="search-overlay"></label>' +
-    '<div id="search-panel" class="search-panel">' +
-    '  <div class="search-panel-header">' +
-    '    <div class="search-panel-count" id="search-panel-count">Resultados da busca</div>' +
-    '    <label for="search-panel-toggle" class="search-panel-close" aria-label="Fechar">&times;</label>' +
-    '  </div>' +
-    '  <div class="search-panel-results" id="search-panel-results" role="listbox"></div>' +
-    '</div>' +
 
     /* --- Mobile Menu Overlay --- */
     '<div class="mobile-menu-overlay">' +

@@ -2588,6 +2588,8 @@ body.high-contrast .news-carousel-dots .dot.active {
 .header-inner {
   display: flex;
   align-items: center;
+  justify-content: center;
+  position: relative;
   gap: 16px;
   max-width: 1200px;
   margin: 0 auto;
@@ -2596,6 +2598,16 @@ body.high-contrast .news-carousel-dots .dot.active {
 }
 .site-header.scrolled .header-inner {
   padding: 6px 20px;
+}
+
+.header-actions {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 /* --- Logo --- */
@@ -3030,6 +3042,8 @@ body.high-contrast .news-carousel-dots .dot.active {
 
   .header-actions {
     order: 2;
+    position: static;
+    transform: none;
     display: flex;
     align-items: center;
     justify-content: center;
