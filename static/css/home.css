@@ -1006,9 +1006,14 @@
 }
 
 .mutirao-card-footer .btn {
-    width: 100%;
-    display: block;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 70%;
+    max-width: 200px;
+    margin: 0 auto;
+    padding: 10px 16px;
+    font-size: 0.9rem;
 }
 
 /* Convite de Marketing - Seções Vazias */
