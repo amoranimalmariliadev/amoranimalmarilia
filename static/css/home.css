@@ -1393,7 +1393,7 @@ body:has(#toggleAtendidos:checked) .status-atendido { display: table-row; }
     .castracao-grid { grid-template-columns: 1fr; }
     .stats-grid { grid-template-columns: repeat(2, 1fr); }
     .agendamentos-item { grid-template-columns: 1fr; gap: 0.5rem; }
-    .events-grid > .event-card-hover { flex: 0 0 85vw; }
+    .events-grid > .event-card-hover { flex: 0 0 min(320px, 86vw); }
     .voluntario-card { flex: 0 0 85vw; width: 85vw; max-width: 320px; }
     .parceria-card { flex: 0 0 85vw; min-width: 85vw; max-width: 320px; }
     .procura-card { flex: 0 0 85vw; min-width: 85vw; max-width: 320px; }
@@ -1404,12 +1404,12 @@ body:has(#toggleAtendidos:checked) .status-atendido { display: table-row; }
 }
 
 @media (max-width: 480px) {
-    .events-grid > .event-card-hover { flex: 0 0 calc(100vw - 3rem); }
-    .voluntario-card { flex: 0 0 calc(100vw - 3rem) !important; width: calc(100vw - 3rem) !important; }
-    .parceria-card { flex: 0 0 calc(100vw - 3rem); min-width: calc(100vw - 3rem); }
-    .procura-card { flex: 0 0 calc(100vw - 3rem); min-width: calc(100vw - 3rem); }
-    .mutirao-card { flex: 0 0 calc(100vw - 3rem); min-width: calc(100vw - 3rem); }
-    .pet-carousel-item { flex: 0 0 calc(100vw - 2.5rem); width: calc(100vw - 2.5rem); }
+    .events-grid > .event-card-hover { flex: 0 0 min(320px, 86vw) !important; }
+    .voluntario-card { flex: 0 0 min(320px, 86vw) !important; width: min(320px, 86vw) !important; }
+    .parceria-card { flex: 0 0 min(320px, 86vw); min-width: min(320px, 86vw); }
+    .procura-card { flex: 0 0 min(320px, 86vw); min-width: min(320px, 86vw); }
+    .mutirao-card { flex: 0 0 min(320px, 86vw); min-width: min(320px, 86vw); }
+    .pet-carousel-item { flex: 0 0 min(320px, 86vw); width: min(320px, 86vw); }
     .event-card-hover { min-height: 280px; }
     .cookie-consent-banner {
         left: 10px !important;
@@ -1535,14 +1535,22 @@ body:has(#toggleAtendidos:checked) .status-atendido { display: table-row; }
         scroll-snap-align: center;
     }
     .voluntario-card {
-        flex: 0 0 calc(100vw - 3rem) !important;
-        width: calc(100vw - 3rem) !important;
-        max-width: 320px;
+        flex: 0 0 min(320px, 86vw) !important;
+        width: min(320px, 86vw) !important;
     }
     .mutirao-card {
-        flex: 0 0 85vw;
-        min-width: 85vw;
-        max-width: 320px;
+        flex: 0 0 min(320px, 86vw);
+        min-width: min(320px, 86vw);
+    }
+
+    /* Garante scroll horizontal (overflow-x) em todos os blocos de cards */
+    .events-grid,
+    .mutirao-carrossel,
+    .voluntarios-carrossel,
+    .parcerias-grid,
+    .procura-grid,
+    .pet-carousel {
+        overflow-x: auto;
     }
 
     /* Pets - troca marquee automático por swipe */
@@ -1558,8 +1566,8 @@ body:has(#toggleAtendidos:checked) .status-atendido { display: table-row; }
     .pet-carousel::-webkit-scrollbar { height: 6px; }
     .pet-carousel-item {
         scroll-snap-align: center;
-        flex: 0 0 80vw;
-        width: 80vw;
+        flex: 0 0 min(320px, 86vw);
+        width: min(320px, 86vw);
     }
     .pet-carousel-item:hover {
         transform: none;
