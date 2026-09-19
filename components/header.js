@@ -2,6 +2,9 @@
   var s = document.currentScript;
   if (!s) return;
   var ROOT = window.ROOT || '.';
+  var _path = (window.location.pathname || '/').replace(/\/+$/, '');
+  var _file = _path.split('/').pop();
+  var isLanding = _file === '' || _file === 'index.html';
 
   s.insertAdjacentHTML('afterend',
     /* --- Hidden toggles (CSS-only) --- */
@@ -122,6 +125,15 @@
     '  </div>' +
     '</div>'
   );
+
+  if (isLanding) {
+    var _mmenu = document.getElementById('mobile-menu-toggle');
+    if (_mmenu && _mmenu.parentNode) _mmenu.parentNode.removeChild(_mmenu);
+    var _mburger = document.querySelector('.header-hamburger');
+    if (_mburger && _mburger.parentNode) _mburger.parentNode.removeChild(_mburger);
+    var _moverlay = document.querySelector('.mobile-menu-overlay');
+    if (_moverlay && _moverlay.parentNode) _moverlay.parentNode.removeChild(_moverlay);
+  }
 
   /* --- Search Logic --- */
   var PAGES = [
