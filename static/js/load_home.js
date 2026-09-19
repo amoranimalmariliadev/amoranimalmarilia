@@ -21,6 +21,14 @@ document.addEventListener('DOMContentLoaded', function () {
     .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
     .then(function (data) { if (data && Array.isArray(data)) renderVoluntarios(data); })
     .catch(function () {});
+  apiFetch('/parceria')
+    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function (data) { if (data && Array.isArray(data)) renderParcerias(data); })
+    .catch(function () {});
+  apiFetch('/procura_se')
+    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function (data) { if (data && Array.isArray(data)) renderProcuraSe(data); })
+    .catch(function () {});
 });
 
 function renderEvents(events) {
@@ -360,6 +368,72 @@ function renderVoluntarios(voluntarios) {
         '<div style="font-weight:bold;">' + esc(v.nome) + '</div>' +
         '<div style="font-size:0.85rem;color:var(--muted-color);">' + esc(v.localidade || v.habilidade || '') + '</div>' +
         '<div style="font-size:0.8rem;font-style:italic;margin-top:8px;">"' + esc(v.mensagem) + '"</div>' +
+      '</div>';
+    container.appendChild(card);
+  });
+}
+
+function renderParcerias(parcerias) {
+  var container = document.getElementById('parceriasGrid');
+  if (!container) return;
+  container.innerHTML = '';
+  if (!parcerias.length) {
+    container.innerHTML =
+      '<div class="section-empty-cta" style="flex:1 0 100%;width:100%;">' +
+        '<i class="bi bi-handshake" style="font-size:2.5rem;color:var(--brand-teal);"></i>' +
+        '<h3>Fa\u00e7a parte das nossas parcerias</h3>' +
+        '<p>Sua empresa pode transformar vidas! Apoie resgates, castra\u00e7\u00f5es e ado\u00e7\u00f5es da ONG e ganhe visibilidade com uma causa que valoriza seu neg\u00f3cio.</p>' +
+        '<div class="cta-botoes">' +
+          '<a class="btn btn-primary" href="pages/parceria.html#form-parceria"><i class="bi bi-hand-thumbs-up me-1"></i> Propor Parceria</a>' +
+        '</div>' +
+      '</div>';
+    return;
+  }
+  parcerias.forEach(function (p) {
+    var card = document.createElement('div');
+    card.className = 'parceria-card';
+    card.innerHTML =
+      '<div class="parceria-card-icon"><i class="bi bi-handshake"></i></div>' +
+      '<div class="parceria-card-nome">' + esc(p.empresa) + '</div>' +
+      (p.localidade ? '<div class="parceria-card-local"><i class="bi bi-geo-alt"></i> ' + esc(p.localidade) + '</div>' : '') +
+      (p.proposta ? '<div class="parceria-card-proposta">' + esc(p.proposta) + '</div>' : '');
+    container.appendChild(card);
+  });
+}
+
+function renderProcuraSe(animais) {
+  var container = document.getElementById('procuraGrid');
+  if (!container) return;
+  container.innerHTML = '';
+  if (!animais.length) {
+    container.innerHTML =
+      '<div class="section-empty-cta" style="flex:1 0 100%;width:100%;">' +
+        '<i class="bi bi-search" style="font-size:2.5rem;color:#f97316;"></i>' +
+        '<h3>Seu pet desapareceu?</h3>' +
+        '<p>N\u00e3o perca tempo! Cadastre aqui e n\u00f3s ajudamos a divulgar a busca. Quanto mais pessoas viram, maiores as chances de encontr\u00e1-lo.</p>' +
+        '<div class="cta-botoes">' +
+          '<a class="btn btn-primary" href="pages/cadastro_procura_se.html"><i class="bi bi-megaphone me-1"></i> Anunciar Desaparecimento</a>' +
+        '</div>' +
+      '</div>';
+    return;
+  }
+  animais.forEach(function (p) {
+    var card = document.createElement('div');
+    card.className = 'procura-card';
+    var meta = [p.pet_especie, p.pet_porte].filter(Boolean).join(' \u00b7 ');
+    if (p.pet_idade) meta += (meta ? ' \u00b7 ' : '') + p.pet_idade + ' anos';
+    card.innerHTML =
+      '<div class="procura-card-foto">' +
+        (p.foto_url || p.arquivo
+          ? '<img src="' + imgUrl(p.foto_url || p.arquivo, 'procura_se') + '" alt="' + esc(p.pet_nome || '') + '">'
+          : '<i class="bi bi-question-circle"></i>') +
+      '</div>' +
+      '<div class="procura-card-body">' +
+        '<div class="procura-card-nome">' + esc(p.pet_nome) + '</div>' +
+        (meta ? '<div class="procura-card-meta">' + meta + '</div>' : '') +
+        (p.local_desaparecimento ? '<div class="procura-card-meta"><i class="bi bi-geo-alt"></i> ' + esc(p.local_desaparecimento) + '</div>' : '') +
+        (p.data_desaparecimento ? '<div class="procura-card-meta"><i class="bi bi-calendar-event"></i> ' + esc(p.data_desaparecimento) + '</div>' : '') +
+        (p.pet_caracteristicas ? '<div class="procura-card-desc">' + esc(p.pet_caracteristicas) + '</div>' : '') +
       '</div>';
     container.appendChild(card);
   });

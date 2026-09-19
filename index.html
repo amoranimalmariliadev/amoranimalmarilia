@@ -433,7 +433,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <section class="landing-section landing-section-alt" id="section-castracao">
   <div class="landing-container">
-    <h2 class="text-center mb-4">Agendamentos de Castração</h2>
+    <h2 class="text-center mb-4">Castrações</h2>
   </div>
 
   <div class="landing-container">
@@ -441,9 +441,6 @@ document.addEventListener('DOMContentLoaded', function() {
     <p style="color:var(--muted-color);font-size:0.9rem;">Próximas datas ativas do mutirão de castração. Garanta sua vaga!</p>
     <div class="mutirao-carrossel" id="mutiroesGrid">
       <!-- Mutirões carregados dinamicamente via API -->
-    </div>
-    <div class="text-center mt-3 mb-4">
-      <a href="pages/castracao_mutirao.html" class="btn btn-primary"><i class="bi bi-calendar-event me-2"></i>Ver todos os mutirões</a>
     </div>
   </div>
 
@@ -519,6 +516,40 @@ document.addEventListener('DOMContentLoaded', function() {
       <a href="pages/voluntario.html" class="btn btn-primary" style="animation:pulse 2s infinite;box-shadow:0 4px 20px rgba(13,148,136,0.4);font-size:1.2rem;padding:16px 40px;">
         <i class="bi bi-people-fill"></i> Seja Voluntário
       </a>
+    </div>
+  </div>
+</section>
+
+<section class="landing-section landing-section-white" id="section-parcerias">
+  <div class="landing-container">
+    <h2 class="text-center mb-4">
+      <i class="bi bi-handshake" style="color:var(--brand-teal);"></i> Parcerias
+    </h2>
+    <p class="text-center text-muted mb-4">Empresas e pessoas que apoiam a nossa causa</p>
+
+    <div class="parcerias-grid" id="parceriasGrid">
+      <!-- Parcerias carregadas dinamicamente via API -->
+    </div>
+
+    <div class="text-center mt-4">
+      <a href="pages/parceria.html" class="btn btn-primary"><i class="bi bi-hand-thumbs-up me-2"></i>Seja um Parceiro</a>
+    </div>
+  </div>
+</section>
+
+<section class="landing-section landing-section-alt" id="section-procura-se">
+  <div class="landing-container">
+    <h2 class="text-center mb-4">
+      <i class="bi bi-search" style="color:#f97316;"></i> Procura-se
+    </h2>
+    <p class="text-center text-muted mb-4">Ajude a encontrar esses peludos desaparecidos</p>
+
+    <div class="procura-grid" id="procuraGrid">
+      <!-- Animais desaparecidos carregados dinamicamente via API -->
+    </div>
+
+    <div class="text-center mt-4">
+      <a href="pages/cadastro_procura_se.html" class="btn btn-outline"><i class="bi bi-megaphone me-2"></i>Anunciar Desaparecimento</a>
     </div>
   </div>
 </section>

@@ -898,6 +898,174 @@
     overflow-y: auto;
 }
 
+/* Parcerias */
+.parcerias-grid {
+    display: flex;
+    gap: 1.25rem;
+    overflow-x: auto;
+    padding: 1rem 0.5rem 1rem 0;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    align-items: stretch;
+}
+
+.parcerias-grid::-webkit-scrollbar {
+    height: 8px;
+}
+
+.parcerias-grid::-webkit-scrollbar-track {
+    background: var(--bg-alt);
+    border-radius: 4px;
+}
+
+.parcerias-grid::-webkit-scrollbar-thumb {
+    background: var(--brand-teal);
+    border-radius: 4px;
+}
+
+.parceria-card {
+    flex: 0 0 280px;
+    min-width: 280px;
+    max-width: 280px;
+    background: var(--container-bg);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: var(--container-shadow);
+    border: 1px solid rgba(0,0,0,0.05);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.parceria-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.1);
+}
+
+.parceria-card-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 0.75rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0f766e, #14b8a6);
+    color: #fff;
+    font-size: 1.5rem;
+}
+
+.parceria-card-nome {
+    font-weight: 700;
+    color: var(--heading-color);
+    font-size: 1.05rem;
+}
+
+.parceria-card-local {
+    font-size: 0.85rem;
+    color: var(--muted-color);
+    margin-top: 0.25rem;
+}
+
+.parceria-card-proposta {
+    font-size: 0.9rem;
+    color: var(--text-color);
+    margin-top: 0.75rem;
+    line-height: 1.5;
+    font-style: italic;
+}
+
+/* Procura-se */
+.procura-grid {
+    display: flex;
+    gap: 1.25rem;
+    overflow-x: auto;
+    padding: 1rem 0.5rem 1rem 0;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    align-items: stretch;
+}
+
+.procura-grid::-webkit-scrollbar {
+    height: 8px;
+}
+
+.procura-grid::-webkit-scrollbar-track {
+    background: var(--bg-alt);
+    border-radius: 4px;
+}
+
+.procura-grid::-webkit-scrollbar-thumb {
+    background: #f97316;
+    border-radius: 4px;
+}
+
+.procura-card {
+    flex: 0 0 280px;
+    min-width: 280px;
+    max-width: 280px;
+    background: var(--container-bg);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--container-shadow);
+    border: 1px solid rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.procura-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.1);
+}
+
+.procura-card-foto {
+    height: 180px;
+    background: var(--bg-alt);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    font-size: 3rem;
+    overflow: hidden;
+}
+
+.procura-card-foto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.procura-card-body {
+    padding: 1rem 1.25rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.procura-card-nome {
+    font-weight: 700;
+    color: var(--heading-color);
+    font-size: 1.05rem;
+}
+
+.procura-card-meta {
+    font-size: 0.85rem;
+    color: var(--muted-color);
+}
+
+.procura-card-desc {
+    font-size: 0.88rem;
+    color: var(--text-color);
+    line-height: 1.5;
+    margin-top: 0.4rem;
+    background: var(--bg-alt);
+    border-left: 3px solid #f97316;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+}
+
 /* Mutirão de Castração Carrossel */
 .mutirao-carrossel {
     display: flex;
@@ -1155,11 +1323,19 @@ body:has(#toggleAtendidos:checked) .status-atendido { display: table-row; }
     .agendamentos-item { grid-template-columns: 1fr; gap: 0.5rem; }
     .events-grid > .event-card-hover { flex: 0 0 85vw; }
     .voluntario-card { flex: 0 0 85vw; width: 85vw; max-width: 320px; }
+    .parceria-card { flex: 0 0 85vw; min-width: 85vw; max-width: 320px; }
+    .procura-card { flex: 0 0 85vw; min-width: 85vw; max-width: 320px; }
+    .castracao-table {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
 }
 
 @media (max-width: 480px) {
     .events-grid > .event-card-hover { flex: 0 0 calc(100vw - 3rem); }
     .voluntario-card { flex: 0 0 calc(100vw - 3rem); width: calc(100vw - 3rem); }
+    .parceria-card { flex: 0 0 calc(100vw - 3rem); min-width: calc(100vw - 3rem); }
+    .procura-card { flex: 0 0 calc(100vw - 3rem); min-width: calc(100vw - 3rem); }
 }
 
 /* Animations */
