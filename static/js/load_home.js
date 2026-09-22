@@ -300,11 +300,7 @@ function renderAnimais(animais) {
     cta.innerHTML =
       '<i class="bi bi-paw" style="font-size:2.5rem;color:#dc2626;"></i>' +
       '<h3>Nossos peludos te esperam</h3>' +
-      '<p>Nenhum pet dispon\u00edvel para ado\u00e7\u00e3o no momento. Se voc\u00ea tem um pet para doar, cadastre-o; e se quer adotar, fique de olho aqui!</p>' +
-      '<div class="cta-botoes">' +
-        '<a class="btn btn-primary" href="pages/adocao.html"><i class="bi bi-house-heart me-1"></i> Quero Adotar</a>' +
-        '<a class="btn btn-outline" href="pages/adocao.html#cadastro-pet"><i class="bi bi-plus-circle me-1"></i> Cadastrar Pet</a>' +
-      '</div>';
+      '<p>Nenhum pet dispon\u00edvel para ado\u00e7\u00e3o no momento. Se voc\u00ea tem um pet para doar, cadastre-o; e se quer adotar, fique de olho aqui!</p>';
     var wrapper = container.parentNode;
     if (wrapper && wrapper.parentNode) {
       wrapper.parentNode.replaceChild(cta, wrapper);
@@ -407,9 +403,6 @@ function renderParcerias(parcerias) {
         '<i class="bi bi-handshake" style="font-size:2.5rem;color:var(--brand-teal);"></i>' +
         '<h3>Fa\u00e7a parte das nossas parcerias</h3>' +
         '<p>Sua empresa pode transformar vidas! Apoie resgates, castra\u00e7\u00f5es e ado\u00e7\u00f5es da ONG e ganhe visibilidade com uma causa que valoriza seu neg\u00f3cio.</p>' +
-        '<div class="cta-botoes">' +
-          '<a class="btn btn-primary" href="pages/parceria.html#form-parceria"><i class="bi bi-hand-thumbs-up me-1"></i> Propor Parceria</a>' +
-        '</div>' +
       '</div>';
     return;
   }
@@ -435,9 +428,6 @@ function renderProcuraSe(animais) {
         '<i class="bi bi-search" style="font-size:2.5rem;color:#f97316;"></i>' +
         '<h3>Seu pet desapareceu?</h3>' +
         '<p>N\u00e3o perca tempo! Cadastre aqui e n\u00f3s ajudamos a divulgar a busca. Quanto mais pessoas viram, maiores as chances de encontr\u00e1-lo.</p>' +
-        '<div class="cta-botoes">' +
-          '<a class="btn btn-primary" href="pages/cadastro_procura_se.html"><i class="bi bi-megaphone me-1"></i> Anunciar Desaparecimento</a>' +
-        '</div>' +
       '</div>';
     return;
   }
