@@ -107,7 +107,7 @@ function renderCastracoes(castracoes) {
   var secCastracao = document.getElementById('section-castracao');
   if (secCastracao) secCastracao.style.display = 'block';
   if (!castracoes.length) {
-    tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">' +
+    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">' +
       '<i class="bi bi-info-circle me-1"></i>Nenhum agendamento no momento. ' +
       '<a href="pages/castracao.html" class="btn btn-primary btn-sm" style="margin-left:6px;"><i class="bi bi-plus-circle me-1"></i>Fazer agendamento</a></td></tr>';
     return;
@@ -137,9 +137,6 @@ function renderCastracoes(castracoes) {
     tr.setAttribute('data-cidade', c.cidade || '');
     tr.setAttribute('data-estado', c.estado || '');
     tr.setAttribute('data-cep', c.cep || '');
-    var badgeCor = (c.especie || '').toLowerCase() === 'gato'
-      ? '<span class="badge" style="background:#8b5cf6;color:#fff;">Gato</span>'
-      : '<span class="badge badge-info">' + esc(c.especie) + '</span>';
     var statusHtml = isAtendido
       ? '<button class="btn-status-atendido" disabled><i class="bi bi-check-circle-fill"></i> Atendido</button>'
       : (c._origem === 'castracao'
@@ -151,14 +148,12 @@ function renderCastracoes(castracoes) {
     else if (tipoNorm === 'baixo_custo') tipoLabel = '<span class="badge" style="background:#0ea5e9;color:#fff;"><i class="bi bi-tag me-1"></i>Baixo Custo</span>';
     else if (tipoNorm === 'pets_rua') tipoLabel = '<span class="badge" style="background:#f59e0b;color:#fff;"><i class="bi bi-paw me-1"></i>Pet de Rua</span>';
     tr.innerHTML =
+      '<td data-label="Data">' + fmtDate(c.data) + '</td>' +
       '<td data-label="Ticket"><strong>' + esc(ticketNum) + '</strong>' + (tipoLabel ? '<br>' + tipoLabel : '') + '</td>' +
       '<td data-label="Pet">' + esc(c.pet_nome) + '</td>' +
       '<td data-label="Respons\u00e1vel">' + esc(c.tutor_nome) + '</td>' +
-      '<td data-label="Esp\u00e9cie">' + badgeCor + '</td>' +
-      '<td data-label="Cl\u00ednica">' + esc(c.clinica) + '</td>' +
-      '<td data-label="Data">' + fmtDate(c.data) + '</td>' +
-      '<td data-label="Status">' + statusHtml + '</td>' +
       '<td data-label="A\u00e7\u00f5es">' +
+        statusHtml + ' ' +
         '<button class="btn-comprovante" onclick="gerarComprovante(this)"><i class="bi bi-file-earmark-text"></i> Comprovante</button> ' +
         (c._origem === 'castracao'
           ? '<button class="btn-excluir-castracao admin-only" onclick="excluirCastracao(this)" data-id="' + c.id + '" title="Excluir"><i class="bi bi-trash"></i> Excluir</button>'
