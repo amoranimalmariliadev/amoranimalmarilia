@@ -232,7 +232,6 @@
     box-shadow: 0 4px 14px rgba(249,115,22,0.5);
   }
   </style>
-  <link rel="stylesheet" href="static/css/pro-dashboard.css">
 </head>
 <body>
 
@@ -255,31 +254,18 @@
 
 <main class="main-content">
 
-<input type="radio" name="camada" id="radio-impacto" class="layer-toggle" checked>
-<input type="radio" name="camada" id="radio-eventos" class="layer-toggle">
-<input type="radio" name="camada" id="radio-castracao" class="layer-toggle">
-<input type="radio" name="camada" id="radio-pets" class="layer-toggle">
-<input type="radio" name="camada" id="radio-voluntarios" class="layer-toggle">
-<input type="radio" name="camada" id="radio-parcerias" class="layer-toggle">
-<input type="radio" name="camada" id="radio-procura-se" class="layer-toggle">
-
 <nav class="landing-quicknav" id="landingQuicknav" aria-label="Navegação entre seções">
-  <details class="quicknav-dropdown">
-    <summary class="quicknav-summary">
-      <i class="bi bi-grid-fill quicknav-icon"></i>
-      <span class="summary-label" id="quicknavCurrent"><i class="bi bi-graph-up-arrow"></i> Nosso Impacto</span>
-      <i class="bi bi-chevron-down chev"></i>
-    </summary>
-    <div class="quicknav-menu" role="menu">
-      <label for="radio-impacto" role="menuitem" data-nome="Nosso Impacto"><i class="bi bi-graph-up-arrow"></i> Nosso Impacto</label>
-      <label for="radio-eventos" role="menuitem" data-nome="Eventos"><i class="bi bi-calendar-event"></i> Eventos</label>
-      <label for="radio-castracao" role="menuitem" data-nome="Castrações"><i class="bi bi-person-heart"></i> Castrações</label>
-      <label for="radio-pets" role="menuitem" data-nome="Pets para Adoção"><i class="bi bi-paw"></i> Pets para Adoção</label>
-      <label for="radio-voluntarios" role="menuitem" data-nome="Voluntários"><i class="bi bi-people-fill"></i> Voluntários</label>
-      <label for="radio-parcerias" role="menuitem" data-nome="Parcerias"><i class="bi bi-handshake"></i> Parcerias</label>
-      <label for="radio-procura-se" role="menuitem" data-nome="Procura-se"><i class="bi bi-search"></i> Procura-se</label>
+  <div class="landing-container">
+    <div class="quicknav-bar">
+      <a href="#nosso-impacto-section" data-secao="nosso-impacto-section"><i class="bi bi-graph-up-arrow"></i> Nosso Impacto</a>
+      <a href="#section-eventos" data-secao="section-eventos"><i class="bi bi-calendar-event"></i> Eventos</a>
+      <a href="#section-castracao" data-secao="section-castracao"><i class="bi bi-person-heart"></i> Castrações</a>
+      <a href="#section-pets" data-secao="section-pets"><i class="bi bi-paw"></i> Pets</a>
+      <a href="#section-voluntarios" data-secao="section-voluntarios"><i class="bi bi-people-fill"></i> Voluntários</a>
+      <a href="#section-parcerias" data-secao="section-parcerias"><i class="bi bi-handshake"></i> Parcerias</a>
+      <a href="#section-procura-se" data-secao="section-procura-se"><i class="bi bi-search"></i> Procura-se</a>
     </div>
-  </details>
+  </div>
 </nav>
 
 <section class="hero-landing">
@@ -293,34 +279,7 @@
   </div>
 </section>
 
-<section class="landing-section landing-section-alt">
-  <div class="landing-container">
-    <div class="landing-grid" style="grid-template-columns: 1fr 1fr; align-items: center;">
-      <div>
-        <h2>Nossa Missão</h2>
-        <p style="line-height: 1.8; color: var(--text-color);">
-          A ONG Amor Animal é dedicada ao resgate, reabilitação e realocação de animais em situação de vulnerabilidade.
-          Movidos pela compaixão, trabalhamos incansavelmente para oferecer uma segunda chance a cada um deles,
-          promovendo a posse responsável e o bem-estar animal em nossa comunidade.
-        </p>
-        <a href="pages/sobre.html" class="button btn" style="background:transparent;border:2px solid var(--brand-teal);color:var(--brand-teal);">Saiba mais</a>
-      </div>
-      <div style="text-align: center;">
-        <fieldset style="border: 2px solid var(--brand-teal); border-radius: 12px; padding: 1.5rem; max-width: 300px; margin: 0 auto;">
-          <legend style="padding: 0 10px; font-weight: bold; color: var(--heading-color);">Portal da Transparência</legend>
-          <img src="static/css/imagem/transparencia.png" alt="QR Code Transparência" style="width: 150px; height: 150px; border-radius: 8px;">
-          <p style="margin-top: 1rem; color: var(--text-color); font-size: 0.9rem;">
-            Escaneie ou visite<br>
-            <a href="pages/transparencia.html" style="color: var(--brand-teal);">Portal da Transparência</a>
-          </p>
-        </fieldset>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div class="dashboard-layers">
-<section class="landing-section landing-section-alt layer" id="nosso-impacto-section">
+<section class="landing-section landing-section-alt" id="nosso-impacto-section">
   <div class="landing-container">
     <h2 class="text-center mb-4">Nosso Impacto</h2>
     <div class="stats-grid" id="stats-grid">
@@ -431,7 +390,33 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<section class="landing-section landing-section-white layer" id="section-eventos">
+<section class="landing-section landing-section-alt">
+  <div class="landing-container">
+    <div class="landing-grid" style="grid-template-columns: 1fr 1fr; align-items: center;">
+      <div>
+        <h2>Nossa Missão</h2>
+        <p style="line-height: 1.8; color: var(--text-color);">
+          A ONG Amor Animal é dedicada ao resgate, reabilitação e realocação de animais em situação de vulnerabilidade.
+          Movidos pela compaixão, trabalhamos incansavelmente para oferecer uma segunda chance a cada um deles,
+          promovendo a posse responsável e o bem-estar animal em nossa comunidade.
+        </p>
+        <a href="pages/sobre.html" class="button btn" style="background:transparent;border:2px solid var(--brand-teal);color:var(--brand-teal);">Saiba mais</a>
+      </div>
+      <div style="text-align: center;">
+        <fieldset style="border: 2px solid var(--brand-teal); border-radius: 12px; padding: 1.5rem; max-width: 300px; margin: 0 auto;">
+          <legend style="padding: 0 10px; font-weight: bold; color: var(--heading-color);">Portal da Transparência</legend>
+          <img src="static/css/imagem/transparencia.png" alt="QR Code Transparência" style="width: 150px; height: 150px; border-radius: 8px;">
+          <p style="margin-top: 1rem; color: var(--text-color); font-size: 0.9rem;">
+            Escaneie ou visite<br>
+            <a href="pages/transparencia.html" style="color: var(--brand-teal);">Portal da Transparência</a>
+          </p>
+        </fieldset>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="landing-section landing-section-white" id="section-eventos">
   <div class="landing-container">
     <div class="d-flex align-items-center justify-content-between mb-4">
       <h2>Eventos</h2>
@@ -445,8 +430,12 @@ document.addEventListener('DOMContentLoaded', function() {
       </div>
     </div>
   </div>
-  <div class="landing-container" style="padding-top: 0;">
+</section>
+
+<div class="landing-section landing-section-white" style="padding-top: 0;">
+  <div class="landing-container">
     <div class="events-grid">
+
       <!-- Eventos carregados dinamicamente via API -->
 
     </div>
@@ -454,9 +443,9 @@ document.addEventListener('DOMContentLoaded', function() {
       <a href="pages/eventos.html" class="btn btn-primary">Ver Todos os Eventos</a>
     </div>
   </div>
-</section>
+</div>
 
-<section class="landing-section landing-section-alt layer" id="section-castracao">
+<section class="landing-section landing-section-alt" id="section-castracao">
   <div class="landing-container">
     <h2 class="text-center mb-4">Castrações</h2>
   </div>
@@ -501,7 +490,7 @@ document.addEventListener('DOMContentLoaded', function() {
   </div>
 </section>
 
-<section class="landing-section landing-section-white layer" id="section-pets">
+<section class="landing-section landing-section-white" id="section-pets">
   <div class="landing-container">
     <div class="section-header" style="text-align: center; margin-bottom: 2rem;">
       <h2>
@@ -523,7 +512,7 @@ document.addEventListener('DOMContentLoaded', function() {
   </div>
 </section>
 
-<section class="landing-section landing-section-alt layer" id="section-voluntarios">
+<section class="landing-section landing-section-alt" id="section-voluntarios">
   <div class="landing-container">
     <h2 class="text-center mb-4">
       <i class="bi bi-people-fill"></i> Nossos Voluntários
@@ -542,7 +531,7 @@ document.addEventListener('DOMContentLoaded', function() {
   </div>
 </section>
 
-<section class="landing-section landing-section-white layer" id="section-parcerias">
+<section class="landing-section landing-section-white" id="section-parcerias">
   <div class="landing-container">
     <h2 class="text-center mb-4">
       <i class="bi bi-handshake" style="color:var(--brand-teal);"></i> Parcerias
@@ -559,7 +548,7 @@ document.addEventListener('DOMContentLoaded', function() {
   </div>
 </section>
 
-<section class="landing-section landing-section-alt layer" id="section-procura-se">
+<section class="landing-section landing-section-alt" id="section-procura-se">
   <div class="landing-container">
     <h2 class="text-center mb-4">
       <i class="bi bi-search" style="color:#f97316;"></i> Procura-se
@@ -575,7 +564,6 @@ document.addEventListener('DOMContentLoaded', function() {
     </div>
   </div>
 </section>
-</div>
 
 
 
@@ -971,14 +959,22 @@ async function sincronizarInstagram(btn) {
 document.addEventListener('DOMContentLoaded', function() {
   var quicknav = document.getElementById('landingQuicknav');
   if (!quicknav) return;
-  var dropdown = quicknav.querySelector('.quicknav-dropdown');
-  var current = document.getElementById('quicknavCurrent');
-  quicknav.querySelectorAll('.quicknav-menu label').forEach(function(label) {
-    label.addEventListener('click', function() {
-      if (current) current.innerHTML = label.innerHTML;
-      if (dropdown) dropdown.open = false;
+  var links = quicknav.querySelectorAll('a[data-secao]');
+  links.forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      var id = link.getAttribute('data-secao');
+      var el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
   });
+  window.addEventListener('scroll', function() {
+    var y = window.pageYOffset || document.documentElement.scrollTop;
+    var bar = document.querySelector('.quicknav-bar');
+    if (!bar) return;
+    if (y > 80) quicknav.classList.add('sticky');
+    else quicknav.classList.remove('sticky');
+  }, { passive: true });
 });
 </script>
 <script src="components/footer.js"></script>
