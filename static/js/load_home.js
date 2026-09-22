@@ -235,6 +235,17 @@ function renderMutiroes(eventos, inscricoes) {
     var restantes = Math.max(0, totalVagas - usadas);
     var esgotado = restantes <= 0;
 
+    var diasRestantes = Math.ceil((new Date(dataISO + 'T12:00:00').getTime() - hoje.getTime()) / 86400000);
+    var diasHtml = '';
+    if (diasRestantes <= 0) {
+      diasHtml = '<div class="mutirao-countdown urgente" title="Dia do mutir\u00e3o"><i class="bi bi-fire me-1"></i>Termina hoje</div>';
+    } else if (diasRestantes === 1) {
+      diasHtml = '<div class="mutirao-countdown urgente"><i class="bi bi-alarm me-1"></i>Falta 1 dia</div>';
+    } else {
+      diasHtml = '<div class="mutirao-countdown"><i class="bi bi-alarm me-1"></i>Faltam ' + diasRestantes + ' dias</div>';
+    }
+    var pctVagas = totalVagas > 0 ? Math.min(100, Math.round(usadas / totalVagas * 100)) : 0;
+
     var eventoData = {
       id: ev.id || '',
       data: dataBR,
@@ -253,6 +264,7 @@ function renderMutiroes(eventos, inscricoes) {
       '<div class="mutirao-card-header">' +
         '<div class="mutirao-data"><i class="bi bi-calendar-event"></i> ' + dataBR + '</div>' +
         (diaSem ? '<div class="mutirao-dia-semana">' + diaSem + '</div>' : '') +
+        diasHtml +
       '</div>' +
       '<div class="mutirao-card-body">' +
         '<div class="mutirao-local"><i class="bi bi-geo-alt"></i> ' + esc(local) + '</div>' +
@@ -266,6 +278,10 @@ function renderMutiroes(eventos, inscricoes) {
           ? '<div class="mutirao-meta"><i class="bi bi-clock"></i> Inscri\u00e7\u00f5es at\u00e9: <strong>' + limiteBR + '</strong></div>'
           : '<div class="mutirao-meta"><i class="bi bi-info-circle"></i> Aguardando confirma\u00e7\u00e3o</div>') +
         '<div class="mutirao-card-badges">' + (esgotado ? '<span class="badge badge-danger"><i class="bi bi-x-circle-fill me-1"></i>Esgotado</span>' : '') + badgeHtml + '</div>' +
+        '<div class="mutirao-vagas">' +
+          '<div class="mutirao-vagas-track"><div class="mutirao-vagas-fill' + (esgotado ? ' esgotado' : '') + '" style="width:' + pctVagas + '%"></div></div>' +
+          '<div class="mutirao-vagas-info"><span>' + usadas + '/' + totalVagas + ' vagas ocupadas</span><span>' + pctVagas + '% preenchidas</span></div>' +
+        '</div>' +
       '</div>';
 
     var footer = document.createElement('div');

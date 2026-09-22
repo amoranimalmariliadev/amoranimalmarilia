@@ -1,0 +1,411 @@
+/* ==========================================================================
+   Impactos — Melhorias de impacto visual nas seções da home
+   (reveal no scroll, hero, micro-interações, mútirão, pets, gráficos)
+   Carregar POR ÚLTIMO (após default.css e home.css).
+   ========================================================================== */
+
+/* ==========================================================================
+   1. Scroll-reveal (fade + slide) — ativado via IntersectionObserver ( .in-view )
+   ========================================================================== */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity .6s ease, transform .6s ease;
+  will-change: opacity, transform;
+}
+[data-reveal].in-view {
+  opacity: 1;
+  transform: none;
+}
+
+/* Grids de cards: não transladam (só fade); os cards entram escalonados */
+.stats-grid[data-reveal],
+.events-grid[data-reveal],
+.mutirao-carrossel[data-reveal],
+.pet-carousel[data-reveal],
+.voluntarios-carrossel[data-reveal],
+.parcerias-grid[data-reveal],
+.procura-grid[data-reveal] {
+  transform: none;
+}
+
+@keyframes iItemIn {
+  from { opacity: 0; transform: translateY(18px) scale(.99); }
+  to   { opacity: 1; transform: none; }
+}
+
+.stats-grid.in-view > *,
+.events-grid.in-view > *,
+.mutirao-carrossel.in-view > *,
+.pet-carousel.in-view > *,
+.voluntarios-carrossel.in-view > *,
+.parcerias-grid.in-view > *,
+.procura-grid.in-view > * {
+  animation: iItemIn .5s ease both;
+}
+.stats-grid.in-view > :nth-child(1), .events-grid.in-view > :nth-child(1),
+.mutirao-carrossel.in-view > :nth-child(1), .pet-carousel.in-view > :nth-child(1),
+.voluntarios-carrossel.in-view > :nth-child(1), .parcerias-grid.in-view > :nth-child(1),
+.procura-grid.in-view > :nth-child(1) { animation-delay: .06s; }
+.stats-grid.in-view > :nth-child(2), .events-grid.in-view > :nth-child(2),
+.mutirao-carrossel.in-view > :nth-child(2), .pet-carousel.in-view > :nth-child(2),
+.voluntarios-carrossel.in-view > :nth-child(2), .parcerias-grid.in-view > :nth-child(2),
+.procura-grid.in-view > :nth-child(2) { animation-delay: .12s; }
+.stats-grid.in-view > :nth-child(3), .events-grid.in-view > :nth-child(3),
+.mutirao-carrossel.in-view > :nth-child(3), .pet-carousel.in-view > :nth-child(3),
+.voluntarios-carrossel.in-view > :nth-child(3), .parcerias-grid.in-view > :nth-child(3),
+.procura-grid.in-view > :nth-child(3) { animation-delay: .18s; }
+.stats-grid.in-view > :nth-child(4), .events-grid.in-view > :nth-child(4),
+.mutirao-carrossel.in-view > :nth-child(4), .pet-carousel.in-view > :nth-child(4),
+.voluntarios-carrossel.in-view > :nth-child(4), .parcerias-grid.in-view > :nth-child(4),
+.procura-grid.in-view > :nth-child(4) { animation-delay: .24s; }
+.stats-grid.in-view > :nth-child(5), .events-grid.in-view > :nth-child(5),
+.mutirao-carrossel.in-view > :nth-child(5), .pet-carousel.in-view > :nth-child(5),
+.voluntarios-carrossel.in-view > :nth-child(5), .parcerias-grid.in-view > :nth-child(5),
+.procura-grid.in-view > :nth-child(5) { animation-delay: .30s; }
+.stats-grid.in-view > :nth-child(6), .events-grid.in-view > :nth-child(6),
+.mutirao-carrossel.in-view > :nth-child(6), .pet-carousel.in-view > :nth-child(6),
+.voluntarios-carrossel.in-view > :nth-child(6), .parcerias-grid.in-view > :nth-child(6),
+.procura-grid.in-view > :nth-child(6) { animation-delay: .36s; }
+.stats-grid.in-view > :nth-child(7), .events-grid.in-view > :nth-child(7),
+.mutirao-carrossel.in-view > :nth-child(7), .pet-carousel.in-view > :nth-child(7),
+.voluntarios-carrossel.in-view > :nth-child(7), .parcerias-grid.in-view > :nth-child(7),
+.procura-grid.in-view > :nth-child(7) { animation-delay: .42s; }
+.stats-grid.in-view > :nth-child(8), .events-grid.in-view > :nth-child(8),
+.mutirao-carrossel.in-view > :nth-child(8), .pet-carousel.in-view > :nth-child(8),
+.voluntarios-carrossel.in-view > :nth-child(8), .parcerias-grid.in-view > :nth-child(8),
+.procura-grid.in-view > :nth-child(8) { animation-delay: .48s; }
+
+/* ==========================================================================
+   2. Hero mais marcante
+   ========================================================================== */
+.hero-landing {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(900px 460px at 12% -18%, rgba(34, 211, 238, 0.30), transparent 60%),
+    radial-gradient(760px 400px at 100% -10%, rgba(168, 85, 247, 0.32), transparent 55%),
+    radial-gradient(700px 420px at 50% 130%, rgba(255, 255, 255, 0.12), transparent 60%),
+    linear-gradient(135deg, rgba(13, 148, 136, 0.94), rgba(14, 165, 233, 0.90));
+}
+
+.hero-landing::before,
+.hero-landing::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(6px);
+  z-index: 0;
+  pointer-events: none;
+}
+.hero-landing::before {
+  width: 380px; height: 380px;
+  top: -150px; left: -90px;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.16), transparent);
+  animation: heroBlob 3.6s ease-in-out infinite alternate;
+}
+.hero-landing::after {
+  width: 300px; height: 300px;
+  bottom: -140px; right: -80px;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.12), transparent);
+  animation: heroBlob 4.4s ease-in-out infinite alternate-reverse;
+}
+@keyframes heroBlob {
+  from { transform: translateY(0) scale(1); }
+  to   { transform: translateY(18px) scale(1.08); }
+}
+
+.hero-landing .landing-container {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--brand-teal);
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: .2px;
+  padding: .38rem .95rem;
+  border-radius: 999px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  margin-bottom: 1.1rem;
+}
+
+.hero-landing h1 .hero-destaque {
+  color: #fde047;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
+}
+
+.hero-proof {
+  display: flex;
+  gap: .6rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 1.9rem;
+}
+.hero-proof span {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(4px);
+  color: #fff;
+  font-size: .82rem;
+  font-weight: 600;
+  padding: .42rem .9rem;
+  border-radius: 999px;
+}
+.hero-proof span i { font-size: .95rem; }
+
+/* ==========================================================================
+   3. Micro-interações nos cards
+   ========================================================================== */
+.stat-card { position: relative; overflow: hidden; }
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--brand-teal), #14b8a6);
+  border-radius: 16px 16px 0 0;
+  opacity: 0;
+  transition: opacity .3s ease;
+}
+.stat-card:hover::before { opacity: 1; }
+.stat-card .stat-card-icon {
+  display: inline-block;
+  transition: transform .3s ease;
+}
+.stat-card:hover .stat-card-icon { transform: scale(1.18) rotate(-4deg); }
+
+.event-card-hover {
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+.event-card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.14);
+}
+
+.parceria-card-icon,
+.voluntario-card-avatar {
+  transition: transform .3s ease;
+}
+.parceria-card:hover .parceria-card-icon,
+.voluntario-card:hover .voluntario-card-avatar {
+  transform: scale(1.1);
+}
+
+.procura-card {
+  transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+}
+.procura-card:hover {
+  border-color: #f97316;
+}
+
+/* Botões — leve "pressão" no clique */
+.btn:active,
+.btn-evento-insta:active {
+  transform: translateY(1px) scale(.98);
+}
+
+/* ==========================================================================
+   4. Pets — filtro, zoom de foto e carrossel com swipe
+   ========================================================================== */
+.pet-carousel {
+  animation: none !important;
+  width: auto !important;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: 1rem;
+  padding-bottom: 10px;
+  scrollbar-width: thin;
+}
+.pet-carousel::-webkit-scrollbar { height: 8px; }
+.pet-carousel::-webkit-scrollbar-track { background: var(--bg-alt); border-radius: 4px; }
+.pet-carousel::-webkit-scrollbar-thumb { background: var(--brand-teal); border-radius: 4px; }
+
+.pet-carousel-item { scroll-snap-align: center; }
+.pet-carousel-item .carousel-img-wrap img {
+  transition: transform .45s ease;
+}
+.pet-carousel-item:hover .carousel-img-wrap img { transform: scale(1.07); }
+
+.pets-filtros {
+  display: flex;
+  justify-content: center;
+  gap: .5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.4rem;
+}
+.pets-filtro-btn {
+  padding: .5rem 1.15rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-color);
+  background: var(--container-bg);
+  color: var(--text-color);
+  font-weight: 600;
+  font-size: .9rem;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+.pets-filtro-btn:hover {
+  border-color: var(--brand-teal);
+  transform: translateY(-1px);
+}
+.pets-filtro-btn.active {
+  background: var(--brand-teal);
+  border-color: var(--brand-teal);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.35);
+}
+.pets-filtro-vazio {
+  display: none;
+  text-align: center;
+  padding: 1.5rem;
+  color: var(--muted-color);
+  font-size: .95rem;
+}
+
+/* ==========================================================================
+   5. Mutirão — contagem regressiva e barra de vagas
+   ========================================================================== */
+.mutirao-countdown {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  margin-top: .4rem;
+  font-size: .78rem;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  padding: .28rem .65rem;
+}
+.mutirao-countdown.urgente {
+  background: rgba(254, 226, 226, 0.28);
+  color: #fff;
+}
+
+.mutirao-vagas {
+  margin-top: .7rem;
+}
+.mutirao-vagas-track {
+  height: 8px;
+  background: var(--bg-alt);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.mutirao-vagas-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--brand-green), #10b981);
+  transition: width 1s ease;
+}
+.mutirao-vagas-fill.esgotado {
+  background: linear-gradient(90deg, #dc2626, #f87171);
+}
+.mutirao-vagas-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: .75rem;
+  color: var(--muted-color);
+  margin-top: .3rem;
+}
+
+/* ==========================================================================
+   6. Gráfico — castrações por ano
+   ========================================================================== */
+.mutirao-chart-card {
+  margin-top: 1.9rem;
+  max-width: 560px;
+  background: var(--container-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.2rem 1.5rem;
+  box-shadow: var(--container-shadow);
+}
+.mutirao-chart-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: .75rem;
+  flex-wrap: wrap;
+}
+.mutirao-chart-head strong {
+  color: var(--heading-color);
+  font-size: 1rem;
+}
+.mutirao-chart-head strong i { color: var(--brand-teal); margin-right: .3rem; }
+.mutirao-chart-sub {
+  font-size: .8rem;
+  color: var(--muted-color);
+}
+.mutirao-chart-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  padding-top: .9rem;
+}
+.chart-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .35rem;
+}
+.chart-bar-title {
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--muted-color);
+}
+.chart-bar-val {
+  font-size: .85rem;
+  font-weight: 700;
+  color: var(--heading-color);
+}
+.chart-track {
+  display: flex;
+  align-items: flex-end;
+  height: 110px;
+  width: 100%;
+}
+.chart-fill {
+  width: 100%;
+  min-height: 4px;
+  border-radius: 8px 8px 0 0;
+  background: linear-gradient(180deg, var(--brand-teal), #0f766e);
+  transform-origin: bottom;
+  animation: barGrow .8s ease both;
+}
+.chart-fill:hover { filter: brightness(1.12); }
+.chart-fill.cur { background: linear-gradient(180deg, #f97316, #ea580c); }
+@keyframes barGrow {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+
+/* ==========================================================================
+   7. Responsivo e acessibilidade
+   ========================================================================== */
+@media (max-width: 768px) {
+  .hero-proof { gap: .45rem; }
+  .hero-proof span { font-size: .74rem; padding: .34rem .7rem; }
+  .pets-filtros { justify-content: flex-start; overflow-x: auto; padding-bottom: 4px; flex-wrap: nowrap; }
+  .pets-filtro-btn { flex: 0 0 auto; font-size: .85rem; padding: .42rem .95rem; }
+  .chart-track { height: 90px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] { opacity: 1; transform: none; transition: none; }
+  [data-reveal].in-view > * { animation: none; }
+  .chart-fill { animation: none; }
+  .hero-landing::before,
+  .hero-landing::after { animation: none; }
+  .mutirao-vagas-fill { transition: none; }
+}

@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="static/css/default.css">
   <link rel="stylesheet" href="static/css/icons/bootstrap-icons.min.css">
   <link rel="stylesheet" href="static/css/home.css">
+  <link rel="stylesheet" href="static/css/impactos.css">
   <link rel="icon" type="image/png" href="static/css/favicon/ong.ico">
   <script src="static/js/pdfmake/pdfmake.min.js"></script>
   <script src="static/js/pdfmake/vfs_fonts.js"></script>
@@ -269,20 +270,26 @@
 </nav>
 
 <section class="hero-landing">
-  <div class="landing-container">
-    <h1>Amor que Transforma Vidas</h1>
+  <div class="landing-container" data-reveal>
+    <span class="hero-badge"><i class="bi bi-heart-fill"></i> ONG sem fins lucrativos · Marília/SP</span>
+    <h1>Amor que <span class="hero-destaque">Transforma</span> Vidas</h1>
     <p>Junte-se a nós na missão de resgatar, cuidar e encontrar lares amorosos para animais abandonados.</p>
     <div style="display: block;">
       <a href="pages/doacao.html" class="btn btn-primary">Quero Doar</a>
       <a href="pages/adocao.html" class="btn btn-outline">Ou Adote</a>
+    </div>
+    <div class="hero-proof">
+      <span><i class="bi bi-shield-check"></i> Transparência ativa</span>
+      <span><i class="bi bi-people"></i> Voluntariado aberto</span>
+      <span><i class="bi bi-hand-heart"></i> Acolhimento responsável</span>
     </div>
   </div>
 </section>
 
 <section class="landing-section landing-section-alt" id="nosso-impacto-section">
   <div class="landing-container">
-    <h2 class="text-center mb-4">Nosso Impacto</h2>
-    <div class="stats-grid" id="stats-grid">
+    <h2 class="text-center mb-4" data-reveal>Nosso Impacto</h2>
+    <div class="stats-grid" id="stats-grid" data-reveal>
       <div class="stat-card" data-endpoint="voluntario" data-section="section-voluntarios">
         <div class="stat-card-icon" style="color: var(--brand-teal);"><i class="bi bi-people"></i></div>
         <div class="stat-card-number" id="stat-count-voluntario">0</div>
@@ -323,12 +330,40 @@
 </section>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  function animarContador(el) {
+    var alvo = parseInt(el.getAttribute('data-count') || '0', 10);
+    if (isNaN(alvo)) return;
+    var inicio = null, dur = 900;
+    function passo(ts) {
+      if (inicio === null) inicio = ts;
+      var p = Math.min(1, (ts - inicio) / dur);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(alvo * eased);
+      if (p < 1) requestAnimationFrame(passo);
+      else el.textContent = alvo;
+    }
+    requestAnimationFrame(passo);
+  }
   function mostrar(endpoint, count, sectionId) {
     var el = document.getElementById('stat-count-' + endpoint);
-    if (el) el.textContent = count;
+    if (el) {
+      el.setAttribute('data-count', count);
+      if (el._inView) animarContador(el);
+      else el.textContent = count;
+    }
     var card = el ? el.closest('.stat-card') : null;
     if (card) card.style.display = count > 0 ? '' : 'none';
   }
+  var statIO = new IntersectionObserver(function(entries) {
+    entries.forEach(function(en) {
+      if (!en.isIntersecting) return;
+      var el = en.target;
+      el._inView = true;
+      animarContador(el);
+      statIO.unobserve(el);
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.stat-card-number').forEach(function(el) { statIO.observe(el); });
   function fetchCount(url, endpoint, sectionId, filtro) {
     apiFetch(url || '/' + endpoint)
       .then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
@@ -354,7 +389,11 @@ document.addEventListener('DOMContentLoaded', function() {
             return p.created_at && p.created_at.slice(0,4) === String(ano);
           }).length : 0;
           var el = document.getElementById('stat-count-mutirao_pet');
-          if (el) el.textContent = c;
+          if (el) {
+            el.setAttribute('data-count', c);
+            if (el._inView) animarContador(el);
+            else el.textContent = c;
+          }
           var label = document.getElementById('stat-year-label-mutirao_pet');
           if (label) label.textContent = ano;
           var card = document.getElementById('card-mutirao_pet');
@@ -392,7 +431,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <section class="landing-section landing-section-alt">
   <div class="landing-container">
-    <div class="landing-grid" style="grid-template-columns: 1fr 1fr; align-items: center;">
+    <div class="landing-grid" style="grid-template-columns: 1fr 1fr; align-items: center;" data-reveal>
       <div>
         <h2>Nossa Missão</h2>
         <p style="line-height: 1.8; color: var(--text-color);">
@@ -418,7 +457,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <section class="landing-section landing-section-white" id="section-eventos">
   <div class="landing-container">
-    <div class="d-flex align-items-center justify-content-between mb-4">
+    <div class="d-flex align-items-center justify-content-between mb-4" data-reveal>
       <h2>Eventos</h2>
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
         <button class="btn-sync-insta admin-only" style="display:none;" onclick="sincronizarInstagram(this)" title="Buscar novas postagens do Instagram">
@@ -434,7 +473,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <div class="landing-section landing-section-white" style="padding-top: 0;">
   <div class="landing-container">
-    <div class="events-grid">
+    <div class="events-grid" data-reveal>
 
       <!-- Eventos carregados dinamicamente via API -->
 
@@ -447,19 +486,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <section class="landing-section landing-section-alt" id="section-castracao">
   <div class="landing-container">
-    <h2 class="text-center mb-4">Castrações</h2>
+    <h2 class="text-center mb-4" data-reveal>Castrações</h2>
   </div>
 
   <div class="landing-container">
-    <h3 class="mb-2"><i class="bi bi-people me-2" style="color:var(--brand-green);"></i>Mutirão de Castração</h3>
-    <p style="color:var(--muted-color);font-size:0.9rem;">Próximas datas ativas do mutirão de castração. Garanta sua vaga!</p>
-    <div class="mutirao-carrossel" id="mutiroesGrid">
+    <h3 class="mb-2" data-reveal><i class="bi bi-people me-2" style="color:var(--brand-green);"></i>Mutirão de Castração</h3>
+    <p style="color:var(--muted-color);font-size:0.9rem;" data-reveal>Próximas datas ativas do mutirão de castração. Garanta sua vaga!</p>
+    <div class="mutirao-carrossel" id="mutiroesGrid" data-reveal>
       <!-- Mutirões carregados dinamicamente via API -->
+    </div>
+
+    <div class="mutirao-chart-card" data-reveal>
+      <div class="mutirao-chart-head">
+        <strong><i class="bi bi-bar-chart-fill"></i> Castrações por ano</strong>
+        <span class="mutirao-chart-sub">Mutirões realizados</span>
+      </div>
+      <div class="mutirao-chart-bars" id="castracoesChartBars">
+        <div class="chart-col">
+          <span class="chart-bar-title">—</span>
+          <div class="chart-track"><div class="chart-fill" style="height:20%"></div></div>
+          <span class="chart-bar-val">·</span>
+        </div>
+      </div>
     </div>
   </div>
 
   <div class="landing-container">
-    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;" data-reveal>
       <h3 style="margin:0;"><i class="bi bi-person-heart me-2" style="color:var(--brand-teal);"></i>Agendamentos</h3>
       <label style="cursor: pointer; font-size: 0.85rem;">
         <input type="checkbox" id="toggleAtendidos" onchange="var cb=document.getElementById('toggleAtendidos');document.querySelectorAll('.status-atendido').forEach(function(el){el.style.display=cb.checked?'table-row':'none'})" style="margin-right:5px;">
@@ -467,7 +520,7 @@ document.addEventListener('DOMContentLoaded', function() {
       </label>
     </div>
   </div>
-  <div class="castracao-table" style="border-radius:0;box-shadow:none;width:100%;overflow-x:auto;overflow-y:auto;max-height:600px;">
+  <div class="castracao-table" style="border-radius:0;box-shadow:none;width:100%;overflow-x:auto;overflow-y:auto;max-height:600px;" data-reveal>
     <table class="table table-striped table-hover mb-0 table-card-mobile" style="width:100%;">
       <thead style="background:var(--brand-teal);color:white;position:sticky;top:0;z-index:2;">
         <tr>
@@ -492,7 +545,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <section class="landing-section landing-section-white" id="section-pets">
   <div class="landing-container">
-    <div class="section-header" style="text-align: center; margin-bottom: 2rem;">
+    <div class="section-header" style="text-align: center; margin-bottom: 2rem;" data-reveal>
       <h2>
         <i class="bi bi-paw"></i>
         Pets para Adoção
@@ -500,7 +553,14 @@ document.addEventListener('DOMContentLoaded', function() {
       <p style="color: var(--text-color);">Encontre seu novo melhor amigo! Estes são os pets que aguardam uma família amorosa.</p>
     </div>
 
-      <div class="pet-carousel-wrapper">
+    <div class="pets-filtros" id="petsFiltros" data-reveal>
+      <button type="button" class="pets-filtro-btn active" data-filtro="todos">Todos</button>
+      <button type="button" class="pets-filtro-btn" data-filtro="Cachorro">Cachorros</button>
+      <button type="button" class="pets-filtro-btn" data-filtro="Gato">Gatos</button>
+    </div>
+    <div class="pets-filtro-vazio" id="petsEmptyFiltro">Nenhum pet encontrado para este filtro.</div>
+
+      <div class="pet-carousel-wrapper" data-reveal>
       <div class="pet-carousel" id="petsGrid">
         <!-- Pets carregados dinamicamente via API -->
       </div>
@@ -514,12 +574,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <section class="landing-section landing-section-alt" id="section-voluntarios">
   <div class="landing-container">
-    <h2 class="text-center mb-4">
+    <h2 class="text-center mb-4" data-reveal>
       <i class="bi bi-people-fill"></i> Nossos Voluntários
     </h2>
-    <p class="text-center text-muted mb-4">Conheça as pessoas que fazem essa obra acontecer</p>
+    <p class="text-center text-muted mb-4" data-reveal>Conheça as pessoas que fazem essa obra acontecer</p>
 
-    <div class="voluntarios-carrossel" style="display:flex; gap:1rem; overflow-x:auto; padding-bottom:1rem;">
+    <div class="voluntarios-carrossel" style="display:flex; gap:1rem; overflow-x:auto; padding-bottom:1rem;" data-reveal>
       <!-- Voluntários carregados dinamicamente via API -->
     </div>
 
@@ -533,12 +593,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <section class="landing-section landing-section-white" id="section-parcerias">
   <div class="landing-container">
-    <h2 class="text-center mb-4">
+    <h2 class="text-center mb-4" data-reveal>
       <i class="bi bi-handshake" style="color:var(--brand-teal);"></i> Parcerias
     </h2>
-    <p class="text-center text-muted mb-4">Empresas e pessoas que apoiam a nossa causa</p>
+    <p class="text-center text-muted mb-4" data-reveal>Empresas e pessoas que apoiam a nossa causa</p>
 
-    <div class="parcerias-grid" id="parceriasGrid">
+    <div class="parcerias-grid" id="parceriasGrid" data-reveal>
       <!-- Parcerias carregadas dinamicamente via API -->
     </div>
 
@@ -550,12 +610,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <section class="landing-section landing-section-alt" id="section-procura-se">
   <div class="landing-container">
-    <h2 class="text-center mb-4">
+    <h2 class="text-center mb-4" data-reveal>
       <i class="bi bi-search" style="color:#f97316;"></i> Procura-se
     </h2>
-    <p class="text-center text-muted mb-4">Ajude a encontrar esses peludos desaparecidos</p>
+    <p class="text-center text-muted mb-4" data-reveal>Ajude a encontrar esses peludos desaparecidos</p>
 
-    <div class="procura-grid" id="procuraGrid">
+    <div class="procura-grid" id="procuraGrid" data-reveal>
       <!-- Animais desaparecidos carregados dinamicamente via API -->
     </div>
 
@@ -568,7 +628,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 <section class="landing-section landing-section-white">
-  <div class="landing-container text-center">
+  <div class="landing-container text-center" data-reveal>
     <h2>Faça Parte da Mudança</h2>
     <p style="font-size: 1.1rem; color: var(--text-color); margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
       Sua ajuda, seja como voluntário, parceiro ou doador, é fundamental para continuarmos nosso trabalho.
@@ -955,6 +1015,84 @@ async function sincronizarInstagram(btn) {
 })();
 </script>
 <script src="static/js/load_home.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  /* Scroll-reveal: adiciona .in-view quando o elemento entra na tela */
+  var revealEls = document.querySelectorAll('[data-reveal]');
+  if ('IntersectionObserver' in window) {
+    var revealIO = new IntersectionObserver(function(entries) {
+      entries.forEach(function(en) {
+        if (!en.isIntersecting) return;
+        en.target.classList.add('in-view');
+        revealIO.unobserve(en.target);
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+    revealEls.forEach(function(el) { revealIO.observe(el); });
+  } else {
+    revealEls.forEach(function(el) { el.classList.add('in-view'); });
+  }
+
+  /* Filtro de Pets por espécie */
+  var petsFiltros = document.getElementById('petsFiltros');
+  if (petsFiltros) {
+    petsFiltros.addEventListener('click', function(e) {
+      var btn = e.target.closest('.pets-filtro-btn');
+      if (!btn) return;
+      petsFiltros.querySelectorAll('.pets-filtro-btn').forEach(function(b) {
+        b.classList.toggle('active', b === btn);
+      });
+      var f = btn.getAttribute('data-filtro');
+      var itens = document.querySelectorAll('#petsGrid .pet-carousel-item');
+      var visiveis = 0;
+      itens.forEach(function(it) {
+        var ok = f === 'todos' || (it.getAttribute('data-especie') || '') === f;
+        it.style.display = ok ? '' : 'none';
+        if (ok) visiveis++;
+      });
+      var msg = document.getElementById('petsEmptyFiltro');
+      if (msg) msg.style.display = visiveis === 0 ? 'block' : 'none';
+    });
+  }
+
+  /* Gráfico: castrações por ano */
+  var chartBars = document.getElementById('castracoesChartBars');
+  if (chartBars && typeof apiFetch === 'function') {
+    apiFetch('/mutirao_pet')
+      .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+      .then(function(data) {
+        var arr = Array.isArray(data) ? data : [];
+        var porAno = {};
+        arr.forEach(function(p) {
+          var y = (p.created_at || '').slice(0, 4);
+          if (y) porAno[y] = (porAno[y] || 0) + 1;
+        });
+        var agora = new Date().getFullYear();
+        var lo = agora - 1, hi = agora + 1;
+        Object.keys(porAno).forEach(function(y) {
+          var n = Number(y);
+          if (n < lo) lo = n;
+          if (n > hi) hi = n;
+        });
+        var maxV = 1;
+        for (var a = lo; a <= hi; a++) if ((porAno[a] || 0) > maxV) maxV = porAno[a];
+        chartBars.innerHTML = '';
+        for (var b = lo; b <= hi; b++) {
+          var ano = String(b);
+          var c = porAno[ano] || 0;
+          var pct = Math.max(4, Math.round(c / maxV * 100));
+          var col = document.createElement('div');
+          col.className = 'chart-col';
+          col.innerHTML =
+            '<span class="chart-bar-title">' + ano + (ano === String(agora) ? ' *' : '') + '</span>' +
+            '<div class="chart-track"><div class="chart-fill' + (ano === String(agora) ? ' cur' : '') + '" style="height:' + pct + '%" title="' + c + ' castra\u00e7\u00f5es"></div></div>' +
+            '<span class="chart-bar-val">' + c + '</span>';
+          chartBars.appendChild(col);
+        }
+      })
+      .catch(function() {});
+  }
+});
+</script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   var quicknav = document.getElementById('landingQuicknav');
