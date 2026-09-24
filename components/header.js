@@ -443,7 +443,7 @@
       var currentScroll = window.pageYOffset || document.documentElement.scrollTop;
       if (currentScroll > 50) {
         header.classList.add('scrolled');
-      } else {
+      } else if (currentScroll < 20) {
         header.classList.remove('scrolled');
       }
       lastScroll = currentScroll;
