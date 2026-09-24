@@ -496,20 +496,7 @@ document.addEventListener('DOMContentLoaded', function() {
       <!-- Mutirões carregados dinamicamente via API -->
     </div>
 
-    <div class="mutirao-chart-card" data-reveal>
-      <div class="mutirao-chart-head">
-        <strong><i class="bi bi-bar-chart-fill"></i> Castrações por ano</strong>
-        <span class="mutirao-chart-sub">Mutirões realizados</span>
-      </div>
-      <div class="mutirao-chart-bars" id="castracoesChartBars">
-        <div class="chart-col">
-          <span class="chart-bar-title">—</span>
-          <div class="chart-track"><div class="chart-fill" style="height:20%"></div></div>
-          <span class="chart-bar-val">·</span>
-        </div>
-      </div>
     </div>
-  </div>
 
   <div class="landing-container">
     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;" data-reveal>
@@ -946,8 +933,8 @@ function excluirCastracao(btn) {
     });
 }
 
-function atenderCastracao(btn) {
-  var id = btn.dataset.id;
+function atenderTicket(link) {
+  var id = link.dataset.id;
   if (!confirm('Marcar este agendamento como Atendido?')) return;
   apiFetch('/castracao/' + encodeURIComponent(id), {
     method: 'PUT',
@@ -956,13 +943,18 @@ function atenderCastracao(btn) {
   })
     .then(function(r) {
       if (!r.ok) throw new Error('Erro ao atualizar');
-      var tr = btn.closest('tr');
-      tr.className = 'status-atendido';
-      tr.style.display = 'none';
-      td = btn.parentNode;
-      td.innerHTML = '<button class="btn-status-atendido" disabled><i class="bi bi-check-circle-fill"></i> Atendido</button>';
+      return apiFetch('/castracao');
+    })
+    .then(function(r) {
+      if (!r.ok) throw new Error('Erro ao atualizar');
+      return r.json();
+    })
+    .then(function(data) {
+      if (typeof renderCastracoes === 'function') renderCastracoes(mergeCastracoes(data || []));
       var checkbox = document.getElementById('toggleAtendidos');
-      if (checkbox && checkbox.checked) tr.style.display = 'table-row';
+      if (checkbox && checkbox.checked) {
+        document.querySelectorAll('.status-atendido').forEach(function(el) { el.style.display = 'table-row'; });
+      }
     })
     .catch(function(err) {
       alert('Erro ao atender: ' + err.message);
@@ -1052,44 +1044,6 @@ document.addEventListener('DOMContentLoaded', function() {
       var msg = document.getElementById('petsEmptyFiltro');
       if (msg) msg.style.display = visiveis === 0 ? 'block' : 'none';
     });
-  }
-
-  /* Gráfico: castrações por ano */
-  var chartBars = document.getElementById('castracoesChartBars');
-  if (chartBars && typeof apiFetch === 'function') {
-    apiFetch('/mutirao_pet')
-      .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-      .then(function(data) {
-        var arr = Array.isArray(data) ? data : [];
-        var porAno = {};
-        arr.forEach(function(p) {
-          var y = (p.created_at || '').slice(0, 4);
-          if (y) porAno[y] = (porAno[y] || 0) + 1;
-        });
-        var agora = new Date().getFullYear();
-        var lo = agora - 1, hi = agora + 1;
-        Object.keys(porAno).forEach(function(y) {
-          var n = Number(y);
-          if (n < lo) lo = n;
-          if (n > hi) hi = n;
-        });
-        var maxV = 1;
-        for (var a = lo; a <= hi; a++) if ((porAno[a] || 0) > maxV) maxV = porAno[a];
-        chartBars.innerHTML = '';
-        for (var b = lo; b <= hi; b++) {
-          var ano = String(b);
-          var c = porAno[ano] || 0;
-          var pct = Math.max(4, Math.round(c / maxV * 100));
-          var col = document.createElement('div');
-          col.className = 'chart-col';
-          col.innerHTML =
-            '<span class="chart-bar-title">' + ano + (ano === String(agora) ? ' *' : '') + '</span>' +
-            '<div class="chart-track"><div class="chart-fill' + (ano === String(agora) ? ' cur' : '') + '" style="height:' + pct + '%" title="' + c + ' castra\u00e7\u00f5es"></div></div>' +
-            '<span class="chart-bar-val">' + c + '</span>';
-          chartBars.appendChild(col);
-        }
-      })
-      .catch(function() {});
   }
 });
 </script>

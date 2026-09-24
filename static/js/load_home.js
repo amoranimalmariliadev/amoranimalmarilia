@@ -137,10 +137,13 @@ function renderCastracoes(castracoes) {
     tr.setAttribute('data-cidade', c.cidade || '');
     tr.setAttribute('data-estado', c.estado || '');
     tr.setAttribute('data-cep', c.cep || '');
+    var ticketHtml = (c._origem === 'castracao' && !isAtendido)
+      ? '<a href="javascript:void(0);" class="ticket-link" onclick="atenderTicket(this)" data-id="' + c.id + '" title="Clique para marcar como Atendido">' + esc(ticketNum) + '</a>'
+      : '<strong>' + esc(ticketNum) + '</strong>';
     var statusHtml = isAtendido
       ? '<button class="btn-status-atendido" disabled><i class="bi bi-check-circle-fill"></i> Atendido</button>'
       : (c._origem === 'castracao'
-        ? '<button class="btn-status-atender" onclick="atenderCastracao(this)" data-id="' + c.id + '"><i class="bi bi-check-lg"></i> Atender</button>'
+        ? ''
         : '<button class="btn-status-atendido" disabled style="opacity:0.5;"><i class="bi bi-check-circle-fill"></i> ' + esc(c.status) + '</button>');
     var tipoLabel = '';
     var tipoNorm = (c.tipo || '').toLowerCase();
@@ -149,7 +152,7 @@ function renderCastracoes(castracoes) {
     else if (tipoNorm === 'pets_rua') tipoLabel = '<span class="badge" style="background:#f59e0b;color:#fff;"><i class="bi bi-paw me-1"></i>Pet de Rua</span>';
     tr.innerHTML =
       '<td data-label="Data">' + fmtDate(c.data) + '</td>' +
-      '<td data-label="Ticket"><strong>' + esc(ticketNum) + '</strong>' + (tipoLabel ? '<br>' + tipoLabel : '') + '</td>' +
+      '<td data-label="Ticket">' + ticketHtml + (tipoLabel ? '<br>' + tipoLabel : '') + '</td>' +
       '<td data-label="Pet">' + esc(c.pet_nome) + '</td>' +
       '<td data-label="Respons\u00e1vel">' + esc(c.tutor_nome) + '</td>' +
       '<td data-label="A\u00e7\u00f5es">' +

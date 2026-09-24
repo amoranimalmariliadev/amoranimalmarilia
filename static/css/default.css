@@ -1232,6 +1232,15 @@ footer {
     cursor: default;
     opacity: .7;
   }
+  .ticket-link {
+    color: var(--brand-teal);
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: 700;
+  }
+  .ticket-link:hover {
+    color: var(--brand-teal-dark);
+  }
   .btn-outline-secondary:hover {
     background: linear-gradient(135deg, #64748b, #475569);
     color: white;
