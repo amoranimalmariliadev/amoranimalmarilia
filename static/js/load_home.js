@@ -101,6 +101,7 @@ function mergeCastracoes(castracoes) {
 }
 
 function renderCastracoes(castracoes) {
+  window._castracoesCache = castracoes || [];
   var tbody = document.querySelector('.castracao-table table tbody');
   if (!tbody) return;
   tbody.innerHTML = '';
@@ -116,7 +117,7 @@ function renderCastracoes(castracoes) {
     var ticketNum = c.ticket || '';
     var isAtendido = (c.status || '').toLowerCase() === 'atendido';
     var tr = document.createElement('tr');
-    if (isAtendido) { tr.className = 'status-atendido'; tr.style.display = 'none'; }
+    if (isAtendido) { tr.className = 'status-atendido'; tr.style.display = (window.showAtendidos ? window.showAtendidos : false) ? 'table-row' : 'none'; }
     tr.setAttribute('data-ticket', ticketNum);
     tr.setAttribute('data-pet', c.pet_nome || '');
     tr.setAttribute('data-responsavel', c.tutor_nome || '');
@@ -150,6 +151,25 @@ function renderCastracoes(castracoes) {
     if (tipoNorm === 'mutirao') tipoLabel = '<span class="badge" style="background:#10b981;color:#fff;"><i class="bi bi-people me-1"></i>Mutir\u00e3o</span>';
     else if (tipoNorm === 'baixo_custo') tipoLabel = '<span class="badge" style="background:#0ea5e9;color:#fff;"><i class="bi bi-tag me-1"></i>Baixo Custo</span>';
     else if (tipoNorm === 'pets_rua') tipoLabel = '<span class="badge" style="background:#f59e0b;color:#fff;"><i class="bi bi-paw me-1"></i>Pet de Rua</span>';
+    var isAtendidoNow = (c.status || '').toLowerCase() === 'atendido';
+    var canAtenderClinica = (c._origem === 'castracao') && !isAtendidoNow;
+    var actionsHtml =
+      '<button class="btn-comprovante" onclick="gerarComprovante(this)"><i class="bi bi-file-earmark-text"></i> Comprovante</button>';
+    var tabAtual = window.currentCastracaoTab || 'publico';
+    if (tabAtual === 'clinica') {
+      if (canAtenderClinica) {
+        actionsHtml += ' <button class="btn-atender" data-id="' + c.id + '" onclick="atenderTicket(this)"><i class="bi bi-check2"></i> Atender</button>';
+      }
+    }
+    if (tabAtual === 'admin') {
+      if (canAtenderClinica) {
+        actionsHtml += ' <button class="btn-atender" data-id="' + c.id + '" onclick="atenderTicket(this)"><i class="bi bi-check2"></i> Atender</button>';
+      }
+      if (c._origem === 'castracao') {
+        actionsHtml += ' <button class="btn-excluir-castracao admin-only" onclick="excluirCastracao(this)" data-id="' + c.id + '" title="Excluir"><i class="bi bi-trash"></i> Excluir</button>';
+      }
+    }
+
     tr.innerHTML =
       '<td data-label="Data">' + fmtDate(c.data) + '</td>' +
       '<td data-label="Ticket">' + ticketHtml + (tipoLabel ? '<br>' + tipoLabel : '') + '</td>' +
@@ -157,10 +177,7 @@ function renderCastracoes(castracoes) {
       '<td data-label="Respons\u00e1vel">' + esc(c.tutor_nome) + '</td>' +
       '<td data-label="A\u00e7\u00f5es">' +
         statusHtml + ' ' +
-        '<button class="btn-comprovante" onclick="gerarComprovante(this)"><i class="bi bi-file-earmark-text"></i> Comprovante</button> ' +
-        (c._origem === 'castracao'
-          ? '<button class="btn-excluir-castracao admin-only" onclick="excluirCastracao(this)" data-id="' + c.id + '" title="Excluir"><i class="bi bi-trash"></i> Excluir</button>'
-          : '') +
+        actionsHtml +
       '</td>';
     tbody.appendChild(tr);
   });

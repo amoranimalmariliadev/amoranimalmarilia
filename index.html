@@ -186,6 +186,59 @@
   .btn-excluir-castracao:hover { background: rgb(185,28,28); }
   body.admin-mode .btn-excluir-castracao { display: inline-block; }
 
+  /* Abas Castrações */
+  .castracao-tabs { display:flex; gap:.5rem; flex-wrap:wrap; margin: .5rem 0 1rem 0; }
+  .castracao-tabs .tab-btn {
+    padding:.5rem 1rem;
+    border:1px solid var(--border-color);
+    background: var(--bg);
+    color: var(--text-color);
+    border-radius:8px;
+    font-weight:600;
+    font-size:.9rem;
+    cursor:pointer;
+    transition:.2s;
+  }
+  .castracao-tabs .tab-btn.active {
+    background: var(--brand-teal);
+    color:#fff;
+    border-color: var(--brand-teal);
+  }
+  .castracao-tabs .tab-btn:hover:not(.active) {
+    background: var(--bg-alt);
+  }
+  .castracao-actions-bar {
+    display:flex;
+    gap:1rem;
+    align-items:center;
+    flex-wrap:wrap;
+    margin-bottom:.75rem;
+  }
+  .btn-atender {
+    background: #16a34a;
+    color:#fff;
+    border:none;
+    border-radius:6px;
+    padding:4px 8px;
+    font-size:0.75rem;
+    cursor:pointer;
+    margin-left:4px;
+  }
+  .btn-atender:hover { background:#15803d; }
+  .btn-atender:disabled { opacity:.6; cursor:not-allowed; }
+  .btn-atender-todos {
+    padding:6px 12px;
+    background:#2563eb;
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    font-weight:600;
+    font-size:.85rem;
+    cursor:pointer;
+  }
+  .btn-atender-todos:hover { background:#1d4ed8; }
+  .btn-atender-todos:disabled { opacity:.5; cursor:not-allowed; }
+
   #section-eventos, #section-castracao, #section-pets, #section-voluntarios { display: block; }
 
   .cookie-consent-banner {
@@ -501,10 +554,20 @@ document.addEventListener('DOMContentLoaded', function() {
   <div class="landing-container">
     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;" data-reveal>
       <h3 style="margin:0;"><i class="bi bi-person-heart me-2" style="color:var(--brand-teal);"></i>Agendamentos</h3>
-      <label style="cursor: pointer; font-size: 0.85rem;">
-        <input type="checkbox" id="toggleAtendidos" onchange="var cb=document.getElementById('toggleAtendidos');document.querySelectorAll('.status-atendido').forEach(function(el){el.style.display=cb.checked?'table-row':'none'})" style="margin-right:5px;">
-        Mostrar atendidos
-      </label>
+      <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;">
+        <label style="cursor: pointer; font-size: 0.85rem;">
+          <input type="checkbox" id="toggleAtendidos" style="margin-right:5px;">
+          Mostrar atendidos
+        </label>
+        <button class="btn-atender-todos" id="btnAtenderTodos" style="display:none;" onclick="atenderTodos()">
+          <i class="bi bi-check2-all"></i> Atender todos
+        </button>
+      </div>
+    </div>
+    <div class="castracao-tabs" id="castracaoTabs" data-reveal>
+      <button class="tab-btn active" data-tab="publico">Público</button>
+      <button class="tab-btn" data-tab="clinica">Clínica</button>
+      <button class="tab-btn admin-only" data-tab="admin" style="display:none;">Admin</button>
     </div>
   </div>
   <div class="castracao-table" style="border-radius:0;box-shadow:none;width:100%;overflow-x:auto;overflow-y:auto;max-height:600px;" data-reveal>
@@ -961,6 +1024,69 @@ function atenderTicket(link) {
     });
 }
 
+
+window.currentCastracaoTab = 'publico';
+window.showAtendidos = false;
+
+function updateCastracaoTabs() {
+  var tabs = document.querySelectorAll('#castracaoTabs .tab-btn');
+  var btnAtenderTodos = document.getElementById('btnAtenderTodos');
+  if (!tabs.length) return;
+  tabs.forEach(function(t) {
+    t.classList.toggle('active', t.dataset.tab === window.currentCastracaoTab);
+  });
+  if (window.currentCastracaoTab === 'clinica' || window.currentCastracaoTab === 'admin') {
+    if (btnAtenderTodos) btnAtenderTodos.style.display = '';
+  } else {
+    if (btnAtenderTodos) btnAtenderTodos.style.display = 'none';
+  }
+  if (typeof renderCastracoes === 'function' && window._castracoesCache) {
+    renderCastracoes(window._castracoesCache);
+  }
+}
+
+function toggleAtendidos(checked) {
+  window.showAtendidos = !!checked;
+  document.querySelectorAll('.status-atendido').forEach(function(el) {
+    el.style.display = window.showAtendidos ? 'table-row' : 'none';
+  });
+}
+
+function atenderTodos() {
+  if (!confirm('Marcar TODOS os agendamentos pendentes como Atendidos?')) return;
+  var btn = document.getElementById('btnAtenderTodos');
+  if (btn) { btn.disabled = true; var orig = btn.innerHTML; btn.innerHTML = '<i class="bi bi-hourglass"></i> Processando...'; }
+  apiFetch('/castracao')
+    .then(function(r){ if(!r.ok) throw new Error('Erro'); return r.json(); })
+    .then(function(data){
+      var pendentes = (data||[]).filter(function(x){ return (x.status||'').toLowerCase() !== 'atendido'; });
+      if (pendentes.length === 0) { if(btn){ btn.disabled=false; btn.innerHTML=orig; } alert('Nenhum pendente.'); return; }
+      var proms = pendentes.map(function(x){
+        return apiFetch('/castracao/'+encodeURIComponent(x.id), {method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify({status:'Atendido'})});
+      });
+      return Promise.all(proms).then(function(){ return apiFetch('/castracao'); });
+    })
+    .then(function(r){ if(!r.ok) throw new Error('Erro'); return r.json(); })
+    .then(function(data){
+      if (typeof mergeCastracoes === 'function' && typeof renderCastracoes === 'function') {
+        window._castracoesCache = mergeCastracoes(data||[]);
+        renderCastracoes(window._castracoesCache);
+      }
+      if (btn){ btn.disabled=false; btn.innerHTML=orig; }
+    })
+    .catch(function(err){ if(btn){ btn.disabled=false; btn.innerHTML=orig; } alert('Erro: '+err.message); });
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  var tabs = document.querySelectorAll('#castracaoTabs .tab-btn');
+  tabs.forEach(function(t){
+    t.addEventListener('click', function(){ window.currentCastracaoTab = t.dataset.tab; updateCastracaoTabs(); });
+  });
+  updateCastracaoTabs();
+  var cb = document.getElementById('toggleAtendidos');
+  if (cb) { cb.checked = window.showAtendidos; cb.onchange = function(){ toggleAtendidos(cb.checked); }; }
+  if (typeof updateCastracaoTabs === "function") updateCastracaoTabs();
+});
 async function sincronizarInstagram(btn) {
   if (btn.disabled) return;
   btn.disabled = true;
