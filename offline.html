@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sem conexão — ONG Amor Animal Marília</title>
+  <meta name="theme-color" content="#0d9488">
+  <link rel="icon" type="image/png" href="static/css/favicon/ong.ico">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(135deg, #f0fdfa 0%, #ffffff 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      color: #1e293b;
+      text-align: center;
+    }
+    .card {
+      max-width: 420px;
+      width: 100%;
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 40px 28px;
+      box-shadow: 0 10px 40px rgba(13, 148, 136, 0.15);
+      border: 1px solid #ccfbf1;
+    }
+    .logo {
+      width: 88px;
+      height: 88px;
+      border-radius: 20px;
+      box-shadow: 0 4px 16px rgba(13, 148, 136, 0.25);
+      margin-bottom: 20px;
+      object-fit: cover;
+    }
+    h1 { font-size: 1.4rem; color: #0f766e; margin-bottom: 10px; }
+    p { font-size: 0.95rem; line-height: 1.6; color: #475569; margin-bottom: 12px; }
+    .hint {
+      font-size: 0.82rem;
+      color: #64748b;
+      background: #f0fdfa;
+      border: 1px dashed #99f6e4;
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin: 16px 0 22px;
+    }
+    .btn {
+      display: inline-block;
+      background: #0d9488;
+      color: #ffffff !important;
+      border: none;
+      border-radius: 999px;
+      padding: 12px 32px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.2s ease;
+      box-shadow: 0 4px 14px rgba(13, 148, 136, 0.35);
+    }
+    .btn:hover { background: #0f766e; transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+  </style>
+</head>
+<body>
+  <div class="card" role="alert">
+    <img class="logo" src="static/css/imagem/ong.jpg" alt="ONG Amor Animal Marília">
+    <h1>Você está offline</h1>
+    <p>
+      Parece que você perdeu a conexão com a internet. As informações de
+      <strong>pets para adoção, eventos e castração</strong> que ficaram salvas
+      no seu dispositivo continuam disponíveis.
+    </p>
+    <p class="hint">
+      📶 Assim que a conexão voltar, os dados serão atualizados automaticamente.
+    </p>
+    <button class="btn" onclick="location.reload()" type="button">Tentar novamente</button>
+  </div>
+</body>
+</html>

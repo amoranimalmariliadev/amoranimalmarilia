@@ -1,0 +1,33 @@
+{
+  "name": "ONG Amor Animal Marília",
+  "short_name": "Amor Animal",
+  "description": "Site oficial da ONG Amor Animal Marília: resgate, castração e adoção de animais. Doe, adote ou seja voluntário.",
+  "lang": "pt-BR",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#0d9488",
+  "categories": ["charity", "animals", "social"],
+  "icons": [
+    {
+      "src": "static/pwa/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "static/pwa/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "static/pwa/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

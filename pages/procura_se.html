@@ -77,7 +77,7 @@ function carregarProcuraSe() {
         var dataStr = p.origem ? formatDate(p.origem) : '-';
         var fotoUrl = p.foto_url || p.arquivo;
         var fotoHtml = fotoUrl
-          ? '<img src="' + fotoUrl + '" width="80" height="80" style="object-fit:cover" class="img-thumbnail p-1 rounded" alt="Foto">'
+          ? '<img loading="lazy" decoding="async" src="' + fotoUrl + '" width="80" height="80" style="object-fit:cover" class="img-thumbnail p-1 rounded" alt="Foto">'
           : '<div style="width:80px;height:80px;background:#e2e8f0;display:flex;align-items:center;justify-content:center;border-radius:4px;font-size:1.5rem"><i class="bi bi-question-circle"></i></div>';
         html +=
           '<tr>' +

@@ -1,40 +1,41 @@
 var BASE = window.API_BASE;
 
 document.addEventListener('DOMContentLoaded', function () {
+  // /castracao alimenta tanto a tabela de castrações quanto a contagem de vagas
+  // dos mutirões. Buscamos uma única vez e compartilhamos a mesma promise,
+  // evitando uma segunda requisição de ~230 KB a cada carregamento da home.
+  var pCastracao = apiFetch('/castracao')
+    .then(function (r) { if (!r.ok) throw new Error(); return r.json(); })
+    .catch(function () { return []; });
+
   apiFetch('/eventos')
     .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
     .then(function (data) { if (data && Array.isArray(data)) renderEvents(data); })
     .catch(function () {});
-  apiFetch('/castracao')
-    .then(function (r) { if (!r.ok) throw new Error(); return r.json(); })
-    .catch(function () { return []; })
-    .then(function (data) { renderCastracoes(mergeCastracoes(data || [])); });
+
+  pCastracao.then(function (data) { renderCastracoes(mergeCastracoes(data || [])); });
+
   apiFetch('/calendario_mutirao')
     .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
     .catch(function () { return []; })
     .then(function (dados) {
       var eventos = Array.isArray(dados) ? dados : [];
-      return apiFetch('/castracao')
-        .then(function (r) { return r.ok ? r.json() : []; })
-        .catch(function () { return []; })
-        .then(function (inscricoes) { renderMutiroes(eventos, Array.isArray(inscricoes) ? inscricoes : []); });
-    });
-  apiFetch('/adocao')
-    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-    .then(function (data) { if (data && Array.isArray(data)) renderAnimais(data); })
+      return pCastracao.then(function (inscricoes) {
+        renderMutiroes(eventos, Array.isArray(inscricoes) ? inscricoes : []);
+      });
+    })
     .catch(function () {});
-  apiFetch('/voluntario')
-    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-    .then(function (data) { if (data && Array.isArray(data)) renderVoluntarios(data); })
-    .catch(function () {});
-  apiFetch('/parceria')
-    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-    .then(function (data) { if (data && Array.isArray(data)) renderParcerias(data); })
-    .catch(function () {});
-  apiFetch('/procura_se')
-    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-    .then(function (data) { if (data && Array.isArray(data)) renderProcuraSe(data); })
-    .catch(function () {});
+
+  var pAdocao = apiFetch('/adocao').then(function(r){ if(!r.ok) throw new Error(); return r.json(); }).catch(function(){ return []; });
+  var pVoluntario = apiFetch('/voluntario').then(function(r){ if(!r.ok) throw new Error(); return r.json(); }).catch(function(){ return []; });
+  var pParceria = apiFetch('/parceria').then(function(r){ if(!r.ok) throw new Error(); return r.json(); }).catch(function(){ return []; });
+  var pProcura = apiFetch('/procura_se').then(function(r){ if(!r.ok) throw new Error(); return r.json(); }).catch(function(){ return []; });
+  Promise.allSettled([pAdocao,pVoluntario,pParceria,pProcura]).then(function(res){
+    if (res[0].status==='fulfilled' && Array.isArray(res[0].value)) renderAnimais(res[0].value);
+    if (res[1].status==='fulfilled' && Array.isArray(res[1].value)) renderVoluntarios(res[1].value);
+    if (res[2].status==='fulfilled' && Array.isArray(res[2].value)) renderParcerias(res[2].value);
+    if (res[3].status==='fulfilled' && Array.isArray(res[3].value)) renderProcuraSe(res[3].value);
+  });
 });
 
 function renderEvents(events) {
@@ -76,7 +77,7 @@ function renderEvents(events) {
         '<a class="btn-evento-insta" href="' + instaUrl + '" target="_blank" rel="noopener noreferrer" title="Ver no Instagram"><i class="bi bi-instagram"></i> Ver no Instagram</a>' +
       '</div>' +
       '<div class="event-fotos-area" style="display:flex;align-items:center;justify-content:center;background:var(--bg-alt);color:#94a3b8;font-size:3rem;overflow:hidden;">' +
-        (ev.fotos || ev.arquivo ? '<img src="' + imgUrl(ev.fotos || ev.arquivo, 'eventos') + '" alt="' + esc(ev.titulo) + '">' : '<i class="bi bi-calendar-event"></i>') +
+        (ev.fotos || ev.arquivo ? '<img loading="lazy" decoding="async" src="' + imgUrl(ev.fotos || ev.arquivo, 'eventos') + '" alt="' + esc(ev.titulo) + '">' : '<i class="bi bi-calendar-event"></i>') +
       '</div>';
     container.appendChild(card);
   });
@@ -359,7 +360,7 @@ function renderAnimais(animais) {
     d.innerHTML =
       '<div class="carousel-img-wrap" style="position:relative;width:100%;height:220px;overflow:hidden;">' +
         '<button class="btn-delete-pet admin-only" data-id="' + pet.id + '" title="Excluir pet"><i class="bi bi-x-lg"></i></button>' +
-        '<img src="' + imgUrl(pet.foto_url || pet.arquivo, 'adocao') + '" alt="' + esc(nm) + '" style="width:100%;height:100%;object-fit:cover;">' +
+        '<img loading="lazy" decoding="async" src="' + imgUrl(pet.foto_url || pet.arquivo, 'adocao') + '" alt="' + esc(nm) + '" style="width:100%;height:100%;object-fit:cover;">' +
         '<span class="carousel-badge badge badge-success" style="position:absolute;top:10px;left:10px;border-radius:20px;">' + esc(pet.status || 'Dispon\u00edvel') + '</span>' +
       '</div>' +
       '<div class="carousel-info" style="padding:1rem;">' +
@@ -475,7 +476,7 @@ function renderProcuraSe(animais) {
     card.innerHTML =
       '<div class="procura-card-foto">' +
         (p.foto_url || p.arquivo
-          ? '<img src="' + imgUrl(p.foto_url || p.arquivo, 'procura_se') + '" alt="' + esc(p.pet_nome || '') + '">'
+          ? '<img loading="lazy" decoding="async" src="' + imgUrl(p.foto_url || p.arquivo, 'procura_se') + '" alt="' + esc(p.pet_nome || '') + '">'
           : '<i class="bi bi-question-circle"></i>') +
       '</div>' +
       '<div class="procura-card-body">' +

@@ -172,7 +172,10 @@ async function sincronizarInstagram(btn) {
   btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Sincronizando…';
   try {
     var r = await apiFetch('/eventos/sync-instagram', { method: 'POST' });
-    var d = await r.json();
+    var d = await r.json().catch(function(){ return {}; });
+    if (!r.ok) {
+      throw new Error(d.error || ('HTTP ' + r.status));
+    }
     if (d.success && d.publicados > 0) {
       alert('✅ ' + d.publicados + ' novo(s) post(s) publicado(s)!' + (d.sem_foto ? ' (' + d.sem_foto + ' sem foto)' : ''));
       location.reload();

@@ -37,6 +37,8 @@ services:
       DB_USER: ${DB_USER:-postgres}
       DB_PASS: ${DB_PASS:-postgres}
       API_TOKEN: ${API_TOKEN}
+      IG_ACCESS_TOKEN: ${IG_ACCESS_TOKEN:-}
+      IG_USER_ID: ${IG_USER_ID:-}
     volumes:
       - ${DATA_DIR}/uploads:/app/uploads
       - ${DATA_DIR}/backups:/app/backups

@@ -3122,3 +3122,29 @@ body.high-contrast .header-admin-badge {
   background: rgba(255,255,255,0.15);
 }
 
+/* --- PWA: toast de instalação --- */
+#pwa-install-btn { display: none; }
+.pwa-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translate(-50%, 16px);
+  max-width: min(460px, calc(100% - 32px));
+  background: #0f172a;
+  color: #f1f5f9;
+  padding: 14px 20px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  z-index: 100000;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  text-align: center;
+}
+.pwa-toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+.pwa-toast strong { color: #5eead4; }
+

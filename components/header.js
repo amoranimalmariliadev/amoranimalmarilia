@@ -29,6 +29,9 @@
     /* Help toggle */
     '      <button type="button" class="header-icon-btn header-help-btn" id="help-toggle-btn" title="Ajuda" aria-label="Ajuda"><i class="bi bi-info-circle"></i></button>' +
 
+    /* Install PWA */
+    '      <button type="button" class="header-icon-btn" id="pwa-install-btn" title="Instalar aplicativo" aria-label="Instalar aplicativo" style="display:none"><i class="bi bi-download"></i></button>' +
+
     /* Admin area */
     '      <span id="admin-access-area">' +
     '        <a href="' + ROOT + '/login/index.html" id="admin-login-link" class="header-icon-btn" title="Acesso administrativo"><i class="bi bi-lock"></i></a>' +
@@ -87,7 +90,9 @@
       '      <li><a href="' + ROOT + '/pages/sobre.html"><i class="bi bi-info-circle"></i> Sobre</a></li>' +
     '    </ul>' +
     '  </div>' +
-    '</div>'
+    '</div>' +
+    /* PWA: registra service worker, manifest e botão de instalação */
+    '<script src="' + ROOT + '/static/js/pwa.js"><\/script>'
   );
 
   if (isLanding) {

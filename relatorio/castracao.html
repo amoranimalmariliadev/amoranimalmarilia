@@ -9,9 +9,7 @@
   <link rel="stylesheet" href="../static/css/relatorio.css">
   <link rel="stylesheet" href="../../static/css/icons/bootstrap-icons.min.css">
   <script src="../static/js/api.js"></script>
-  <script src="../static/js/pdfmake/pdfmake.min.js"></script>
-  <script src="../static/js/pdfmake/vfs_fonts.js"></script>
-  <style>
+    <style>
     .filters-bar {
       display: flex;
       flex-wrap: wrap;
@@ -549,7 +547,17 @@
       return val;
     }
 
-    function exportarPDF() {
+    async function loadPdfMakeRel() {
+      if (window.pdfMake) return;
+      await new Promise(function(resolve,reject){
+        var s1=document.createElement('script'); s1.src='../static/js/pdfmake/pdfmake.min.js'; s1.onload=function(){
+          var s2=document.createElement('script'); s2.src='../static/js/pdfmake/vfs_fonts.js'; s2.onload=resolve; s2.onerror=reject; document.head.appendChild(s2);
+        }; s1.onerror=reject; document.head.appendChild(s1);
+      });
+    }
+
+    async function exportarPDF() {
+      await loadPdfMakeRel();
       if (!currentData.length) return;
 
       var columns = ['ticket', 'tutor_nome', 'pet_nome', 'pet_especie', 'pet_sexo', 'pet_periodo', 'pet_idade', 'clinica', 'data_agendamento', 'tipo', 'status'];
@@ -705,5 +713,6 @@
       }
     });
   </script>
+<script src="../static/js/pwa.js"></script>
 </body>
 </html>
