@@ -37,10 +37,23 @@ services:
       DB_USER: ${DB_USER:-postgres}
       DB_PASS: ${DB_PASS:-postgres}
       API_TOKEN: ${API_TOKEN}
+      # IG_* vêm do arquivo `.env` na PASTA do docker-compose (não do arquivo
+      # `env` do servidor). Depois de editar o .env, recrie o container com
+      # `docker compose up -d` — `docker compose restart` NÃO relê o .env.
       IG_ACCESS_TOKEN: ${IG_ACCESS_TOKEN:-}
       IG_USER_ID: ${IG_USER_ID:-}
+      IG_APP_ID: ${IG_APP_ID:-}
+      IG_APP_SECRET: ${IG_APP_SECRET:-}
+      IG_DISCOVERY_USERNAME: ${IG_DISCOVERY_USERNAME:-}
+      IG_GRAPH_VERSION: ${IG_GRAPH_VERSION:-}
     volumes:
       - ${DATA_DIR}/uploads:/app/uploads
       - ${DATA_DIR}/backups:/app/backups
+      # Pasta de deploy montada somente-leitura: o server.js relê /app/host/.env
+      # em runtime (sem recriar o container). Além disso o .env fica visível como
+      # /app/.env. Montar a PASTA (e não o arquivo) evita que o bind-mount fique
+      # "preso" a um inode antigo quando o editor regrava o .env.
+      - ${DATA_DIR}:/app/host:ro
+      - ${DATA_DIR}/.env:/app/.env:ro
     ports:
       - "${PORT:-3000}:3000"

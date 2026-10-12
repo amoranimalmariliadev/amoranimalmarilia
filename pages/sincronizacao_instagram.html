@@ -119,7 +119,11 @@
         <h3>Endpoint da API</h3>
         <pre class="code-block">POST  https://api.projetosdinamicos.com.br/amoranimal/eventos/sync-instagram</pre>
         <p>Requer autenticação <strong>Bearer token</strong> no header <code>Authorization</code>.</p>
-        <p>No servidor, as postagens são obtidas pela <strong>API oficial do Instagram (Graph API)</strong> da conta <code>@grupoamoranimal</code>. Para a sincronização funcionar, a API precisa das variáveis de ambiente <code>IG_ACCESS_TOKEN</code> (token de longa duração da Meta) e <code>IG_USER_ID</code> (ID numérico da conta conectada ao app da Meta).</p>
+        <p>No servidor, as postagens são obtidas pela <strong>API oficial do Instagram (Graph API)</strong> da conta <code>@grupoamoranimal</code>. Há dois modos de leitura, escolhidos pelas variáveis de ambiente:</p>
+        <ul>
+          <li><strong>Business Discovery</strong> — lê o feed <em>público</em> de <code>@grupoamoranimal</code> <strong>sem precisar do login da ONG</strong>. Requer <code>IG_ACCESS_TOKEN</code> (token do Facebook Login) e <code>IG_DISCOVERY_USERNAME=grupoamoranimal</code>. O token deve pertencer a um usuário que administre uma Página do Facebook com uma conta Instagram profissional vinculada (a conta "observadora").</li>
+          <li><strong>Instagram Login</strong> — lê a própria conta que autorizou o app. Requer <code>IG_ACCESS_TOKEN</code> (token <code>IG…</code>) e, opcionalmente, <code>IG_USER_ID</code>. Neste modo, deixe <code>IG_DISCOVERY_USERNAME</code> vazio.</li>
+        </ul>
 
         <h3>Requisição</h3>
         <pre class="code-block">fetch(API_BASE + '/eventos/sync-instagram', {
