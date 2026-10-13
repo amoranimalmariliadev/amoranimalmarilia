@@ -439,15 +439,20 @@ document.addEventListener('DOMContentLoaded', function() {
   fetchCount('/adocao', 'adotado', null, function(a) { return (a.status || '').toLowerCase() === 'adotado'; });
   fetchCount('/procura_se', 'procura_se');
   fetchCount('/parceria', 'parceria');
-  fetchCount('/mutirao_pet', 'mutirao_pet', 'section-castracao');
   (function() {
     var anoAtual = 2026;
-    function carregarMutiraoPet(ano) {
-      apiFetch('/mutirao_pet')
+    function anoRef(p) {
+      var ref = p.origem || p.data_agendamento || p.agenda || p.created_at || '';
+      return String(ref).slice(0, 4);
+    }
+    function carregarAtendidos(ano) {
+      // Reaproveita a mesma requisição de /castracao usada pela tabela/mutirões.
+      var p = window._castracaoPromise || (window._castracaoPromise = apiFetch('/castracao')
         .then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
-        .then(function(data) {
+        .catch(function() { return []; }));
+      p.then(function(data) {
           var c = Array.isArray(data) ? data.filter(function(p) {
-            return p.created_at && p.created_at.slice(0,4) === String(ano);
+            return (p.status || '').toLowerCase() === 'atendido' && anoRef(p) === String(ano);
           }).length : 0;
           var el = document.getElementById('stat-count-mutirao_pet');
           if (el) {
@@ -476,10 +481,10 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(function() { mostrar('mutirao_pet', 0); });
     }
-    carregarMutiraoPet(anoAtual);
+    carregarAtendidos(anoAtual);
     document.querySelectorAll('#card-mutirao_pet .year-btn').forEach(function(btn) {
       btn.addEventListener('click', function() {
-        carregarMutiraoPet(parseInt(this.getAttribute('data-year')));
+        carregarAtendidos(parseInt(this.getAttribute('data-year')));
       });
     });
   })();
@@ -575,17 +580,18 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="castracao-tabs" id="castracaoTabs" data-reveal>
       <button class="tab-btn active" data-tab="publico">Público</button>
       <button class="tab-btn" data-tab="clinica">Clínica</button>
-      <button class="tab-btn admin-only" data-tab="admin" style="display:none;">Admin</button>
+      <button class="tab-btn admin-only" data-tab="admin" style="display:none;">Administrador</button>
     </div>
   </div>
   <div class="castracao-table" style="border-radius:0;box-shadow:none;width:100%;overflow-x:auto;overflow-y:auto;max-height:600px;" data-reveal>
     <table class="table table-striped table-hover mb-0 table-card-mobile" style="width:100%;">
-      <thead style="background:var(--brand-teal);color:white;position:sticky;top:0;z-index:2;">
+      <thead id="castracaoTableHead" style="background:var(--brand-teal);color:white;position:sticky;top:0;z-index:2;">
         <tr>
           <th>Data</th>
           <th>Ticket</th>
           <th>Pet</th>
           <th>Responsável</th>
+          <th>Status</th>
           <th>Ações</th>
         </tr>
       </thead>
@@ -1024,14 +1030,13 @@ function excluirCastracao(btn) {
     });
 }
 
-function atenderTicket(link) {
-  var id = link.dataset.id;
+function atenderTicket(btn) {
+  var id = btn.dataset.id;
   if (!confirm('Marcar este agendamento como Atendido?')) return;
-  apiFetch('/castracao/' + encodeURIComponent(id), {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ status: 'Atendido' })
-  })
+  var original = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Aguarde...';
+  apiFetch('/castracao/' + encodeURIComponent(id) + '/atender', { method: 'PUT' })
     .then(function(r) {
       if (!r.ok) throw new Error('Erro ao atualizar');
       return apiFetch('/castracao');
@@ -1041,13 +1046,15 @@ function atenderTicket(link) {
       return r.json();
     })
     .then(function(data) {
-      if (typeof renderCastracoes === 'function') renderCastracoes(mergeCastracoes(data || []));
+      // Mantém o ticket recém-atendido visível (mostra "Atendido" na coluna Ações)
+      window.showAtendidos = true;
       var checkbox = document.getElementById('toggleAtendidos');
-      if (checkbox && checkbox.checked) {
-        document.querySelectorAll('.status-atendido').forEach(function(el) { el.style.display = 'table-row'; });
-      }
+      if (checkbox) checkbox.checked = true;
+      if (typeof renderCastracoes === 'function') renderCastracoes(mergeCastracoes(data || []));
     })
     .catch(function(err) {
+      btn.disabled = false;
+      btn.innerHTML = original;
       alert('Erro ao atender: ' + err.message);
     });
 }
@@ -1060,14 +1067,13 @@ function updateCastracaoTabs() {
   var tabs = document.querySelectorAll('#castracaoTabs .tab-btn');
   var btnAtenderTodos = document.getElementById('btnAtenderTodos');
   if (!tabs.length) return;
+  if (window.currentCastracaoTab === 'admin' && !document.body.classList.contains('admin-mode')) {
+    window.currentCastracaoTab = 'publico';
+  }
   tabs.forEach(function(t) {
     t.classList.toggle('active', t.dataset.tab === window.currentCastracaoTab);
   });
-  if (window.currentCastracaoTab === 'clinica' || window.currentCastracaoTab === 'admin') {
-    if (btnAtenderTodos) btnAtenderTodos.style.display = '';
-  } else {
-    if (btnAtenderTodos) btnAtenderTodos.style.display = 'none';
-  }
+  if (btnAtenderTodos) btnAtenderTodos.style.display = (window.currentCastracaoTab === 'admin') ? '' : 'none';
   if (typeof renderCastracoes === 'function' && window._castracoesCache) {
     renderCastracoes(window._castracoesCache);
   }
@@ -1090,13 +1096,17 @@ function atenderTodos() {
       var pendentes = (data||[]).filter(function(x){ return (x.status||'').toLowerCase() !== 'atendido'; });
       if (pendentes.length === 0) { if(btn){ btn.disabled=false; btn.innerHTML=orig; } alert('Nenhum pendente.'); return; }
       var proms = pendentes.map(function(x){
-        return apiFetch('/castracao/'+encodeURIComponent(x.id), {method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify({status:'Atendido'})});
+        return apiFetch('/castracao/'+encodeURIComponent(x.id)+'/atender', {method:'PUT'});
       });
       return Promise.all(proms).then(function(){ return apiFetch('/castracao'); });
     })
     .then(function(r){ if(!r.ok) throw new Error('Erro'); return r.json(); })
     .then(function(data){
       if (typeof mergeCastracoes === 'function' && typeof renderCastracoes === 'function') {
+        // Mantém visível o resultado (todos como "Atendido")
+        window.showAtendidos = true;
+        var cb = document.getElementById('toggleAtendidos');
+        if (cb) cb.checked = true;
         window._castracoesCache = mergeCastracoes(data||[]);
         renderCastracoes(window._castracoesCache);
       }

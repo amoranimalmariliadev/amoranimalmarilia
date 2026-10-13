@@ -1,12 +1,13 @@
 var BASE = window.API_BASE;
 
 document.addEventListener('DOMContentLoaded', function () {
-  // /castracao alimenta tanto a tabela de castrações quanto a contagem de vagas
-  // dos mutirões. Buscamos uma única vez e compartilhamos a mesma promise,
-  // evitando uma segunda requisição de ~230 KB a cada carregamento da home.
-  var pCastracao = apiFetch('/castracao')
+  // /castracao alimenta a tabela de castrações, a contagem de vagas dos mutirões
+  // e os atendidos do "Nosso Impacto". Compartilhamos uma única promise global
+  // (criada aqui ou antecipadamente pelo bloco de estatísticas), evitando
+  // requisições repetidas de ~230 KB a cada carregamento da home.
+  var pCastracao = window._castracaoPromise || (window._castracaoPromise = apiFetch('/castracao')
     .then(function (r) { if (!r.ok) throw new Error(); return r.json(); })
-    .catch(function () { return []; });
+    .catch(function () { return []; }));
 
   apiFetch('/eventos')
     .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
@@ -101,15 +102,30 @@ function mergeCastracoes(castracoes) {
   return all;
 }
 
+function renderCastracaoHead(tab) {
+  var thead = document.getElementById('castracaoTableHead');
+  if (!thead) return;
+  var cols = '<th>Data</th><th>Ticket</th><th>Pet</th><th>Respons\u00e1vel</th>';
+  if (tab === 'clinica') {
+    cols += '<th>A\u00e7\u00f5es</th>';
+  } else {
+    cols += '<th>Status</th><th>A\u00e7\u00f5es</th>';
+  }
+  thead.innerHTML = '<tr>' + cols + '</tr>';
+}
+
 function renderCastracoes(castracoes) {
   window._castracoesCache = castracoes || [];
   var tbody = document.querySelector('.castracao-table table tbody');
   if (!tbody) return;
+  var tab = window.currentCastracaoTab || 'publico';
+  renderCastracaoHead(tab);
   tbody.innerHTML = '';
   var secCastracao = document.getElementById('section-castracao');
   if (secCastracao) secCastracao.style.display = 'block';
+  var colCount = (tab === 'clinica') ? 5 : 6;
   if (!castracoes.length) {
-    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">' +
+    tbody.innerHTML = '<tr><td colspan="' + colCount + '" class="text-center text-muted">' +
       '<i class="bi bi-info-circle me-1"></i>Nenhum agendamento no momento. ' +
       '<a href="pages/castracao.html" class="btn btn-primary btn-sm" style="margin-left:6px;"><i class="bi bi-plus-circle me-1"></i>Fazer agendamento</a></td></tr>';
     return;
@@ -118,7 +134,7 @@ function renderCastracoes(castracoes) {
     var ticketNum = c.ticket || '';
     var isAtendido = (c.status || '').toLowerCase() === 'atendido';
     var tr = document.createElement('tr');
-    if (isAtendido) { tr.className = 'status-atendido'; tr.style.display = (window.showAtendidos ? window.showAtendidos : false) ? 'table-row' : 'none'; }
+    if (isAtendido) { tr.className = 'status-atendido'; tr.style.display = window.showAtendidos ? 'table-row' : 'none'; }
     tr.setAttribute('data-ticket', ticketNum);
     tr.setAttribute('data-pet', c.pet_nome || '');
     tr.setAttribute('data-responsavel', c.tutor_nome || '');
@@ -139,47 +155,38 @@ function renderCastracoes(castracoes) {
     tr.setAttribute('data-cidade', c.cidade || '');
     tr.setAttribute('data-estado', c.estado || '');
     tr.setAttribute('data-cep', c.cep || '');
-    var ticketHtml = (c._origem === 'castracao' && !isAtendido)
-      ? '<a href="javascript:void(0);" class="ticket-link" onclick="atenderTicket(this)" data-id="' + c.id + '" title="Clique para marcar como Atendido">' + esc(ticketNum) + '</a>'
-      : '<strong>' + esc(ticketNum) + '</strong>';
-    var statusHtml = isAtendido
-      ? '<button class="btn-status-atendido" disabled><i class="bi bi-check-circle-fill"></i> Atendido</button>'
-      : (c._origem === 'castracao'
-        ? ''
-        : '<button class="btn-status-atendido" disabled style="opacity:0.5;"><i class="bi bi-check-circle-fill"></i> ' + esc(c.status) + '</button>');
+    // Ticket sempre sem link (a a\u00e7\u00e3o de atender fica na coluna A\u00e7\u00f5es da aba Cl\u00ednica)
+    var ticketHtml = '<strong>' + esc(ticketNum) + '</strong>';
     var tipoLabel = '';
     var tipoNorm = (c.tipo || '').toLowerCase();
     if (tipoNorm === 'mutirao') tipoLabel = '<span class="badge" style="background:#10b981;color:#fff;"><i class="bi bi-people me-1"></i>Mutir\u00e3o</span>';
     else if (tipoNorm === 'baixo_custo') tipoLabel = '<span class="badge" style="background:#0ea5e9;color:#fff;"><i class="bi bi-tag me-1"></i>Baixo Custo</span>';
     else if (tipoNorm === 'pets_rua') tipoLabel = '<span class="badge" style="background:#f59e0b;color:#fff;"><i class="bi bi-paw me-1"></i>Pet de Rua</span>';
-    var isAtendidoNow = (c.status || '').toLowerCase() === 'atendido';
-    var canAtenderClinica = (c._origem === 'castracao') && !isAtendidoNow;
-    var actionsHtml =
-      '<button class="btn-comprovante" onclick="gerarComprovante(this)"><i class="bi bi-file-earmark-text"></i> Comprovante</button>';
-    var tabAtual = window.currentCastracaoTab || 'publico';
-    if (tabAtual === 'clinica') {
-      if (canAtenderClinica) {
-        actionsHtml += ' <button class="btn-atender" data-id="' + c.id + '" onclick="atenderTicket(this)"><i class="bi bi-check2"></i> Atender</button>';
-      }
-    }
-    if (tabAtual === 'admin') {
-      if (canAtenderClinica) {
-        actionsHtml += ' <button class="btn-atender" data-id="' + c.id + '" onclick="atenderTicket(this)"><i class="bi bi-check2"></i> Atender</button>';
-      }
-      if (c._origem === 'castracao') {
-        actionsHtml += ' <button class="btn-excluir-castracao admin-only" onclick="excluirCastracao(this)" data-id="' + c.id + '" title="Excluir"><i class="bi bi-trash"></i> Excluir</button>';
-      }
+    var statusHtml = isAtendido
+      ? '<span class="btn-status-atendido"><i class="bi bi-check-circle-fill"></i> Atendido</span>'
+      : '<span class="btn-status-atendido" style="background:#fef3c7;color:#92400e;opacity:1;"><i class="bi bi-hourglass-split"></i> Pendente</span>';
+    var actionsHtml = '';
+    if (tab === 'clinica') {
+      // Aba Cl\u00ednica: apenas o bot\u00e3o Atender (altera Pendente -> Atendido)
+      actionsHtml = isAtendido
+        ? '<span class="btn-status-atendido"><i class="bi bi-check-circle-fill"></i> Atendido</span>'
+        : '<button class="btn-atender" data-id="' + c.id + '" onclick="atenderTicket(this)"><i class="bi bi-check2"></i> Atender</button>';
+    } else if (tab === 'admin') {
+      // Aba Administrador (exige login): apenas excluir linha
+      actionsHtml = '<button class="btn-excluir-castracao admin-only" onclick="excluirCastracao(this)" data-id="' + c.id + '" title="Excluir"><i class="bi bi-trash"></i> Excluir</button>';
+    } else {
+      // Aba P\u00fablico: download do comprovante em PDF
+      actionsHtml = '<button class="btn-comprovante" onclick="gerarComprovante(this)"><i class="bi bi-file-earmark-text"></i> Comprovante</button>';
     }
 
-    tr.innerHTML =
+    var cells =
       '<td data-label="Data">' + fmtDate(c.data) + '</td>' +
       '<td data-label="Ticket">' + ticketHtml + (tipoLabel ? '<br>' + tipoLabel : '') + '</td>' +
       '<td data-label="Pet">' + esc(c.pet_nome) + '</td>' +
-      '<td data-label="Respons\u00e1vel">' + esc(c.tutor_nome) + '</td>' +
-      '<td data-label="A\u00e7\u00f5es">' +
-        statusHtml + ' ' +
-        actionsHtml +
-      '</td>';
+      '<td data-label="Respons\u00e1vel">' + esc(c.tutor_nome) + '</td>';
+    if (tab !== 'clinica') cells += '<td data-label="Status">' + statusHtml + '</td>';
+    cells += '<td data-label="A\u00e7\u00f5es">' + actionsHtml + '</td>';
+    tr.innerHTML = cells;
     tbody.appendChild(tr);
   });
 }
