@@ -380,6 +380,8 @@
           <button class="year-btn year-active" data-year="2026" style="background:none;border:1px solid var(--brand-green);border-radius:4px;padding:2px 10px;cursor:pointer;color:var(--brand-green);font-weight:600">2026</button>
           <button class="year-btn" data-year="2027" style="background:none;border:1px solid #ccc;border-radius:4px;padding:2px 10px;cursor:pointer;opacity:.5">2027</button>
         </div>
+        <div class="stat-card-breakdown" id="stat-breakdown-mutirao_pet"
+             style="margin-top:8px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;font-size:12px;color:var(--muted-color);"></div>
       </div>
       <div class="stat-card" data-endpoint="parceria">
         <div class="stat-card-icon" style="color: var(--brand-yellow);"><i class="bi bi-hand-thumbs-up"></i></div>
@@ -441,50 +443,59 @@ document.addEventListener('DOMContentLoaded', function() {
   fetchCount('/parceria', 'parceria');
   (function() {
     var anoAtual = 2026;
-    function anoRef(p) {
-      var ref = p.origem || p.data_agendamento || p.agenda || p.created_at || '';
-      return String(ref).slice(0, 4);
+    function destacarAno(ano) {
+      document.querySelectorAll('#card-mutirao_pet .year-btn').forEach(function(btn) {
+        var y = parseInt(btn.getAttribute('data-year'));
+        if (y === ano) {
+          btn.style.borderColor = 'var(--brand-green)';
+          btn.style.color = 'var(--brand-green)';
+          btn.style.fontWeight = '600';
+          btn.style.opacity = '1';
+        } else {
+          btn.style.borderColor = '#ccc';
+          btn.style.color = '';
+          btn.style.fontWeight = '';
+          btn.style.opacity = '.5';
+        }
+      });
     }
-    function carregarAtendidos(ano) {
-      // Reaproveita a mesma requisição de /castracao usada pela tabela/mutirões.
-      var p = window._castracaoPromise || (window._castracaoPromise = apiFetch('/castracao')
-        .then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
-        .catch(function() { return []; }));
-      p.then(function(data) {
-          var c = Array.isArray(data) ? data.filter(function(p) {
-            return (p.status || '').toLowerCase() === 'atendido' && anoRef(p) === String(ano);
-          }).length : 0;
+    function carregarResumo(ano) {
+      var label = document.getElementById('stat-year-label-mutirao_pet');
+      if (label) label.textContent = ano;
+      destacarAno(ano);
+      // Somatório de castrações por tipo, agregado no servidor (GET /castracao/resumo).
+      apiFetch('/castracao/resumo?ano=' + encodeURIComponent(ano))
+        .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then(function(resumo) {
+          var c = (resumo && typeof resumo.total === 'number') ? resumo.total : 0;
           var el = document.getElementById('stat-count-mutirao_pet');
           if (el) {
             el.setAttribute('data-count', c);
             if (el._inView) animarContador(el);
             else el.textContent = c;
           }
-          var label = document.getElementById('stat-year-label-mutirao_pet');
-          if (label) label.textContent = ano;
-          var card = document.getElementById('card-mutirao_pet');
-          if (card) card.style.display = c > 0 ? '' : 'none';
-          document.querySelectorAll('#card-mutirao_pet .year-btn').forEach(function(btn) {
-            var y = parseInt(btn.getAttribute('data-year'));
-            if (y === ano) {
-              btn.style.borderColor = 'var(--brand-green)';
-              btn.style.color = 'var(--brand-green)';
-              btn.style.fontWeight = '600';
-              btn.style.opacity = '1';
-            } else {
-              btn.style.borderColor = '#ccc';
-              btn.style.color = '';
-              btn.style.fontWeight = '';
-              btn.style.opacity = '.5';
-            }
-          });
+          var bt = (resumo && resumo.por_tipo) || {};
+          var bd = document.getElementById('stat-breakdown-mutirao_pet');
+          if (bd) {
+            bd.innerHTML =
+              '<span title="Mutirão"><i class="bi bi-people"></i> ' + (bt.mutirao || 0) + '</span>' +
+              '<span title="Baixo custo"><i class="bi bi-tag"></i> ' + (bt.baixo_custo || 0) + '</span>' +
+              '<span title="Pets de rua"><i class="bi bi-paw"></i> ' + (bt.pets_rua || 0) + '</span>';
+          }
         })
-        .catch(function() { mostrar('mutirao_pet', 0); });
+        .catch(function() {
+          // Fallback: se o resumo falhar, mostra 0 sem esconder o card, para
+          // não perder a navegação de anos.
+          var el = document.getElementById('stat-count-mutirao_pet');
+          if (el) { el.setAttribute('data-count', 0); el.textContent = '0'; }
+          var bd = document.getElementById('stat-breakdown-mutirao_pet');
+          if (bd) bd.innerHTML = '';
+        });
     }
-    carregarAtendidos(anoAtual);
+    carregarResumo(anoAtual);
     document.querySelectorAll('#card-mutirao_pet .year-btn').forEach(function(btn) {
       btn.addEventListener('click', function() {
-        carregarAtendidos(parseInt(this.getAttribute('data-year')));
+        carregarResumo(parseInt(this.getAttribute('data-year')));
       });
     });
   })();

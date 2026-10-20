@@ -1,10 +1,10 @@
 var BASE = window.API_BASE;
 
 document.addEventListener('DOMContentLoaded', function () {
-  // /castracao alimenta a tabela de castrações, a contagem de vagas dos mutirões
-  // e os atendidos do "Nosso Impacto". Compartilhamos uma única promise global
-  // (criada aqui ou antecipadamente pelo bloco de estatísticas), evitando
-  // requisições repetidas de ~230 KB a cada carregamento da home.
+  // /castracao alimenta a tabela de castrações e a contagem de vagas dos
+  // mutirões. Compartilhamos uma única promise global para evitar requisições
+  // repetidas de ~230 KB a cada carregamento da home. (O card "Nosso Impacto"
+  // usa GET /castracao/resumo, já agregado no servidor, então não depende disto.)
   var pCastracao = window._castracaoPromise || (window._castracaoPromise = apiFetch('/castracao')
     .then(function (r) { if (!r.ok) throw new Error(); return r.json(); })
     .catch(function () { return []; }));
