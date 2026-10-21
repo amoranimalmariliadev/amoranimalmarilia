@@ -4,7 +4,8 @@ document.addEventListener('DOMContentLoaded', function () {
   // /castracao alimenta a tabela de castrações e a contagem de vagas dos
   // mutirões. Compartilhamos uma única promise global para evitar requisições
   // repetidas de ~230 KB a cada carregamento da home. (O card "Nosso Impacto"
-  // usa GET /castracao/resumo, já agregado no servidor, então não depende disto.)
+  // usa GET /castracao/resumo, mas reaproveita esta mesma promise no fallback
+  // quando a rota de resumo não está disponível no servidor.)
   var pCastracao = window._castracaoPromise || (window._castracaoPromise = apiFetch('/castracao')
     .then(function (r) { if (!r.ok) throw new Error(); return r.json(); })
     .catch(function () { return []; }));
