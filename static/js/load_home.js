@@ -1,5 +1,46 @@
 var BASE = window.API_BASE;
 
+/* ==========================================================================
+   Carrosséis horizontais das seções (Eventos, Procura-se, Mutirões, Pets,
+   Voluntários e Parcerias).
+
+   Os cards chegam pela API (posts do Instagram, banco) e são inseridos
+   dinamicamente no DOM. No mobile o scroll lateral (x-overflow) precisa
+   continuar ativo à medida que as postagens aparecem, então reaplicamos
+   as propriedades de scroll depois de cada renderização e sempre que a
+   viewport muda (resize / rotação de tela).
+   ========================================================================== */
+var SELETOR_CARROSSEL = '.events-grid, .procura-grid, .mutirao-carrossel, .pet-carousel, .voluntarios-carrossel, .parcerias-grid';
+var QUERY_MOBILE = '(max-width: 768px)';
+
+function garantirOverflowX(el) {
+  if (!el) return;
+  if (window.matchMedia && window.matchMedia(QUERY_MOBILE).matches) {
+    el.style.overflowX = 'auto';
+    el.style.webkitOverflowScrolling = 'touch';
+  } else {
+    // No desktop o CSS assume o controle (o carrossel de pets usa marquee).
+    el.style.overflowX = '';
+    el.style.webkitOverflowScrolling = '';
+  }
+}
+
+function garantirOverflowXCarrossel() {
+  var els = document.querySelectorAll(SELETOR_CARROSSEL);
+  for (var i = 0; i < els.length; i++) garantirOverflowX(els[i]);
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  garantirOverflowXCarrossel();
+  var aguardandoResize;
+  function aoRedimensionar() {
+    clearTimeout(aguardandoResize);
+    aguardandoResize = setTimeout(garantirOverflowXCarrossel, 150);
+  }
+  window.addEventListener('resize', aoRedimensionar);
+  window.addEventListener('orientationchange', aoRedimensionar);
+});
+
 document.addEventListener('DOMContentLoaded', function () {
   // /castracao alimenta a tabela de castrações e a contagem de vagas dos
   // mutirões. Compartilhamos uma única promise global para evitar requisições
@@ -56,6 +97,7 @@ function renderEvents(events) {
           '<a class="btn-evento-insta" href="' + INSTAGRAM_URL + '" target="_blank" rel="noopener noreferrer"><i class="bi bi-instagram"></i> Seguir no Instagram</a>' +
         '</div>' +
       '</div>';
+    garantirOverflowX(container);
     return;
   }
   var criadoEm = function (ev) {
@@ -83,6 +125,7 @@ function renderEvents(events) {
       '</div>';
     container.appendChild(card);
   });
+  garantirOverflowX(container);
 }
 
 function mergeCastracoes(castracoes) {
@@ -226,6 +269,7 @@ function renderMutiroes(eventos, inscricoes) {
           '<a class="button button-highlight" href="pages/castracao.html"><i class="bi bi-plus-circle me-1"></i> Novo Agendamento</a>' +
         '</div>' +
       '</div>';
+    garantirOverflowX(container);
     return;
   }
 
@@ -332,6 +376,7 @@ function renderMutiroes(eventos, inscricoes) {
     d.appendChild(footer);
     container.appendChild(d);
   });
+  garantirOverflowX(container);
 }
 
 function renderAnimais(animais) {
@@ -401,6 +446,7 @@ function renderAnimais(animais) {
     return d;
   }
   animais.forEach(function (p) { container.appendChild(item(p)); });
+  garantirOverflowX(container);
 }
 
 function renderVoluntarios(voluntarios) {
@@ -418,6 +464,7 @@ function renderVoluntarios(voluntarios) {
           '<a class="button btn" style="background:var(--brand-coral);" href="pages/parceria.html"><i class="bi bi-hand-thumbs-up me-1"></i> Seja um Parceiro</a>' +
         '</div>' +
       '</div>';
+    garantirOverflowX(container);
     return;
   }
   var cores = ['var(--brand-teal)', 'var(--brand-coral)', 'var(--brand-purple)', 'var(--brand-blue)', 'var(--brand-green)', 'var(--brand-yellow)'];
@@ -436,6 +483,7 @@ function renderVoluntarios(voluntarios) {
       '</div>';
     container.appendChild(card);
   });
+  garantirOverflowX(container);
 }
 
 function renderParcerias(parcerias) {
@@ -461,6 +509,7 @@ function renderParcerias(parcerias) {
       (p.proposta ? '<div class="parceria-card-proposta">' + esc(p.proposta) + '</div>' : '');
     container.appendChild(card);
   });
+  garantirOverflowX(container);
 }
 
 function renderProcuraSe(animais) {
@@ -496,6 +545,7 @@ function renderProcuraSe(animais) {
       '</div>';
     container.appendChild(card);
   });
+  garantirOverflowX(container);
 }
 
 function imgUrl(f, pasta) {

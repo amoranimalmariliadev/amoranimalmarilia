@@ -970,6 +970,44 @@
     }
 }
 
+/* ==========================================================================
+   Carrossel de Pets (Adoção)
+   Fica aqui (e não no <style> inline do index.html) porque o bloco inline é
+   carregado DEPOIS do home.css e sobrescreveria as regras mobile por cascata.
+   ========================================================================== */
+.pet-carousel-wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    padding: 10px 0;
+}
+.pet-carousel {
+    display: flex;
+    gap: 1.5rem;
+    width: max-content;
+    animation: scrollPets 40s linear infinite;
+}
+.pet-carousel:hover {
+    animation-play-state: paused;
+}
+@keyframes scrollPets {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+.pet-carousel-item {
+    flex: 0 0 280px;
+    background: var(--container-bg);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--container-shadow);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.pet-carousel-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
 /* Parcerias */
 .parcerias-grid {
     display: flex;
@@ -1514,7 +1552,8 @@ body:has(#toggleAtendidos:checked) .status-atendido { display: table-row; }
     .mutirao-carrossel,
     .voluntarios-carrossel,
     .parcerias-grid,
-    .procura-grid {
+    .procura-grid,
+    .pet-carousel {
         scroll-snap-type: x mandatory;
         -webkit-overflow-scrolling: touch;
         scroll-padding-left: 1rem;
@@ -1524,23 +1563,37 @@ body:has(#toggleAtendidos:checked) .status-atendido { display: table-row; }
     .mutirao-carrossel::-webkit-scrollbar,
     .voluntarios-carrossel::-webkit-scrollbar,
     .parcerias-grid::-webkit-scrollbar,
-    .procura-grid::-webkit-scrollbar {
+    .procura-grid::-webkit-scrollbar,
+    .pet-carousel::-webkit-scrollbar {
         display: none;
     }
     .event-card-hover,
     .mutirao-card,
     .voluntario-card,
     .parceria-card,
-    .procura-card {
+    .procura-card,
+    .pet-carousel-item {
         scroll-snap-align: center;
     }
+
+    /* Cards ocupam uma "fatia" da viewport (86vw) para o próximo card
+       aparecer e indicar que há mais conteúdo para o lado. */
+    .mutirao-card,
+    .parceria-card,
+    .procura-card,
+    .pet-carousel-item {
+        flex: 0 0 min(320px, 86vw);
+        width: min(320px, 86vw);
+        min-width: min(320px, 86vw);
+        max-width: min(320px, 86vw);
+    }
+    /* O card de voluntário recebe estilo inline via JS (cssText), por isso
+       precisa de !important para ser redimensionado no mobile. */
     .voluntario-card {
         flex: 0 0 min(320px, 86vw) !important;
         width: min(320px, 86vw) !important;
-    }
-    .mutirao-card {
-        flex: 0 0 min(320px, 86vw);
-        min-width: min(320px, 86vw);
+        min-width: min(320px, 86vw) !important;
+        max-width: min(320px, 86vw) !important;
     }
 
     /* Garante scroll horizontal (overflow-x) em todos os blocos de cards */
@@ -1551,6 +1604,7 @@ body:has(#toggleAtendidos:checked) .status-atendido { display: table-row; }
     .procura-grid,
     .pet-carousel {
         overflow-x: auto;
+        max-width: 100%;
     }
 
     /* Pets - troca marquee automático por swipe */

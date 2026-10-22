@@ -116,37 +116,9 @@
   .table-hover tbody tr:hover { background: var(--bg-color) !important; }
   .badge { display: inline-block; padding: 4px 8px; font-size: 0.75rem; border-radius: 4px; }
 
-  .pet-carousel-wrapper {
-    width: 100%;
-    overflow: hidden;
-    padding: 10px 0;
-  }
-  .pet-carousel {
-    display: flex;
-    gap: 1.5rem;
-    width: max-content;
-    animation: scrollPets 40s linear infinite;
-  }
-  .pet-carousel:hover {
-    animation-play-state: paused;
-  }
-  @keyframes scrollPets {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-  .pet-carousel-item {
-    flex: 0 0 280px;
-    background: var(--container-bg);
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: var(--container-shadow);
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-  .pet-carousel-item:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-  }
+  /* O carrossel de pets (.pet-carousel) foi movido para static/css/home.css:
+     mantendo-o aqui, o <style> inline (carregado depois do CSS externo)
+     sobrescreveria as regras mobile de scroll horizontal por cascata. */
 
   .btn-delete-evento {
     position: absolute; top: 8px; right: 8px; z-index: 20;
