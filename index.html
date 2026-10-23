@@ -1311,6 +1311,13 @@ document.addEventListener('DOMContentLoaded', function() {
       });
       var msg = document.getElementById('petsEmptyFiltro');
       if (msg) msg.style.display = visiveis === 0 ? 'block' : 'none';
+      // Volta ao início do carrossel para o primeiro card visível aparecer
+      // e garante que o scroll lateral continue ativo com os cards restantes.
+      var grid = document.getElementById('petsGrid');
+      if (grid) {
+        grid.scrollLeft = 0;
+        if (typeof garantirOverflowX === 'function') garantirOverflowX(grid);
+      }
     });
   }
 });
