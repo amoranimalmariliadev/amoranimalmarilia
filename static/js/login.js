@@ -142,7 +142,7 @@ class LoginFormHandler {
       .then(function(data) {
         localStorage.setItem('amoranimal_token', data.token);
         localStorage.setItem('amoranimal_usuario', JSON.stringify(data.usuario));
-        localStorage.setItem('amoranimal_session_expiry', String(Date.now() + 600000));
+        localStorage.setItem('amoranimal_session_expiry', String(Date.now() + 8 * 60 * 60 * 1000));
         window.loginHandler?.showMessage('Login realizado! Redirecionando...', 'success');
         setTimeout(function() { window.location.href = '/index.html'; }, 1000);
       })
